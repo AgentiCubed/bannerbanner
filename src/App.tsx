@@ -8,12 +8,12 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ShieldCheck, Gear, Eye, Info, ListChecks, GraduationCap, Power, Palette } from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider, useTheme } from '@/components/ThemeProvider';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { StatsDashboard } from '@/components/StatsDashboard';
 import { BannerPatternsList } from '@/components/BannerPatternsList';
-import { BananaCelebration } from '@/components/BananaCelebration';
+import { BananaTownCameo } from '@/components/BananaTownCameo';
 import { LearnBannerPattern } from '@/components/LearnBannerPattern';
 import { GhostBannerPreview } from '@/components/GhostBannerPreview';
 import { BannerTrainerEnhanced } from '@/components/BannerTrainerEnhanced';
@@ -28,7 +28,8 @@ const DEFAULT_CATEGORIES: CookieCategories = {
   marketing: false,
 };
 
-function App() {
+function AppContent() {
+  const { theme } = useTheme();
   const [preferences, setPreferences] = useKV<UserPreferences>('banner-preferences', {
     level: 'necessary',
     useCustom: false,
@@ -41,6 +42,18 @@ function App() {
   const [lastBannerClosed, setLastBannerClosed] = useState<BannerClosedEvent | null>(null);
   const [isPreviewRunning, setIsPreviewRunning] = useState(false);
   const [sharePublicly, setSharePublicly] = useKV<boolean>('share-patterns-publicly', false);
+
+  const isBananaTheme = theme === 'banana' || theme === 'dark-banana';
+  const bananaThemeClass = theme === 'banana' ? 'banana-theme' : theme === 'dark-banana' ? 'dark-banana-theme' : '';
+
+  useEffect(() => {
+    if (bananaThemeClass) {
+      document.body.classList.add(bananaThemeClass);
+    }
+    return () => {
+      document.body.classList.remove('banana-theme', 'dark-banana-theme');
+    };
+  }, [bananaThemeClass]);
 
   const handleBannerClosed = (event: BannerClosedEvent) => {
     setLastBannerClosed(event);
@@ -95,9 +108,8 @@ function App() {
   };
 
   return (
-    <ThemeProvider>
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div className={`min-h-screen ${isBananaTheme ? (theme === 'banana' ? 'banana-theme-background' : 'dark-banana-theme-background') : 'bg-gradient-to-br from-background via-background to-accent/5'}`}>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <header className="mb-8 sm:mb-12">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-xl bg-primary/10">
@@ -359,12 +371,19 @@ function App() {
         </Tabs>
       </div>
 
-      <BananaCelebration
+      <BananaTownCameo
         isVisible={bananaVisible}
         onDismiss={() => setBananaVisible(false)}
         bannerName={lastBannerClosed?.bannerName}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }
