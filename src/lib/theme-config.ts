@@ -1,4 +1,4 @@
-export type ThemeName = 'light' | 'dark' | 'banana';
+export type ThemeName = 'light' | 'dark' | 'banana' | 'dark-banana';
 
 export interface ThemeColors {
   background: string;
@@ -85,5 +85,26 @@ export const THEME_COLORS: Record<ThemeName, ThemeColors> = {
     border: 'oklch(0.85 0.08 88)',
     input: 'oklch(0.85 0.08 88)',
     ring: 'oklch(0.75 0.2 90)',
+  },
+  'dark-banana': {
+    background: 'oklch(0.18 0.04 70)',
+    foreground: 'oklch(0.95 0.06 95)',
+    card: 'oklch(0.22 0.05 75)',
+    cardForeground: 'oklch(0.95 0.06 95)',
+    popover: 'oklch(0.22 0.05 75)',
+    popoverForeground: 'oklch(0.95 0.06 95)',
+    primary: 'oklch(0.75 0.2 85)',
+    primaryForeground: 'oklch(0.15 0.04 70)',
+    secondary: 'oklch(0.35 0.08 75)',
+    secondaryForeground: 'oklch(0.95 0.06 95)',
+    muted: 'oklch(0.28 0.05 75)',
+    mutedForeground: 'oklch(0.68 0.08 85)',
+    accent: 'oklch(0.8 0.22 90)',
+    accentForeground: 'oklch(0.15 0.04 70)',
+    destructive: 'oklch(0.6 0.24 25)',
+    destructiveForeground: 'oklch(0.95 0.06 95)',
+    border: 'oklch(0.32 0.06 75)',
+    input: 'oklch(0.32 0.06 75)',
+    ring: 'oklch(0.8 0.22 90)',
   },
 };

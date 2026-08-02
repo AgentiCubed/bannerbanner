@@ -16,7 +16,7 @@ import { BannerPatternsList } from '@/components/BannerPatternsList';
 import { BananaCelebration } from '@/components/BananaCelebration';
 import { LearnBannerPattern } from '@/components/LearnBannerPattern';
 import { GhostBannerPreview } from '@/components/GhostBannerPreview';
-import { BannerTrainer } from '@/components/BannerTrainer';
+import { BannerTrainerEnhanced } from '@/components/BannerTrainerEnhanced';
 import { useAutoBannerHandler, type BannerClosedEvent } from '@/hooks/use-auto-banner-handler';
 import { BANNER_PATTERNS } from '@/lib/banner-patterns';
 import type { PreferenceLevel, CookieCategories, UserPreferences } from '@/lib/types';
@@ -241,14 +241,14 @@ function App() {
                 </div>
               </Card>
 
-              <BannerTrainer
+              <BannerTrainerEnhanced
                 onComplete={() => {
                   toast.success('Banner pattern saved successfully!', {
                     description: sharePublicly ? 'Pattern shared with the community' : 'Pattern saved locally',
                   });
                 }}
                 sharePublicly={sharePublicly || false}
-                onSharePubliclyChange={(value) => setSharePublicly(value)}
+                onSharePubliclyChange={(value: boolean) => setSharePublicly(value)}
               />
             </div>
           </TabsContent>

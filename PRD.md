@@ -40,12 +40,12 @@ This is a privacy automation tool with preference management, pattern detection,
 - **Progression**: User views stats → See preference summary → View privacy score and supported patterns count
 - **Success criteria**: Numbers are meaningful and update in real-time as preferences change
 
-### Feature 5: Banner Pattern Library with Learning System
-- **Functionality**: Comprehensive list of supported patterns with ability to learn new banner types and save custom patterns
-- **Purpose**: Builds user confidence and allows system to adapt to new or unsupported banners
-- **Trigger**: User navigates to "Patterns" tab or encounters unknown banner
-- **Progression**: View patterns list → Search frameworks → Add custom pattern for unsupported banner → System learns and applies to future encounters
-- **Success criteria**: All patterns display correctly, custom patterns can be added, learning system persists across sessions
+### Feature 5: Banner Pattern Library with Enhanced Learning System
+- **Functionality**: Comprehensive list of supported patterns with ultra-intuitive, step-by-step banner training wizard with visual guidance and examples
+- **Purpose**: Builds user confidence and allows system to adapt to new or unsupported banners with zero technical knowledge required
+- **Trigger**: User navigates to "Patterns" tab or encounters unknown banner, clicks "Start Training"
+- **Progression**: View intro screen → Read simple overview → Click "I'll Guide You!" → Follow step-by-step visual instructions → Point to Accept button → Point to Reject button → Optionally find Settings → Auto-test → Celebrate success → Pattern saved
+- **Success criteria**: All patterns display correctly, custom patterns can be added by ANY user regardless of technical skill, each step provides clear visual examples, progress bar shows advancement, training feels "boomer-easy" and confidence-inspiring, learning system persists across sessions
 
 ### Feature 6: Banana Celebration Notification
 - **Functionality**: Shows animated banana with thumbs up when banner is successfully removed
@@ -54,12 +54,12 @@ This is a privacy automation tool with preference management, pattern detection,
 - **Progression**: Banner closes → Banana appears with animation → Thumbs up gesture → Fades after 3 seconds → Can be disabled in settings
 - **Success criteria**: Animation is smooth and celebratory, doesn't obstruct content, can be toggled off
 
-### Feature 7: Theme Customization
-- **Functionality**: Users can select between Light, Dark, and Banana visual themes
-- **Purpose**: Provides personalization and accommodates different viewing preferences and environments
+### Feature 7: Theme Customization with Banana Delight
+- **Functionality**: Users can select between Light, Dark, Banana, and Dark Banana visual themes, each with distinct personality
+- **Purpose**: Provides personalization, accommodates different viewing preferences and environments, and adds playful joy through banana themes
 - **Trigger**: User navigates to Appearance/Theme tab
-- **Progression**: View theme options → Select preferred theme → See instant visual update across all UI → Theme preference persists
-- **Success criteria**: Theme changes apply immediately, all components adapt properly, preference saved across sessions
+- **Progression**: View theme grid (2x2) → See visual previews with animations → Select preferred theme → See instant visual update across all UI → Banana themes show rotating banana emoji and delightful messages → Theme preference persists
+- **Success criteria**: Theme changes apply immediately with smooth transitions, all components adapt properly, banana themes feel joyful and distinctive (light and dark variants), preference saved across sessions, rotating banana animations on theme cards
 
 ## Edge Case Handling
 
@@ -72,10 +72,11 @@ This is a privacy automation tool with preference management, pattern detection,
 
 The design should evoke a sense of **digital sanctuary and empowerment**. Users should feel like they're taking control of their privacy with a tool that's professional yet approachable. The aesthetic should be clean and modern with subtle security-oriented visual cues (shields, locks, checkmarks) used sparingly. The color palette should inspire trust while the typography should be clear and authoritative.
 
-**Theme System**: The application now supports three distinct themes that maintain the core brand identity while offering flexibility:
+**Theme System**: The application now supports four distinct themes that maintain the core brand identity while offering flexibility:
 - **Light**: Clean, bright interface optimized for daytime use with high contrast
 - **Dark**: Eye-friendly darker palette for low-light environments
 - **Banana**: Playful yellow-toned theme that embraces the banana celebration motif with tropical warmth
+- **Dark Banana**: Moonlit tropical theme combining the joy of bananas with the comfort of dark mode
 
 ## Color Selection
 
@@ -100,13 +101,25 @@ A trustworthy, privacy-focused palette with strong contrast and clear visual hie
   - Background Dark (oklch(0.15 0.01 255)): Light text oklch(0.95 0.01 255) - Ratio 12.1:1 ✓
   - Primary on Dark: Ensures WCAG AAA compliance
 
-### Banana Theme  
+### Banana Theme
+  
 - **Primary Color**: Golden Yellow (oklch(0.7 0.18 85)) - Warm, energetic banana-inspired hue
 - **Background**: Cream (oklch(0.95 0.08 95)) - Soft yellow-tinted base
 - **Accent Color**: Bright Banana (oklch(0.75 0.2 90)) - Vibrant tropical highlight
 - **Design Philosophy**: Embraces the playful banana celebration while maintaining readability
 - **Foreground/Background Pairings**:
   - Background Cream (oklch(0.95 0.08 95)): Brown text oklch(0.25 0.05 60) - Ratio 9.8:1 ✓
+
+### Dark Banana Theme
+
+- **Primary Color**: Bright Banana (oklch(0.75 0.2 85)) - Glowing tropical warmth for dark backgrounds
+- **Background**: Deep Brown-Yellow (oklch(0.18 0.04 70)) - Rich dark base with banana undertones
+- **Card**: Chocolate Brown (oklch(0.22 0.05 75)) - Deeper brown containers
+- **Accent Color**: Vibrant Yellow (oklch(0.8 0.22 90)) - High-energy yellow highlights
+- **Design Philosophy**: Brings banana joy to dark mode with moonlit tropical vibes and cozy warmth
+- **Foreground/Background Pairings**:
+  - Background Dark (oklch(0.18 0.04 70)): Light Yellow text oklch(0.95 0.06 95) - Ratio 11.5:1 ✓
+  - Accent Yellow (oklch(0.8 0.22 90)): Dark text oklch(0.15 0.04 70) - Ratio 10.2:1 ✓
 
 ## Font Selection
 
