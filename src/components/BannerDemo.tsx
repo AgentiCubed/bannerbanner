@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Cookie } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,15 @@ interface BannerDemoProps {
 }
 
 export function BannerDemo({ onApplySettings, isVisible }: BannerDemoProps) {
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        onApplySettings();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, onApplySettings]);
+
   if (!isVisible) return null;
 
   return (
@@ -28,6 +38,9 @@ export function BannerDemo({ onApplySettings, isVisible }: BannerDemoProps) {
                 This website uses cookies to ensure you get the best experience on our website. 
                 We use necessary cookies to make our site work. We'd also like to set analytics 
                 cookies that help us make improvements by measuring how you use the site.
+              </p>
+              <p className="text-xs text-accent mt-2 font-medium">
+                ⚡ BannerBanner will automatically close this in 2 seconds...
               </p>
             </div>
           </div>

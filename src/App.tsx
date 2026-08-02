@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ShieldCheck, Gear, Eye, Info, ListChecks } from '@phosphor-icons/react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { ShieldCheck, Gear, Eye, Info, ListChecks, GraduationCap, Power } from '@phosphor-icons/react';
 import { AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { StatsDashboard } from '@/components/StatsDashboard';
 import { BannerDemo } from '@/components/BannerDemo';
 import { BannerPatternsList } from '@/components/BannerPatternsList';
+import { BananaCelebration } from '@/components/BananaCelebration';
+import { LearnBannerPattern } from '@/components/LearnBannerPattern';
+import { useAutoBannerHandler, type BannerClosedEvent } from '@/hooks/use-auto-banner-handler';
 import { BANNER_PATTERNS } from '@/lib/banner-patterns';
 import type { PreferenceLevel, CookieCategories, UserPreferences } from '@/lib/types';
 
@@ -29,6 +34,31 @@ function App() {
   });
 
   const [showBanner, setShowBanner] = useState(false);
+  const [autoCloseEnabled, setAutoCloseEnabled] = useKV<boolean>('auto-close-enabled', true);
+  const [showBanana, setShowBanana] = useKV<boolean>('show-banana-celebration', true);
+  const [bananaVisible, setBananaVisible] = useState(false);
+  const [lastBannerClosed, setLastBannerClosed] = useState<BannerClosedEvent | null>(null);
+
+  const handleBannerClosed = (event: BannerClosedEvent) => {
+    setLastBannerClosed(event);
+    if (showBanana) {
+      setBananaVisible(true);
+      setTimeout(() => setBananaVisible(false), 3500);
+    }
+  };
+
+  useAutoBannerHandler({
+    preferences: preferences || { level: 'necessary', useCustom: false, customCategories: DEFAULT_CATEGORIES },
+    onBannerClosed: handleBannerClosed,
+    isEnabled: autoCloseEnabled || false,
+  });
+
+  useEffect(() => {
+    if (bananaVisible) {
+      const timer = setTimeout(() => setBananaVisible(false), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [bananaVisible]);
 
   const handlePreferenceLevelChange = (level: PreferenceLevel) => {
     setPreferences((current) => {
@@ -63,6 +93,14 @@ function App() {
 
   const handleApplySettings = () => {
     setShowBanner(false);
+    if (showBanana) {
+      setBananaVisible(true);
+      setLastBannerClosed({
+        bannerName: 'Demo Banner',
+        timestamp: Date.now(),
+        patternId: 'demo',
+      });
+    }
     toast.success('Settings applied! Banner closed automatically.', {
       description: 'Your privacy preferences have been saved.',
     });
@@ -94,7 +132,7 @@ function App() {
         />
 
         <Tabs defaultValue="settings" className="mt-8">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6">
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Gear size={18} weight="duotone" />
               <span className="hidden sm:inline">Settings</span>
@@ -102,6 +140,10 @@ function App() {
             <TabsTrigger value="patterns" className="flex items-center gap-2">
               <ListChecks size={18} weight="duotone" />
               <span className="hidden sm:inline">Patterns</span>
+            </TabsTrigger>
+            <TabsTrigger value="learn" className="flex items-center gap-2">
+              <GraduationCap size={18} weight="duotone" />
+              <span className="hidden sm:inline">Learn</span>
             </TabsTrigger>
             <TabsTrigger value="preview" className="flex items-center gap-2">
               <Eye size={18} weight="duotone" />
@@ -114,7 +156,29 @@ function App() {
           </TabsList>
 
           <TabsContent value="settings">
-            <Card className="p-6">
+            <Card className="p-6 space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
+                <div className="flex items-center gap-3">
+                  <Power size={24} weight="duotone" className={autoCloseEnabled ? 'text-accent' : 'text-muted-foreground'} />
+                  <div>
+                    <Label htmlFor="auto-close" className="font-semibold cursor-pointer">
+                      Automatic Banner Closing
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      {autoCloseEnabled ? 'Banners will be closed automatically' : 'Banners must be closed manually'}
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="auto-close"
+                  checked={autoCloseEnabled || false}
+                  onCheckedChange={(checked) => {
+                    setAutoCloseEnabled(checked);
+                    toast.success(checked ? 'Automatic closing enabled' : 'Automatic closing disabled');
+                  }}
+                />
+              </div>
+
               <SettingsPanel
                 preferenceLevel={preferences?.level ?? 'necessary'}
                 onPreferenceLevelChange={handlePreferenceLevelChange}
@@ -129,6 +193,12 @@ function App() {
           <TabsContent value="patterns">
             <Card className="p-6">
               <BannerPatternsList />
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="learn">
+            <Card className="p-6">
+              <LearnBannerPattern />
             </Card>
           </TabsContent>
 
@@ -178,18 +248,39 @@ function App() {
                   <h3 className="text-lg font-semibold mb-2">How It Works</h3>
                   <div className="space-y-3 text-sm text-muted-foreground">
                     <p>
-                      BannerBanner is designed to save you time and protect your privacy by automatically managing cookie consent banners based on your preferences.
+                      BannerBanner automatically detects and closes cookie consent banners based on your preferences - no clicking required!
                     </p>
                     <p>
-                      Simply set your preferred privacy level once, and the extension would automatically apply those settings to cookie banners across the web, eliminating the need to manually configure each one.
+                      When a banner is detected, the system applies your settings instantly. If you have automatic closing enabled, you'll see a delightful banana celebration when a banner is successfully removed.
                     </p>
                   </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border">
+                  <div>
+                    <Label htmlFor="show-banana" className="font-semibold cursor-pointer">
+                      Show Banana Celebration
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display a fun banana animation when banners are closed
+                    </p>
+                  </div>
+                  <Switch
+                    id="show-banana"
+                    checked={showBanana || false}
+                    onCheckedChange={(checked) => {
+                      setShowBanana(checked);
+                      if (checked) {
+                        setBananaVisible(true);
+                      }
+                    }}
+                  />
                 </div>
 
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Supported Frameworks</h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    BannerBanner recognizes and handles {BANNER_PATTERNS.length} different cookie consent implementations, including:
+                    BannerBanner recognizes {BANNER_PATTERNS.length} different cookie consent implementations, including:
                   </p>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
                     <li className="flex items-center gap-2">
@@ -218,7 +309,7 @@ function App() {
                     </li>
                   </ul>
                   <p className="text-sm text-muted-foreground mt-3">
-                    Check the <strong>Patterns</strong> tab to see the complete list of supported frameworks.
+                    Check the <strong>Patterns</strong> tab to see the complete list. Use the <strong>Learn</strong> tab to add custom patterns for new banners.
                   </p>
                 </div>
 
@@ -261,6 +352,12 @@ function App() {
           <BannerDemo onApplySettings={handleApplySettings} isVisible={showBanner} />
         )}
       </AnimatePresence>
+
+      <BananaCelebration
+        isVisible={bananaVisible}
+        onDismiss={() => setBananaVisible(false)}
+        bannerName={lastBannerClosed?.bannerName}
+      />
     </div>
   );
 }
