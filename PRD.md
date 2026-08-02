@@ -54,6 +54,13 @@ This is a privacy automation tool with preference management, pattern detection,
 - **Progression**: Banner closes → Banana appears with animation → Thumbs up gesture → Fades after 3 seconds → Can be disabled in settings
 - **Success criteria**: Animation is smooth and celebratory, doesn't obstruct content, can be toggled off
 
+### Feature 7: Theme Customization
+- **Functionality**: Users can select between Light, Dark, and Banana visual themes
+- **Purpose**: Provides personalization and accommodates different viewing preferences and environments
+- **Trigger**: User navigates to Appearance/Theme tab
+- **Progression**: View theme options → Select preferred theme → See instant visual update across all UI → Theme preference persists
+- **Success criteria**: Theme changes apply immediately, all components adapt properly, preference saved across sessions
+
 ## Edge Case Handling
 
 - **No Preference Set**: Default to "Necessary Only" automatically on first launch, with clear indication this is the privacy-protective default
@@ -65,20 +72,41 @@ This is a privacy automation tool with preference management, pattern detection,
 
 The design should evoke a sense of **digital sanctuary and empowerment**. Users should feel like they're taking control of their privacy with a tool that's professional yet approachable. The aesthetic should be clean and modern with subtle security-oriented visual cues (shields, locks, checkmarks) used sparingly. The color palette should inspire trust while the typography should be clear and authoritative.
 
+**Theme System**: The application now supports three distinct themes that maintain the core brand identity while offering flexibility:
+- **Light**: Clean, bright interface optimized for daytime use with high contrast
+- **Dark**: Eye-friendly darker palette for low-light environments
+- **Banana**: Playful yellow-toned theme that embraces the banana celebration motif with tropical warmth
+
 ## Color Selection
 
-A trustworthy, privacy-focused palette with strong contrast and clear visual hierarchy.
+A trustworthy, privacy-focused palette with strong contrast and clear visual hierarchy. Colors are defined per theme:
 
-- **Primary Color**: Deep Blue (oklch(0.45 0.15 255)) - Communicates trust, security, and professionalism; used for primary actions and branding
+### Light Theme (Default)
+- **Primary Color**: Deep Blue (oklch(0.45 0.15 255)) - Communicates trust, security, and professionalism
 - **Secondary Colors**: 
   - Slate Gray (oklch(0.35 0.02 255)) - Professional supporting color for secondary UI elements
   - Light Blue Gray (oklch(0.96 0.01 255)) - Soft background for cards and panels
-- **Accent Color**: Vibrant Teal (oklch(0.65 0.14 200)) - Attention-grabbing highlight for active states, toggles, and CTAs
+- **Accent Color**: Vibrant Teal (oklch(0.65 0.14 200)) - Attention-grabbing highlight for active states
 - **Foreground/Background Pairings**: 
   - Background Light (oklch(0.98 0 0)): Dark text oklch(0.25 0.02 255) - Ratio 11.2:1 ✓
   - Primary Blue (oklch(0.45 0.15 255)): White text (oklch(1 0 0)) - Ratio 8.9:1 ✓
   - Accent Teal (oklch(0.65 0.14 200)): Dark text (oklch(0.25 0.02 255)) - Ratio 5.8:1 ✓
-  - Card Background (oklch(0.96 0.01 255)): Medium text (oklch(0.35 0.02 255)) - Ratio 7.5:1 ✓
+
+### Dark Theme
+- **Primary Color**: Bright Blue (oklch(0.65 0.18 255)) - Vibrant but not harsh for dark backgrounds
+- **Background**: Deep Slate (oklch(0.15 0.01 255)) - Rich dark base
+- **Accent Color**: Bright Cyan (oklch(0.7 0.16 180)) - Pops against dark background
+- **Foreground/Background Pairings**:
+  - Background Dark (oklch(0.15 0.01 255)): Light text oklch(0.95 0.01 255) - Ratio 12.1:1 ✓
+  - Primary on Dark: Ensures WCAG AAA compliance
+
+### Banana Theme  
+- **Primary Color**: Golden Yellow (oklch(0.7 0.18 85)) - Warm, energetic banana-inspired hue
+- **Background**: Cream (oklch(0.95 0.08 95)) - Soft yellow-tinted base
+- **Accent Color**: Bright Banana (oklch(0.75 0.2 90)) - Vibrant tropical highlight
+- **Design Philosophy**: Embraces the playful banana celebration while maintaining readability
+- **Foreground/Background Pairings**:
+  - Background Cream (oklch(0.95 0.08 95)): Brown text oklch(0.25 0.05 60) - Ratio 9.8:1 ✓
 
 ## Font Selection
 
@@ -103,7 +131,7 @@ Animations should feel purposeful and security-oriented - nothing frivolous. Pre
 
 - **Components**:
   - `Card` - Main container for settings panel and preview area, with subtle shadows for depth
-  - `Tabs` - Navigation between Settings, Preview, and Info views
+  - `Tabs` - Navigation between Settings, Appearance, Patterns, Learn, Preview, and Info views
   - `RadioGroup` - Preset preference selection (Necessary Only, Functional, Analytics, All)
   - `Switch` - Individual category toggles in advanced mode
   - `Label` - Clear form labels with proper ARIA associations
@@ -118,6 +146,9 @@ Animations should feel purposeful and security-oriented - nothing frivolous. Pre
   - Animated banner component for preview/demo with slide-out transition
   - Custom stats card with icon + number + label layout
   - Preference summary component showing active categories
+  - **Theme selector** with visual preview cards showing Light, Dark, and Banana options
+  - **Theme provider** with React Context for global theme state management
+  - Animated theme transition with framer-motion for smooth color changes
 
 - **States**:
   - Buttons: Solid fill for primary, outline for secondary, distinct hover with subtle lift (translate-y)
