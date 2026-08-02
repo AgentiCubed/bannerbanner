@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
-import { ShieldCheck, CheckCircle, Clock } from '@phosphor-icons/react';
+import { ShieldCheck, CheckCircle, ListChecks } from '@phosphor-icons/react';
+import { BANNER_PATTERNS } from '@/lib/banner-patterns';
 import type { PreferenceLevel, CookieCategories } from '@/lib/types';
 
 interface StatsDashboardProps {
@@ -15,7 +16,8 @@ export function StatsDashboard({ preferenceLevel, useCustom, customCategories }:
 
   const privacyScore = Math.round((1 - (activeCategories - 1) / 3) * 100);
   
-  const estimatedTimeSaved = 45;
+  const totalPatterns = BANNER_PATTERNS.length;
+  const premiumPatterns = BANNER_PATTERNS.filter(p => p.priority === 1).length;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -52,14 +54,14 @@ export function StatsDashboard({ preferenceLevel, useCustom, customCategories }:
       <Card className="p-5">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 rounded-lg bg-secondary/10">
-            <Clock size={24} weight="duotone" className="text-secondary" />
+            <ListChecks size={24} weight="duotone" className="text-secondary" />
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Time Saved</p>
-            <p className="text-2xl font-bold">~{estimatedTimeSaved}s</p>
+            <p className="text-sm text-muted-foreground">Banner Patterns</p>
+            <p className="text-2xl font-bold">{totalPatterns}</p>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">Per session estimate</p>
+        <p className="text-xs text-muted-foreground">{premiumPatterns} premium frameworks</p>
       </Card>
     </div>
   );

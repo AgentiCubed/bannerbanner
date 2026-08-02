@@ -34,11 +34,18 @@ This is a preference management tool with settings configuration, visual feedbac
 - **Success criteria**: Animation is smooth, applied settings match user preferences, clear feedback provided
 
 ### Feature 4: Statistics Dashboard
-- **Functionality**: Display count of saved preferences, estimated banners that would be auto-handled
+- **Functionality**: Display count of saved preferences, supported banner patterns, and privacy level score
 - **Purpose**: Reinforces value proposition and provides satisfaction through quantified impact
 - **Trigger**: Always visible on main screen or dedicated stats section
-- **Progression**: User views stats → See preference summary → View estimated time saved
+- **Progression**: User views stats → See preference summary → View privacy score and supported patterns count
 - **Success criteria**: Numbers are meaningful and update in real-time as preferences change
+
+### Feature 5: Banner Pattern Library
+- **Functionality**: Comprehensive list of supported cookie consent frameworks and custom banner patterns with search capability
+- **Purpose**: Builds user confidence by showing extensive coverage of real-world banner implementations
+- **Trigger**: User navigates to "Patterns" tab
+- **Progression**: View patterns list → Search for specific framework → See technical details of each pattern → Understand coverage
+- **Success criteria**: All patterns display correctly, search works smoothly, users understand the breadth of support
 
 ## Edge Case Handling
 

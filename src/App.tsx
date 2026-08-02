@@ -4,12 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ShieldCheck, Gear, Eye, Info } from '@phosphor-icons/react';
+import { ShieldCheck, Gear, Eye, Info, ListChecks } from '@phosphor-icons/react';
 import { AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { StatsDashboard } from '@/components/StatsDashboard';
 import { BannerDemo } from '@/components/BannerDemo';
+import { BannerPatternsList } from '@/components/BannerPatternsList';
+import { BANNER_PATTERNS } from '@/lib/banner-patterns';
 import type { PreferenceLevel, CookieCategories, UserPreferences } from '@/lib/types';
 
 const DEFAULT_CATEGORIES: CookieCategories = {
@@ -92,10 +94,14 @@ function App() {
         />
 
         <Tabs defaultValue="settings" className="mt-8">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Gear size={18} weight="duotone" />
               <span className="hidden sm:inline">Settings</span>
+            </TabsTrigger>
+            <TabsTrigger value="patterns" className="flex items-center gap-2">
+              <ListChecks size={18} weight="duotone" />
+              <span className="hidden sm:inline">Patterns</span>
             </TabsTrigger>
             <TabsTrigger value="preview" className="flex items-center gap-2">
               <Eye size={18} weight="duotone" />
@@ -117,6 +123,12 @@ function App() {
                 customCategories={preferences?.customCategories ?? DEFAULT_CATEGORIES}
                 onCustomCategoriesChange={handleCustomCategoriesChange}
               />
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="patterns">
+            <Card className="p-6">
+              <BannerPatternsList />
             </Card>
           </TabsContent>
 
@@ -172,6 +184,42 @@ function App() {
                       Simply set your preferred privacy level once, and the extension would automatically apply those settings to cookie banners across the web, eliminating the need to manually configure each one.
                     </p>
                   </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Supported Frameworks</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    BannerBanner recognizes and handles {BANNER_PATTERNS.length} different cookie consent implementations, including:
+                  </p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                    <li className="flex items-center gap-2">
+                      <ListChecks size={16} weight="duotone" className="text-accent shrink-0" />
+                      <span>Cookiebot</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ListChecks size={16} weight="duotone" className="text-accent shrink-0" />
+                      <span>OneTrust</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ListChecks size={16} weight="duotone" className="text-accent shrink-0" />
+                      <span>CookieYes</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ListChecks size={16} weight="duotone" className="text-accent shrink-0" />
+                      <span>Quantcast Choice</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ListChecks size={16} weight="duotone" className="text-accent shrink-0" />
+                      <span>Usercentrics</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <ListChecks size={16} weight="duotone" className="text-accent shrink-0" />
+                      <span>+ many more</span>
+                    </li>
+                  </ul>
+                  <p className="text-sm text-muted-foreground mt-3">
+                    Check the <strong>Patterns</strong> tab to see the complete list of supported frameworks.
+                  </p>
                 </div>
 
                 <div>
