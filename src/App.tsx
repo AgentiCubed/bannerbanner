@@ -7,14 +7,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ShieldCheck, Gear, Eye, Info, ListChecks, GraduationCap, Power } from '@phosphor-icons/react';
-import { AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { StatsDashboard } from '@/components/StatsDashboard';
-import { BannerDemo } from '@/components/BannerDemo';
 import { BannerPatternsList } from '@/components/BannerPatternsList';
 import { BananaCelebration } from '@/components/BananaCelebration';
 import { LearnBannerPattern } from '@/components/LearnBannerPattern';
+import { GhostBannerPreview } from '@/components/GhostBannerPreview';
+import { BannerTrainer } from '@/components/BannerTrainer';
 import { useAutoBannerHandler, type BannerClosedEvent } from '@/hooks/use-auto-banner-handler';
 import { BANNER_PATTERNS } from '@/lib/banner-patterns';
 import type { PreferenceLevel, CookieCategories, UserPreferences } from '@/lib/types';
@@ -33,11 +33,12 @@ function App() {
     customCategories: DEFAULT_CATEGORIES,
   });
 
-  const [showBanner, setShowBanner] = useState(false);
   const [autoCloseEnabled, setAutoCloseEnabled] = useKV<boolean>('auto-close-enabled', true);
   const [showBanana, setShowBanana] = useKV<boolean>('show-banana-celebration', true);
   const [bananaVisible, setBananaVisible] = useState(false);
   const [lastBannerClosed, setLastBannerClosed] = useState<BannerClosedEvent | null>(null);
+  const [isPreviewRunning, setIsPreviewRunning] = useState(false);
+  const [sharePublicly, setSharePublicly] = useKV<boolean>('share-patterns-publicly', false);
 
   const handleBannerClosed = (event: BannerClosedEvent) => {
     setLastBannerClosed(event);
@@ -89,25 +90,6 @@ function App() {
         customCategories,
       };
     });
-  };
-
-  const handleApplySettings = () => {
-    setShowBanner(false);
-    if (showBanana) {
-      setBananaVisible(true);
-      setLastBannerClosed({
-        bannerName: 'Demo Banner',
-        timestamp: Date.now(),
-        patternId: 'demo',
-      });
-    }
-    toast.success('Settings applied! Banner closed automatically.', {
-      description: 'Your privacy preferences have been saved.',
-    });
-  };
-
-  const handleShowDemo = () => {
-    setShowBanner(true);
   };
 
   return (
@@ -203,42 +185,59 @@ function App() {
           </TabsContent>
 
           <TabsContent value="preview">
-            <Card className="p-6">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Banner Preview</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    See how BannerBanner would handle a typical cookie consent banner with your current settings.
-                  </p>
-                </div>
+            <div className="space-y-6">
+              <Card className="p-6">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Behind-the-Scenes Preview</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Watch how BannerBanner handles cookie banners automatically - no interaction required from you!
+                    </p>
+                  </div>
 
-                <Alert>
-                  <Info size={18} weight="duotone" />
-                  <AlertDescription>
-                    Click the button below to simulate a cookie banner. The "Apply My Settings" button will automatically close it using your configured preferences.
-                  </AlertDescription>
-                </Alert>
+                  <Alert>
+                    <Info size={18} weight="duotone" />
+                    <AlertDescription>
+                      This preview shows what happens behind the scenes when BannerBanner encounters a cookie banner. In real use, you'd never see the banner - it's detected and closed automatically before interrupting your browsing.
+                    </AlertDescription>
+                  </Alert>
 
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button onClick={handleShowDemo} disabled={showBanner}>
-                    Show Cookie Banner
-                  </Button>
-                  {showBanner && (
-                    <Button variant="outline" onClick={() => setShowBanner(false)}>
-                      Hide Banner
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={() => {
+                        setIsPreviewRunning(true);
+                        setTimeout(() => setIsPreviewRunning(false), 6000);
+                      }} 
+                      disabled={isPreviewRunning}
+                    >
+                      {isPreviewRunning ? 'Running...' : 'Start Preview'}
                     </Button>
-                  )}
-                </div>
+                    {isPreviewRunning && (
+                      <Button variant="outline" onClick={() => setIsPreviewRunning(false)}>
+                        Stop
+                      </Button>
+                    )}
+                  </div>
 
-                <div className="p-6 rounded-lg bg-muted/30 border border-border">
-                  <p className="text-sm text-muted-foreground text-center">
-                    {showBanner
-                      ? 'Banner is visible below. Click "Apply My Settings" to close it automatically.'
-                      : 'No banner currently showing. Click the button above to see the demo.'}
-                  </p>
+                  <GhostBannerPreview
+                    isRunning={isPreviewRunning}
+                    preferenceLevel={preferences?.level ?? 'necessary'}
+                    customCategories={preferences?.customCategories}
+                    useCustom={preferences?.useCustom ?? false}
+                  />
                 </div>
-              </div>
-            </Card>
+              </Card>
+
+              <BannerTrainer
+                onComplete={() => {
+                  toast.success('Banner pattern saved successfully!', {
+                    description: sharePublicly ? 'Pattern shared with the community' : 'Pattern saved locally',
+                  });
+                }}
+                sharePublicly={sharePublicly || false}
+                onSharePubliclyChange={(value) => setSharePublicly(value)}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="info">
@@ -346,12 +345,6 @@ function App() {
           </TabsContent>
         </Tabs>
       </div>
-
-      <AnimatePresence>
-        {showBanner && (
-          <BannerDemo onApplySettings={handleApplySettings} isVisible={showBanner} />
-        )}
-      </AnimatePresence>
 
       <BananaCelebration
         isVisible={bananaVisible}
