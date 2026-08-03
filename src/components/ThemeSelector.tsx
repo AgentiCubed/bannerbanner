@@ -1,5 +1,4 @@
 import { useTheme } from '@/components/ThemeProvider';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Sun, Moon, Sparkle, MoonStars } from '@phosphor-icons/react';

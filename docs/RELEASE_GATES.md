@@ -55,7 +55,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
 - [ ] **PB-10: Automated release checks**
   - Build, lint, unit, browser integration, manifest, and package checks run in CI and pass.
   - Safety regressions are required checks.
-  - Evidence: Automated: `.github/workflows/extension-ci.yml` runs syntax checks, unit tests, icon reproducibility, build + package validation, and both browser suites on every pull request. Local commands documented in `extension/README.md`.
+  - Evidence: Automated: `.github/workflows/extension-ci.yml` runs syntax checks, unit tests, icon reproducibility, build + package validation, and both browser suites on every pull request. Local commands documented in `extension/README.md`. `.github/workflows/lint.yml` runs repo-wide eslint (flat config in `eslint.config.js` covering `src/`, `extension/`, `scripts/`, and tests) on every pull request; `npm audit` is clean as of PR #37 but is not a CI check.
 
 - [ ] **PB-11: Real-site acceptance**
   - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.

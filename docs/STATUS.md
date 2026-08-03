@@ -1,7 +1,7 @@
 # BannerBanner status
 
 Last updated: 2026-08-03  
-Code baseline reviewed: `main` at `8d20396` plus the v0.1 hardening branch  
+Code baseline reviewed: `main` at `3981fdb` (v0.1 hardening rewrite merged)  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -82,6 +82,35 @@ await James's confirmation runs before their boxes are checked.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: PR #37 — repo-wide eslint in CI on top of the merged v0.1
+  hardening rewrite: flat eslint config for eslint 10 (`eslint.config.js`
+  covering `src/`, the ES-module extension runtime, `scripts/`, and both test
+  suites), `.github/workflows/lint.yml`, and a clean `npm audit`.
+- Files or behavior changed: `eslint.config.js` and `.github/workflows/lint.yml`
+  added; 27 lint errors fixed in `src/` (unused bindings/imports, typing
+  cleanups — no behavior changes) and 3 in the rewritten runtime/tooling
+  (`lib/dom-probe.js` useless assignment, unused test arg, unused import in
+  `validate-package.mjs`); `package.json` security overrides bumped
+  (`postcss` 8.5.25, `minimatch` 3.1.5) plus `npm audit fix`, taking audit
+  findings from 4 to 0. Runtime behavior is unchanged; the merge kept main's
+  v0.1 runtime (including the deletion of `bananer.js`) intact.
+- Checks passed: `npm run lint` exits 0 (7 warnings, all the stock shadcn
+  fast-refresh warning); 70/70 unit tests; `npm audit` 0 vulnerabilities;
+  `npm run build` passes.
+- Manual evidence: Command output verified in the PR #37 session; the diff is
+  the record.
+- Remaining uncertainty: the lint workflow has not yet run on GitHub-hosted
+  runners (first run happens on this PR); `npm audit` is clean locally but is
+  deliberately not a CI check. The pre-existing `tsc --noEmit` errors in `src/`
+  (lucide-react deep imports) are untouched.
+- Release gate changed: None closed; PB-10 evidence extended with the
+  repo-wide eslint CI workflow.
+- Next shippable artifact: unchanged — issue #32 execution (run
+  `docs/REAL_SITE_TEST_PROTOCOL.md` against the matrix rows) and the final
+  claim audit.
+
+Previous handoff (PR #38, issue #32 prep):
 
 - Artifact shipped: issue #32 preparation — `docs/REAL_SITE_TEST_PROTOCOL.md`
   (step-by-step manual procedure covering per-site rows, the

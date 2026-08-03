@@ -96,6 +96,7 @@ function Carousel({
 
   useEffect(() => {
     if (!api) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- captures the Embla API's initial selection state before subscribing
     onSelect(api)
     api.on("reInit", onSelect)
     api.on("select", onSelect)

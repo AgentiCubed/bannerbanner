@@ -90,7 +90,7 @@ export function createDomProbe(win = window, doc = document) {
       const seen = new Set();
       const out = [];
       const selector = '[role="dialog"], [aria-modal="true"], dialog[open]';
-      let nodes = [];
+      let nodes;
       try {
         nodes = doc.querySelectorAll(selector);
       } catch {

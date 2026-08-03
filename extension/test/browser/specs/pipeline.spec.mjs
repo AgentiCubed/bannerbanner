@@ -136,7 +136,7 @@ test('BB_STOP halts activity: banner added after stop is never touched', async (
   await startRuntimeOnPage(page, origin, NECESSARY);
   await sleep(500);
 
-  await page.evaluate((org) => {
+  await page.evaluate((_org) => {
     window.__bbDispatch({ type: 'BB_STOP', origin: window.location.origin });
     // Now inject a fully working OneTrust-style banner.
     const div = document.createElement('div');

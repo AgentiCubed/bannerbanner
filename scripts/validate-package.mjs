@@ -7,7 +7,7 @@
 // failure — a missing required file is fatal, never a warning (PB-09).
 
 import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 
 const packageDir = resolve(process.argv[2] || 'extension');
 const errors = [];

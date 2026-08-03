@@ -310,7 +310,7 @@ export function detectBanner(document: Document): BannerMatchResult | null {
             confidence += 10;
             break;
           }
-        } catch (e) {
+        } catch {
           continue;
         }
       }
@@ -325,7 +325,7 @@ export function detectBanner(document: Document): BannerMatchResult | null {
             confidence += 10;
             break;
           }
-        } catch (e) {
+        } catch {
           continue;
         }
       }
@@ -340,7 +340,7 @@ export function detectBanner(document: Document): BannerMatchResult | null {
             confidence += 10;
             break;
           }
-        } catch (e) {
+        } catch {
           continue;
         }
       }
@@ -370,7 +370,7 @@ export function findElement(selectors: string[], doc: Document = document): Elem
     try {
       const element = doc.querySelector(selector);
       if (element) return element;
-    } catch (e) {
+    } catch {
       continue;
     }
   }
@@ -393,7 +393,7 @@ export function clickElement(element: Element | null): boolean {
     });
     element.dispatchEvent(clickEvent);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
@@ -418,7 +418,7 @@ export function toggleCheckbox(element: Element | null, checked: boolean): boole
       }
       return true;
     }
-  } catch (e) {
+  } catch {
     return false;
   }
 
