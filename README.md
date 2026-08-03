@@ -13,6 +13,7 @@ BannerBanner is a browser extension that detects and closes cookie banners on we
 - 📊 **Statistics Dashboard** - Track how many banners you've avoided
 - 🧪 **Pattern Training** - Teach BannerBanner to recognize new banner types
 - ⚙️ **Advanced Mode** - Granular control over individual cookie categories
+- 🍌🎓 **Bananers** - Learning companions that investigate, dismiss, and remember popups (see below)
 
 ## 🚀 Quick Start
 
@@ -63,6 +64,17 @@ Visit any website with a cookie banner (e.g., bbc.com, cnn.com) and watch Banner
 - ✅ Cookie Notice
 
 Users can train BannerBanner to recognize additional frameworks through the built-in training wizard.
+
+## 🍌🎓 Bananers — Popup-Dismissing Learning Companions
+
+The **Learn** section of the extension introduces *bananers*: anthropomorphized banana characters you deploy to investigate and dismiss popups (cookie consent modals, newsletter interstitials, ad overlays) — and learn from every takedown.
+
+- **Opt-in per site** — bananers only run on sites you invite them to. Open the toolbar popup on any site and click *"Deploy a bananer here"*; host permission is requested for that origin only (no blanket `<all_urls>` access).
+- **Investigate & dismiss** — a content script injected at `document_start` detects popups heuristically, inspects their DOM/CSS/listeners, picks a dismissal strategy (reject/close/click, or peel-off removal), and acts it out with an animated character and educational captions.
+- **Learn & remember** — every dismissal is fingerprinted into a knowledge base (`chrome.storage.local`). On repeat visits, known popups are suppressed *before they even paint* and dismissed near-instantly.
+- **Learn dashboard** — the options page hosts the character roster (XP and levels per bananer), a per-banner-type memory browser with animated replays of past takedowns, and preferences (auto-dismiss, character visibility, captions, pre-paint suppression) plus opted-in site management.
+
+Meet the crew: 🍌🔍 Peelock Holmes (cookie consent), 🍌📰 Scoop (newsletters), 🍌💥 Splat (ad overlays), and 🍌🎓 Professor Nana (mystery popups).
 
 ## 🛠️ Tech Stack
 
