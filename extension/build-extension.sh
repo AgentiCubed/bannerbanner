@@ -11,7 +11,13 @@ echo "📁 Step 2: Copying extension files..."
 cp extension/manifest.json dist/
 cp extension/background.js dist/
 cp extension/content.js dist/
+cp extension/bananer-characters.js dist/
+cp extension/bananer.js dist/
 cp extension/popup.html dist/
+cp extension/popup.js dist/
+cp extension/learn.html dist/
+cp extension/learn.js dist/
+cp extension/learn.css dist/
 
 echo "🎨 Step 3: Copying icons..."
 mkdir -p dist/icons

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn — BannerBanner Bananers</title>
+    <link rel="stylesheet" href="learn.css" />
+</head>
+<body>
+    <div class="wrap">
+        <header class="page">
+            <span class="logo">🍌🎓</span>
+            <div>
+                <h1>Learn with the Bananers</h1>
+                <p>Your popup-dismissing companions: who they are, what they've learned, and how they take popups apart.</p>
+            </div>
+        </header>
+
+        <div class="welcome" id="welcome-banner" hidden>
+            👋 <strong>Welcome to Banana Town!</strong> Bananers are learning companions that investigate and dismiss
+            annoying popups. They only work on sites you invite them to: open the toolbar popup on any site and click
+            <em>"Deploy a bananer here"</em>. Every popup they dismiss becomes a memory you can browse and replay below.
+        </div>
+
+        <nav class="tabs">
+            <button data-tab="roster" class="active">🍌 Character Roster</button>
+            <button data-tab="memories">🧠 Memory Browser</button>
+            <button data-tab="settings">⚙️ Preferences &amp; Sites</button>
+        </nav>
+
+        <section class="tab-panel active" id="tab-roster">
+            <h2>Meet your bananers</h2>
+            <p class="hint">Each bananer specializes in one kind of popup and earns XP for every fingerprint learned and memory recalled.</p>
+            <div class="roster" id="roster"></div>
+        </section>
+
+        <section class="tab-panel" id="tab-memories">
+            <h2>Learned popup memories</h2>
+            <p class="hint">Every dismissed popup is fingerprinted so bananers can suppress it before it even paints next time. Replay any takedown to see how it was done.</p>
+            <div class="memory-controls">
+                <select id="filter-type">
+                    <option value="all">All popup types</option>
+                    <option value="cookie-consent">🍪 Cookie consent</option>
+                    <option value="newsletter">📧 Newsletter interstitials</option>
+                    <option value="ad-overlay">📢 Ad overlays</option>
+                    <option value="unknown">❓ Mystery popups</option>
+                </select>
+                <input type="search" id="filter-host" placeholder="Filter by site…" />
+                <span class="toolbar-right"><button class="forget-all" id="forget-all">🗑 Forget everything</button></span>
+            </div>
+            <div id="memories"></div>
+        </section>
+
+        <section class="tab-panel" id="tab-settings">
+            <h2>Preferences</h2>
+            <div id="settings"></div>
+
+            <div class="sites-list">
+                <h2>Sites with bananers deployed</h2>
+                <p class="hint">Bananers only run on sites you've opted into. Removing a site also revokes the extension's host permission for it.</p>
+                <div id="sites"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="replay-backdrop" id="replay-backdrop">
+        <div class="replay-stage">
+            <button class="replay-close" id="replay-close">✕</button>
+            <h3 id="replay-title">Replay</h3>
+            <div class="sub" id="replay-sub"></div>
+            <div class="replay-arena" id="replay-arena"></div>
+            <div class="replay-log" id="replay-log"></div>
+        </div>
+    </div>
+
+    <script src="bananer-characters.js"></script>
+    <script src="learn.js"></script>
+</body>
+</html>
