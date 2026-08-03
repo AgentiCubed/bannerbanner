@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>OneTrust unresponsive fixture</title></head>
+<body>
+<main><h1>Article content</h1></main>
+<div id="onetrust-banner-sdk" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:20px;z-index:9999;">
+  <p>We use cookies. Manage consent below. (GDPR)</p>
+  <button id="onetrust-accept-btn-handler">Accept All Cookies</button>
+  <button id="onetrust-reject-all-handler">Reject All</button>
+</div>
+<script>
+  // Broken CMP: clicks are counted but nothing happens — no cookie, no teardown.
+  window.__clickCount = 0;
+  for (const id of ['onetrust-accept-btn-handler', 'onetrust-reject-all-handler']) {
+    document.getElementById(id).addEventListener('click', () => { window.__clickCount++; });
+  }
+</script>
+</body>
+</html>

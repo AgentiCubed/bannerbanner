@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BannerBanner Settings</title>
+  <style>
+    :root { --yellow: #fbbf24; --yellow-dark: #b45309; --ink: #1f2937; --paper: #fffbeb; --muted: #6b7280; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--paper); color: var(--ink); }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 32px 20px 60px; }
+    header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    header .logo { font-size: 36px; }
+    h1 { font-size: 22px; margin: 0; }
+    .tagline { color: var(--muted); margin: 4px 0 24px; font-size: 14px; }
+    .card { background: #fff; border: 1px solid #fde68a; border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
+    .card h2 { font-size: 15px; margin: 0 0 10px; }
+    .field { margin: 12px 0; }
+    .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    select { width: 100%; max-width: 360px; padding: 9px; border-radius: 8px; border: 1px solid #fde68a; font-size: 14px; background: #fff; }
+    .row { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; margin: 12px 0; max-width: 360px; }
+    ul.origins { list-style: none; padding: 0; margin: 0; }
+    ul.origins li { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #fef3c7; font-size: 13px; }
+    ul.origins li:last-child { border-bottom: none; }
+    ul.origins button { border: 1px solid #fca5a5; color: #b91c1c; background: #fff; border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .empty { font-size: 13px; color: var(--muted); }
+    .stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stat { flex: 1; min-width: 110px; background: var(--paper); border: 1px solid #fde68a; border-radius: 10px; padding: 10px; text-align: center; }
+    .stat .num { font-size: 20px; font-weight: 800; }
+    .stat .label { font-size: 11px; color: var(--muted); }
+    .actions { margin-top: 10px; }
+    .actions button { border: 1px solid #fde68a; background: #fff; color: var(--yellow-dark); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .saved { color: #16a34a; font-size: 12px; font-weight: 700; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><span class="logo">🍌</span><h1>BannerBanner Settings</h1></header>
+    <p class="tagline">Applies your cookie-consent preference on websites you explicitly enable. Nothing runs anywhere else.</p>
+
+    <div class="card">
+      <h2>Consent preference</h2>
+      <div class="field">
+        <label for="mode">When a supported cookie banner is found</label>
+        <select id="mode">
+          <option value="necessary">Necessary only — reject non-essential cookies</option>
+          <option value="all">Accept all cookies</option>
+        </select>
+        <div class="hint">Applied only on sites you enable, and only on supported consent managers. Anything BannerBanner does not recognize is left untouched.</div>
+      </div>
+      <div class="row"><span>Automatic handling</span><input type="checkbox" id="enabled" /></div>
+      <div class="row"><span>Banana celebration after verified success</span><input type="checkbox" id="celebrate" /></div>
+      <div class="saved" id="saved"></div>
+    </div>
+
+    <div class="card">
+      <h2>Enabled sites</h2>
+      <ul class="origins" id="origins"></ul>
+      <p class="empty" id="origins-empty">No sites enabled yet. Use the toolbar button on a site to enable BannerBanner there.</p>
+    </div>
+
+    <div class="card">
+      <h2>Local statistics</h2>
+      <div class="stats">
+        <div class="stat"><div class="num" id="stat-success">0</div><div class="label">Verified successes</div></div>
+        <div class="stat"><div class="num" id="stat-unsupported">0</div><div class="label">Unsupported banners</div></div>
+        <div class="stat"><div class="num" id="stat-unverified">0</div><div class="label">Unverified attempts</div></div>
+      </div>
+      <p class="note">Counts only. BannerBanner never stores page URLs, titles, content, or any browsing history — see the privacy policy.</p>
+    </div>
+
+    <div class="card">
+      <h2>Reset</h2>
+      <div class="actions"><button id="reset">Reset settings to defaults</button></div>
+      <p class="note">Restores "Necessary only" and default behavior. Enabled sites are kept; disable them per-site from the toolbar or chrome://extensions.</p>
+    </div>
+  </div>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

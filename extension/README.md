@@ -1,300 +1,112 @@
-# BannerBanner Browser Extension
+# BannerBanner extension (v0.1)
 
-## 🎯 Quick Links
+The Chrome (Manifest V3) extension. v0.1 does one thing: apply your
+cookie-consent choice on sites you explicitly enable, when a supported
+consent-management platform is present, with the result verified before it is
+ever counted as a success.
 
-- **🚀 [Quick Start Submission Guide](QUICK_START_SUBMISSION.md)** - 5-minute overview
-- **📋 [Detailed Submission Checklist](SUBMISSION_CHECKLIST.md)** - Step-by-step guide
-- **📝 [Complete Submission Guide](CHROME_WEB_STORE_SUBMISSION.md)** - Everything you need to know
-- **🔒 [Privacy Policy](PRIVACY_POLICY.md)** - Ready-to-publish privacy policy
-- **🎨 [Icon Design Guide](ICON_GUIDE.md)** - Icon specifications
+## Architecture
 
----
+```
+manifest.json          MV3 manifest — NO static content scripts, no default host access
+background.js          Service worker: origin registry + dynamic script registration,
+                       settings, bounded aggregate stats
+content.js             Tiny bootstrap, registered per-origin at runtime only
+popup.html/js          Toolbar popup: per-site enable/disable, mode, quick stats
+options.html/js        Options page: modes, enabled sites, stats, reset
+lib/                   Shared ES modules (the unit-tested core):
+  origins.js             origin normalization + match patterns
+  settings-schema.js     versioned settings, defaults, migration, recovery
+  stats.js               bounded aggregate counters (no URLs, no history)
+  classify.js            cookie / sensitive / unknown classification
+  cmp-adapters.js        allowlisted CMP adapters with verified postconditions
+  pipeline.js            THE single consent pipeline (detect→classify→decide→
+                         execute→verify→report)
+  registry.js            dynamic-registration reconciliation planning
+  dom-probe.js           the only DOM-touching layer
+  content-runtime.js     content-side engine wiring
+  celebrate.js           post-verified-success animation only
+```
 
-## 🚀 Building the Extension
+### The permission boundary
 
-The BannerBanner extension is built from the main React application. Use the automated build script:
+There are no static content scripts. The only way BannerBanner runs on a site:
 
-### Quick Build (Recommended)
+1. The user clicks **Enable on this site** in the popup.
+2. Chrome shows its permission prompt for that single origin.
+3. On grant, the service worker records the origin in the canonical registry
+   (`chrome.storage.local`, key `bb:authorizedOrigins`) and registers the
+   content script for exactly that origin with
+   `chrome.scripting.registerContentScripts()`.
+
+Registrations are reconciled on install, startup, update, and permission
+changes; the effective set is always *(registry ∩ currently granted origins)*,
+so a stale registry entry or an extension update can never broaden access.
+Revoking a site unregisters the script, removes the permission, and signals
+open tabs on that origin to stop.
+
+### The safety line
+
+- Unknown dialogs get **no** click, removal, hiding, style mutation, or
+  synthetic event.
+- Login, checkout, payment, security, age-gate, session-expiration, and
+  unsaved-work dialogs are classified sensitive and never touched.
+- Newsletter and advertisement overlays are out of scope in v0.1.
+- DOM removal is never a success: an outcome counts as success only when the
+  adapter's own postcondition (the CMP's consent cookie / storage write plus
+  the CMP tearing down its banner) verifies after clicking the intended
+  control.
+- The celebration animation plays only after a verified success.
+
+## Commands
 
 ```bash
-# From the project root
-./extension/build-extension.sh
+# Unit tests (pure logic, no dependencies)
+npm run test:extension
+
+# Build + validate the package (fatal on missing files) → dist-extension/
+npm run build:extension
+
+# Validate the source-tree manifest
+npm run validate:extension
+
+# Browser integration tests (real Chromium; installs playwright-core locally)
+cd extension/test/browser && npm install && npm test
+
+# Regenerate icons deterministically
+node scripts/generate-icons.mjs
 ```
 
-This script will:
-1. Build the React app with Vite
-2. Copy extension files to `dist/`
-3. Verify icons are present
-4. Provide next steps
-
-### Manual Build
-
-If you prefer to build manually:
-
-```bash
-# 1. Build the web app
-npm run build
-
-# 2. Copy extension files
-cp extension/manifest.json dist/
-cp extension/background.js dist/
-cp extension/content.js dist/
-cp extension/bananer-characters.js dist/
-cp extension/bananer.js dist/
-cp extension/popup.html dist/
-cp extension/popup.js dist/
-cp extension/learn.html dist/
-cp extension/learn.js dist/
-cp extension/learn.css dist/
-
-# 3. Copy icons (must be generated first)
-mkdir -p dist/icons
-cp extension/icons/icon-*.png dist/icons/
-```
-
-## 🎨 Generate Icons (REQUIRED)
-
-Before building, you must generate extension icons:
-
-1. **Open the icon generator:**
-   ```bash
-   open extension/icons/generate-icons.html
-   # Or manually open in your browser
-   ```
-
-2. **Download all icon sizes:**
-   - Click "Download All Icons as ZIP"
-   - Extract to `extension/icons/` directory
-
-3. **Verify icons:**
-   ```bash
-   ls extension/icons/
-   # Should show: icon-16.png, icon-32.png, icon-48.png, icon-128.png
-   ```
-
-**Icon sizes:**
-- `icon-16.png` - Toolbar icon (16×16px)
-- `icon-32.png` - Toolbar icon @2x (32×32px)
-- `icon-48.png` - Extension management page (48×48px)
-- `icon-128.png` - Chrome Web Store listing (128×128px)
-
-See [Icon Design Guide](ICON_GUIDE.md) for details.
-
----
-
-### 3. Extension Structure
-
-After building, your `dist/` directory should contain:
-
-```
-dist/
-├── manifest.json          # Extension manifest
-├── background.js          # Background service worker
-├── content.js            # Content script for banner detection
-├── bananer-characters.js  # Shared bananer roster definitions
-├── bananer.js            # Bananer content script (document_start)
-├── popup.html / popup.js  # Toolbar popup (deploy a bananer)
-├── learn.html/js/css      # Learn dashboard (options page)
-├── icons/                # Extension icons (16, 32, 48, 128px)
-├── assets/               # Built assets from Vite
-└── [other build files]   # Compiled React app
-```
-
-### 4. Load in Chrome/Edge (Development)
-
-1. Open Chrome or Edge browser
-2. Navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in top right corner)
-4. Click "Load unpacked" button
-5. Select the `dist/` directory
-6. Extension installed! 🎉
-
-### 5. Local Testing
-
-**Basic functionality:**
-1. Click the BannerBanner icon in browser toolbar
-2. Configure privacy preferences in settings
-3. Visit test websites with cookie banners:
-   - [BBC](https://www.bbc.com)
-   - [CNN](https://www.cnn.com)
-   - [Forbes](https://www.forbes.com)
-4. Verify banner is detected and closed automatically
-5. Check statistics update correctly
-
-**Bananers (Learn):**
-1. Open the toolbar popup on a site and click **"Deploy a bananer here"** — grant the per-site permission when prompted
-2. Open `extension/test-page.html` (or any popup-heavy site) and spawn a popup — watch the bananer investigate and dismiss it
-3. Reload the page — the learned popup should be suppressed pre-paint and dismissed near-instantly
-4. Open the Learn dashboard (options page) to check the character roster, memory browser, and replays
-
-**Full test checklist:**
-
-## 📦 Distribution
-
-### Chrome Web Store
-
-1. Zip the `dist/` directory:
-   ```bash
-   cd dist && zip -r ../bannerbanner-extension.zip . && cd ..
-   ```
-
-2. Upload to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-
-3. Fill in:
-   - Extension name: BannerBanner
-   - Description: (from manifest.json)
-   - Category: Productivity
-   - Privacy policy URL
-   - Screenshots and promotional images
-
-### Firefox Add-ons
-
-Firefox requires Manifest V2. Create a separate `manifest-firefox.json`:
-
-```json
-{
-  "manifest_version": 2,
-  "name": "BannerBanner",
-  ...
-}
-```
-
-Then submit to [Firefox Add-on Developer Hub](https://addons.mozilla.org/developers/)
-
-## 🎨 Icons
-
-Extension icons should be placed in `extension/icons/`:
-
-- `icon-16.png` - Toolbar icon (small)
-- `icon-32.png` - Toolbar icon (medium)  
-- `icon-48.png` - Extension management page
-- `icon-128.png` - Chrome Web Store listing
-
-Use a shield with a banana or similar privacy-themed icon.
-
-## 🔧 Development Workflow
-
-1. Make changes to React app in `src/`
-2. Test in browser via `npm run dev`
-3. When ready, build with `npm run build`
-4. Copy extension files: `cp -r extension/* dist/`
-5. Reload extension in `chrome://extensions/`
-
-## 📦 Chrome Web Store Submission
-
-### Overview
-
-Complete guides are available:
-- **[Quick Start](QUICK_START_SUBMISSION.md)** - Fast track to submission (~3 hours)
-- **[Detailed Checklist](SUBMISSION_CHECKLIST.md)** - Step-by-step with verification
-- **[Complete Guide](CHROME_WEB_STORE_SUBMISSION.md)** - Everything explained in detail
-
-### Fast Track Summary
-
-1. **Generate Assets** (30 min)
-   ```bash
-   # Generate icons
-   open extension/icons/generate-icons.html
-   
-   # Generate store graphics
-   open extension/assets/generate-store-assets.html
-   ```
-
-2. **Build Extension** (5 min)
-   ```bash
-   ./extension/build-extension.sh
-   cd dist && zip -r ../bannerbanner-v1.0.0.zip .
-   ```
-
-3. **Create Screenshots** (45 min)
-   - Capture extension interface at 1280×800px
-   - Minimum 1 screenshot, recommended 3-5
-   - Annotate with key features
-
-4. **Submit** (30 min)
-   - Go to [Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-   - Upload ZIP file
-   - Fill store listing (copy from guides)
-   - Add screenshots and promotional graphics
-   - Submit for review
-
-5. **Wait for Approval** (1-3 days)
-   - Monitor email for review status
-   - Respond to any feedback
-   - Celebrate when approved! 🎉
-
-### Required for Submission
-
-- ✅ 4 icon sizes (16, 32, 48, 128px)
-- ✅ Extension ZIP file
-- ✅ 1+ screenshot (1280×800px recommended)
-- ✅ Privacy policy URL (see [PRIVACY_POLICY.md](PRIVACY_POLICY.md))
-- ✅ Store description and summary
-- ✅ Permissions justifications
-- ✅ $5 one-time developer registration fee
-
-### Optional but Recommended
-
-- ✅ Promotional tile (440×280px)
-- ✅ Marquee tile (1400×560px)
-- ✅ 3-5 annotated screenshots
-- ✅ Support URL (GitHub issues page)
-
----
-
-## 🧪 Testing Before Submission
-
-- [ ] Extension loads without errors
-- [ ] Popup opens and displays UI correctly
-- [ ] Preferences save and persist
-- [ ] Banner detection works on test sites
-- [ ] Banana celebration appears (if enabled)
-- [ ] Stats update when banners are closed
-- [ ] Theme switching works
-- [ ] Training system saves custom patterns
-- [ ] Extension works across multiple tabs
-- [ ] Settings sync between popup and content script
-
-## 🐛 Debugging
-
-### View Console Logs
-
-- **Popup**: Right-click extension icon → "Inspect popup"
-- **Background script**: `chrome://extensions/` → "Inspect views: background page"
-- **Content script**: Right-click page → "Inspect" → Console tab (filter by "BannerBanner")
-
-### Common Issues
-
-**Banner not detected:**
-- Check content script is injected (Console → Sources)
-- Verify pattern selectors match the banner's DOM structure
-- Add debug logging to `content.js`
-
-**Preferences not saving:**
-- Check Chrome storage in DevTools → Application → Storage → Extension Storage
-- Verify `chrome.storage` permissions in manifest
-
-**Popup not loading:**
-- Check for CSP errors in popup console
-- Ensure all assets are in `dist/` and paths are correct
-
-## 📝 Notes
-
-- Content scripts use vanilla JS (no React) for performance
-- Background script is a service worker (Manifest V3)
-- Toolbar popup and Learn dashboard are self-contained vanilla JS pages (extension CSP: no inline scripts)
-- Bananers only run on origins the user has opted into (`optional_host_permissions` granted at runtime)
-- Pattern library can be extended by users via the training UI
-- Stats are stored in `chrome.storage.local` and synced across devices via `chrome.storage.sync`
-- The bananer knowledge base lives in `chrome.storage.local` (capped at 300 fingerprints; `chrome.storage.sync` cross-device recall is a possible stretch goal, mindful of its size quotas)
-
-## 🍌 Banana Town Features
-
-The extension includes delightful banana-themed easter eggs:
-
-- Random banana character animations on banner close
-- Banana and Dark Banana themes
-- Rotating banana emoji on theme cards
-- Celebration messages
-
-These can all be toggled in settings for users who prefer a more serious interface.
+## Testing
+
+- `test/unit/` — `node --test` suites for origins, settings schema, stats,
+  classification, adapters, pipeline (including the one-action-per-banner and
+  race guarantees), and registration reconciliation.
+- `test/browser/specs/boundary.spec.mjs` — loads the **built extension** into
+  Chromium: clean install executes nothing anywhere, registers nothing,
+  initializes the versioned schema, keeps sync storage empty, and even a
+  registered script does not run without a granted permission.
+- `test/browser/specs/pipeline.spec.mjs` — runs the real runtime modules
+  against CMP fixtures (both modes per claimed CMP) and against every
+  protected dialog class, asserting byte-identical dialogs and zero clicks.
+- `test/browser/fixtures/` — one fixture per supported CMP (cooperative and
+  unresponsive variants) and per protected class.
+
+What automation cannot cover: Chrome's native permission-grant prompt. The
+grant/revoke user flows and real-site behavior are recorded manually in
+`docs/REAL_SITE_TEST_MATRIX.md`.
+
+## Supported CMPs (launch candidates)
+
+| CMP | Necessary only | Accept all |
+|---|---|---|
+| OneTrust | ✓ | ✓ |
+| Cookiebot | ✓ | ✓ |
+| CookieYes | ✓ | ✓ |
+| Usercentrics | ✓ | ✓ |
+| Quantcast Choice | — (unsupported in v0.1) | ✓ |
+
+"✓" means an adapter with an exact intended control and a verified
+postcondition exists and passes fixture tests. Real-site verification is
+tracked in `docs/REAL_SITE_TEST_MATRIX.md`; a CMP is only *claimed* publicly
+once both its modes pass there.

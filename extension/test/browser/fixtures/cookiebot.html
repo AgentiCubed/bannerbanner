@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Cookiebot fixture</title></head>
+<body>
+<main><h1>Shop</h1></main>
+<div id="CybotCookiebotDialog" style="position:fixed;top:20%;left:20%;width:60%;background:#fff;border:1px solid #999;padding:24px;z-index:9999;">
+  <p>This website uses cookies. We use cookies to personalise content and to analyse our traffic. Data protection info.</p>
+  <button id="CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll">Allow all</button>
+  <button id="CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll">Use necessary cookies only</button>
+</div>
+<script>
+  window.__clickCount = 0;
+  function settle(consent) {
+    document.cookie = 'CookieConsent={stamp:%27test%27,necessary:true,preferences:' + consent +
+      ',statistics:' + consent + ',marketing:' + consent + '}; path=/';
+    document.getElementById('CybotCookiebotDialog').remove();
+  }
+  document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
+    .addEventListener('click', () => { window.__clickCount++; window.__lastClicked = 'accept'; settle(true); });
+  document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll')
+    .addEventListener('click', () => { window.__clickCount++; window.__lastClicked = 'reject'; settle(false); });
+</script>
+</body>
+</html>

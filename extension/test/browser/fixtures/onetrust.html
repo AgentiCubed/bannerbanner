@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>OneTrust fixture</title></head>
+<body>
+<main><h1>Article content</h1><p>Page body that must stay usable.</p></main>
+<div id="onetrust-consent-sdk">
+  <div id="onetrust-banner-sdk" style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #333;padding:20px;z-index:9999;">
+    <p>We use cookies to enhance your experience, analyze traffic, and serve tailored ads. See our privacy policy. (GDPR)</p>
+    <button id="onetrust-accept-btn-handler">Accept All Cookies</button>
+    <button id="onetrust-reject-all-handler">Reject All</button>
+  </div>
+</div>
+<script>
+  // Mimic the real CMP: clicking a decision button writes the consent cookie
+  // and tears the banner down. BannerBanner itself never does this.
+  window.__clickCount = 0;
+  function settle(groups) {
+    document.cookie = 'OptanonConsent=groups=' + groups + '; path=/';
+    document.cookie = 'OptanonAlertBoxClosed=' + new Date().toISOString() + '; path=/';
+    document.getElementById('onetrust-consent-sdk').remove();
+  }
+  document.getElementById('onetrust-accept-btn-handler').addEventListener('click', () => {
+    window.__clickCount++; window.__lastClicked = 'accept'; settle('C0001:1,C0002:1,C0003:1,C0004:1');
+  });
+  document.getElementById('onetrust-reject-all-handler').addEventListener('click', () => {
+    window.__clickCount++; window.__lastClicked = 'reject'; settle('C0001:1,C0002:0,C0003:0,C0004:0');
+  });
+</script>
+</body>
+</html>

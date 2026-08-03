@@ -1,0 +1,82 @@
+name: Extension CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'extension/**'
+      - 'scripts/**'
+      - '.github/workflows/extension-ci.yml'
+  pull_request:
+    paths:
+      - 'extension/**'
+      - 'scripts/**'
+      - '.github/workflows/extension-ci.yml'
+
+jobs:
+  checks:
+    name: Lint, unit tests, build, package validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax-check every shipped script
+        run: |
+          set -e
+          for f in extension/*.js extension/lib/*.js scripts/*.mjs; do
+            node --check "$f"
+          done
+
+      - name: Unit tests (safety-critical pure logic)
+        run: node --test extension/test/unit/*.test.mjs
+
+      - name: Icons are reproducible from source
+        run: |
+          node scripts/generate-icons.mjs
+          git diff --exit-code extension/icons
+
+      - name: Build and validate the package (missing files are fatal)
+        run: bash extension/build-extension.sh
+
+      - name: Validate the source tree manifest too
+        run: node scripts/validate-package.mjs extension
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bannerbanner-extension
+          path: |
+            dist-extension/
+            dist-extension-inventory.txt
+            bannerbanner-v*.zip
+            bannerbanner-v*.zip.sha256
+
+  browser:
+    name: Browser integration tests (real Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install browser-test dependencies
+        working-directory: extension/test/browser
+        run: npm ci
+
+      - name: Install Chromium
+        working-directory: extension/test/browser
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Permission-boundary tests (extension loaded)
+        working-directory: extension/test/browser
+        run: node --test specs/boundary.spec.mjs
+
+      - name: Consent-pipeline and safety-dialog tests
+        working-directory: extension/test/browser
+        run: node --test specs/pipeline.spec.mjs

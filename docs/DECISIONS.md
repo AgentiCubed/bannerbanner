@@ -16,6 +16,8 @@ This is the durable decision log for product scope, safety, permissions, data ha
 | BB-010 | 2026-08-02 | Accepted | Completion requires evidence. | Generated documentation and UI state are not proof of working behavior. |
 | BB-011 | 2026-08-02 | Accepted | Release proceeds through private beta before Web Store submission. | Real-browser safety evidence is required before broad distribution. |
 | BB-012 | 2026-08-02 | Accepted | The repository operating files are the project memory. | Future agents and contributors need a current, inspectable source of truth. |
+| BB-013 | 2026-08-03 | Accepted | Quantcast Choice claims only the Accept all mode in v0.1; Necessary only is explicitly unsupported for it. | Quantcast's summary UI has no stable reject-all control without opening its settings panel; guessing would violate the exact-intended-control rule, so the claim is narrowed instead. |
+| BB-014 | 2026-08-03 | Accepted | TrustArc, Osano, and Cookie Notice are removed from the claimed CMP set for v0.1. | Their alpha selectors had no verifiable postcondition defined; the launch allowlist keeps only the five CMPs with adapter-specific consent signals and fixture coverage, within the contract's three-to-five target. |
 
 ## Superseding a decision
 

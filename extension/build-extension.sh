@@ -1,73 +1,58 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Build the BannerBanner extension package.
+#
+# Produces dist-extension/ containing ONLY the runtime files the extension
+# needs, validates the result (missing required files are fatal), writes a
+# package inventory, and — when `zip` is available — an archive plus its
+# sha256 for release provenance.
+#
+# The extension is plain JS; there is no compilation step, so this script does
+# each piece of work exactly once. The GitHub Spark web app under src/ is NOT
+# part of the extension and is not built here.
 
-set -e
+set -euo pipefail
 
-echo "🍌 Building BannerBanner Extension..."
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SRC="$ROOT/extension"
+OUT="$ROOT/dist-extension"
+VERSION="$(node -p "JSON.parse(require('fs').readFileSync('$SRC/manifest.json','utf8')).version")"
 
-echo "📦 Step 1: Building React app..."
-npm run build
+echo "Building BannerBanner v$VERSION"
 
-echo "📁 Step 2: Copying extension files..."
-cp extension/manifest.json dist/
-cp extension/background.js dist/
-cp extension/content.js dist/
-cp extension/bananer-characters.js dist/
-cp extension/bananer.js dist/
-cp extension/popup.html dist/
-cp extension/popup.js dist/
-cp extension/learn.html dist/
-cp extension/learn.js dist/
-cp extension/learn.css dist/
+rm -rf "$OUT"
+mkdir -p "$OUT/lib" "$OUT/icons"
 
-echo "🎨 Step 3: Copying icons..."
-mkdir -p dist/icons
+# Runtime files only.
+cp "$SRC/manifest.json" "$OUT/"
+cp "$SRC/background.js" "$OUT/"
+cp "$SRC/content.js" "$OUT/"
+cp "$SRC/popup.html" "$SRC/popup.js" "$OUT/"
+cp "$SRC/options.html" "$SRC/options.js" "$OUT/"
+cp "$SRC"/lib/*.js "$OUT/lib/"
+for size in 16 32 48 128; do
+  # Missing icons are fatal, not a warning.
+  cp "$SRC/icons/icon-$size.png" "$OUT/icons/"
+done
 
-if [ -f "extension/icons/icon-16.png" ]; then
-    echo "  ✅ Copying icons..."
-    cp extension/icons/icon-*.png dist/icons/ 2>/dev/null || true
+# Validate the built package: manifest references, permission contract,
+# and strict inventory (no unexpected files).
+node "$ROOT/scripts/validate-package.mjs" "$OUT" --strict-inventory
+
+# Inventory for release records.
+(cd "$OUT" && find . -type f | sed 's|^\./||' | sort) > "$ROOT/dist-extension-inventory.txt"
+echo "Inventory written to dist-extension-inventory.txt"
+
+# Optional archive + hash for provenance (WS-04).
+if command -v zip >/dev/null 2>&1; then
+  ARCHIVE="$ROOT/bannerbanner-v$VERSION.zip"
+  rm -f "$ARCHIVE"
+  (cd "$OUT" && zip -qr "$ARCHIVE" .)
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$ARCHIVE" | tee "$ARCHIVE.sha256"
+  fi
+  echo "Archive: $ARCHIVE"
 else
-    echo ""
-    echo "⚠️  WARNING: Extension icons not found!"
-    echo ""
-    echo "📝 To generate icons:"
-    echo "   1. Open extension/icons/generate-icons.html in your browser"
-    echo "   2. Click 'Download All Icons as ZIP'"
-    echo "   3. Extract to extension/icons/"
-    echo "   4. Run this build script again"
-    echo ""
+  echo "zip not found — skipping archive (package dir is complete in $OUT)"
 fi
 
-echo "📦 Step 4: Copying store assets..."
-mkdir -p dist/assets
-
-echo "✅ Build complete! Extension ready in dist/"
-echo ""
-echo "📋 Next steps:"
-
-if [ ! -f "extension/icons/icon-16.png" ]; then
-    echo ""
-    echo "🎨 STEP 1: Generate Icons (REQUIRED)"
-    echo "   → Open: extension/icons/generate-icons.html"
-    echo "   → Download all icons and place in extension/icons/"
-    echo "   → Run build script again"
-    echo ""
-fi
-
-echo "🧪 STEP 2: Test the Extension Locally"
-echo "   1. Open chrome://extensions/"
-echo "   2. Enable 'Developer mode' (top right)"
-echo "   3. Click 'Load unpacked'"
-echo "   4. Select the dist/ folder"
-echo "   5. Test on websites with cookie banners"
-echo ""
-echo "🏪 STEP 3: Prepare for Chrome Web Store"
-echo "   1. Generate store assets:"
-echo "      → Open: extension/assets/generate-store-assets.html"
-echo "      → Download promotional tiles and screenshot templates"
-echo "   2. Create actual screenshots of your extension"
-echo "   3. Follow guide: extension/CHROME_WEB_STORE_SUBMISSION.md"
-echo ""
-echo "📦 STEP 4: Package for Distribution"
-echo "   cd dist && zip -r ../bannerbanner-v1.0.0.zip ."
-echo ""
-echo "🍌 Happy banana-ing!"
+echo "Build complete: $OUT"
