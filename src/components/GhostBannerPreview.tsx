@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cookie, Ghost, CheckCircle, XCircle } from '@phosphor-icons/react';
+import { Cookie, Ghost, CheckCircle } from '@phosphor-icons/react';
 import type { PreferenceLevel, CookieCategories } from '@/lib/types';
 
 interface GhostBannerPreviewProps {
@@ -19,6 +19,7 @@ export function GhostBannerPreview({ isRunning, preferenceLevel, customCategorie
 
   useEffect(() => {
     if (!isRunning) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resets the timer-driven animation sequence when the run stops
       setStep('detecting');
       setShowBanana(false);
       return;
@@ -56,7 +57,7 @@ export function GhostBannerPreview({ isRunning, preferenceLevel, customCategorie
   const getPreferenceText = () => {
     if (useCustom && customCategories) {
       const enabled = Object.entries(customCategories)
-        .filter(([_, value]) => value)
+        .filter(([, value]) => value)
         .map(([key]) => key)
         .join(', ');
       return `Custom: ${enabled}`;

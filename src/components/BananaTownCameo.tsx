@@ -16,6 +16,7 @@ export function BananaTownCameo({ isVisible, onDismiss, bannerName }: BananaTown
   useEffect(() => {
     if (isVisible && !shouldReduceMotion()) {
       const selectedCameo = getRandomBananaCameo();
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- cameo must be re-randomized on each reveal, which can't happen during render
       setCameo(selectedCameo);
       setShowCelebration(true);
 

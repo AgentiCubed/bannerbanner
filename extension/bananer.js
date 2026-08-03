@@ -125,10 +125,10 @@
     // 1. Fast path: recall learned fingerprints (works on pre-paint-hidden nodes too).
     for (const record of state.knowledge) {
       if (!record.selector) continue;
-      let el = null;
+      let el;
       try {
         el = document.querySelector(record.selector);
-      } catch (e) {
+      } catch {
         continue;
       }
       if (el && !state.handled.has(el)) {
@@ -372,7 +372,7 @@
         if (el.isConnected && isVisible(el)) peelOff(el, analysis);
       }, 800);
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   }
@@ -545,7 +545,7 @@
     if (record.dismissal && record.dismissal.buttonSelector) {
       try {
         button = el.querySelector(record.dismissal.buttonSelector) || document.querySelector(record.dismissal.buttonSelector);
-      } catch (e) {
+      } catch {
         button = null;
       }
     }
@@ -567,7 +567,7 @@
   function report(record) {
     try {
       chrome.runtime.sendMessage({ type: 'BANANER_REPORT', record }, () => void chrome.runtime.lastError);
-    } catch (e) {
+    } catch {
       // Extension context invalidated (e.g. update) — nothing to do.
     }
   }

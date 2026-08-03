@@ -105,7 +105,7 @@ export function RealWorldTester() {
     setCookiesVerified(false);
   };
 
-  const handleOpenRecordDialog = (success: boolean) => {
+  const handleOpenRecordDialog = (_success: boolean) => {
     setIsRecordingResult(true);
   };
 
@@ -115,7 +115,7 @@ export function RealWorldTester() {
     const existingResult = testResults?.[selectedSite.url];
     const now = Date.now();
 
-    let status: TestStatus = 'untested';
+    let status: TestStatus;
     if (success) {
       status = 'working';
     } else if (!bannerDetected) {
@@ -359,6 +359,7 @@ ${successRate >= 90 ? '✅ **Excellent coverage!** BannerBanner is performing ve
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
+    // eslint-disable-next-line react-hooks/purity -- runs in a click handler, not during render
     a.download = `bannerbanner-test-report-${Date.now()}.md`;
     document.body.appendChild(a);
     a.click();

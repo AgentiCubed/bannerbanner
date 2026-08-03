@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { detectBanner, clickElement, findElement, toggleCheckbox, type BannerMatchResult } from '@/lib/banner-patterns';
+import { detectBanner, clickElement, findElement, toggleCheckbox, type BannerMatchResult, type BannerPattern } from '@/lib/banner-patterns';
 import type { UserPreferences, CookieCategories } from '@/lib/types';
 
 export interface BannerClosedEvent {
@@ -17,7 +17,7 @@ interface AutoBannerHandlerProps {
 
 export function useAutoBannerHandler({ preferences, onBannerClosed, isEnabled }: AutoBannerHandlerProps) {
   const timeoutRef = useRef<number>(0);
-  const [customPatterns] = useKV<any[]>('custom-banner-patterns', []);
+  const [customPatterns] = useKV<BannerPattern[]>('custom-banner-patterns', []);
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -69,7 +69,7 @@ export function useAutoBannerHandler({ preferences, onBannerClosed, isEnabled }:
 function applyPreferencesToBanner(
   match: BannerMatchResult,
   preferences: UserPreferences,
-  customPatterns: any[]
+  _customPatterns: BannerPattern[]
 ) {
   const pattern = match.pattern;
   

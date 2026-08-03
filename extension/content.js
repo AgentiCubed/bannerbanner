@@ -130,7 +130,7 @@ function findButton(selectors) {
   return null;
 }
 
-async function handleBanner(pattern, container) {
+async function handleBanner(pattern, _container) {
   if (!autoCloseEnabled || processingBanner) return;
   
   processingBanner = true;
@@ -210,7 +210,7 @@ async function handleBanner(pattern, container) {
   }
 }
 
-function showBananaCelebrationAnimation(bannerName) {
+function showBananaCelebrationAnimation(_bannerName) {
   const celebrations = [
     'zipline',
     'lawyer',
