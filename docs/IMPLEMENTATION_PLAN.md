@@ -17,7 +17,7 @@ Deliverables:
 - status handoff;
 - release gates;
 - real-site evidence matrix; and
-- Release Steward definition.
+- Release Steward definition and project-scoped agent configuration.
 
 Completed on `main` on 2026-08-02.
 
