@@ -1,7 +1,7 @@
 # BannerBanner status
 
 Last updated: 2026-08-03  
-Code baseline reviewed: `main` at `1fce8291bce211ab539c9968d24caa19799c722a`  
+Code baseline reviewed: `main` at `3981fdb` (v0.1 hardening rewrite merged)  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -14,46 +14,56 @@ Release hardening and scope correction.
 
 ## Current truth
 
-BannerBanner is a functional alpha with Manifest V3 scaffolding, an options page, optional host-permission declarations, content scripts, and local learning behavior. It is not yet a safe MVP.
+The v0.1 hardening branch (issues #24–#31, plus the automatable parts of #32)
+replaces the alpha runtime:
 
-Current critical mismatches include:
-
-- static all-site content-script injection despite the per-site opt-in claim;
-- two independent detection and dismissal engines;
-- automatic destructive handling of unknown dialogs;
-- DOM removal being recorded as cookie-consent success;
-- extension settings split between Spark KV and `chrome.storage`;
-- a training flow that does not capture a usable extension pattern;
-- URL-bearing history and privacy-policy contradictions;
-- absent release-grade tests and CI; and
-- missing or dead package assets.
+- No static content scripts remain; access is per-origin, dynamically
+  registered, reconciled against actual grants, and revocable (with a stop
+  signal to open tabs).
+- One awaited consent pipeline (`extension/lib/pipeline.js`) owns detect →
+  classify → decide → execute → verify → report. The second engine
+  (`bananer.js`) and the alpha `content.js` engine were removed.
+- Unknown and sensitive dialogs receive no action of any kind; each protected
+  class has a fixture regression.
+- Consent success requires the CMP's own postcondition (site-written consent
+  signal + banner teardown by the site). All DOM-removal/hiding fallbacks are
+  gone.
+- `chrome.storage.local` is the sole runtime store, with a versioned schema,
+  legacy migration, corruption recovery, and reset. Spark KV is not used by
+  the extension. Training/sharing/Learn-dashboard UI was removed from the
+  shipped package.
+- Storage holds bounded aggregate counters only; nothing browsing-derived
+  enters sync storage; legacy URL-bearing history is purged on update. The
+  privacy policy was rewritten to the observed schema.
+- Icons exist (generated reproducibly), the manifest references only real
+  files, the build packages only runtime files, validates strictly, and emits
+  an inventory plus an archive hash.
+- CI (`.github/workflows/extension-ci.yml`) runs syntax checks, 70 unit
+  tests, icon reproducibility, build + strict package validation, and 33
+  real-Chromium integration tests (permission boundary with the built
+  extension loaded; CMP/sensitive/unknown fixtures against the shipped
+  runtime modules).
 
 ## Next Shippable Artifact
 
-Issue #24: a permission-boundary patch that removes static all-site content scripts and dynamically registers one unified script only for explicitly accepted origins.
-
-The patch must include opt-in, revocation, reload, update, and already-open-tab tests.
+Issue #32: real-site acceptance — 20 to 30 live sites across the claimed CMP
+set, both modes per claimed CMP, the manual grant/revoke permission cases,
+and the final claim-to-code audit of the legacy planning documents (PRD and
+the alpha-era summaries still overstate capabilities).
 
 ## Blocking Release Gate
 
-`PB-01: Genuine per-origin opt-in`.
-
-## Active sequence
-
-1. Implement issue #24 and enforce the permission boundary.
-2. Unify the consent pipeline and remove generic destructive behavior.
-3. Implement verified supported-CMP actions.
-4. Connect settings and repair data handling.
-5. Complete packaging, CI, and browser safety testing.
-6. Run the real-site matrix and reconcile public claims.
+`PB-11: Real-site acceptance` (requires human browser evidence). Gates PB-01
+through PB-10 have automated evidence linked in `docs/RELEASE_GATES.md` and
+await James's confirmation runs before their boxes are checked.
 
 ## Known blockers
 
-- No release-grade automated test harness.
-- No committed real-site verification evidence.
-- Current extension package references missing assets.
-- Current documentation overstates implemented capabilities.
-- Chrome Web Store disclosures do not yet match behavior.
+- The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
+  user flows need manual matrix rows.
+- No real-site evidence yet; CMP support claims stay "candidate" until then.
+- PRD.md and other alpha-era documents still contain outdated claims (PB-12
+  is only partially closed).
 
 ## Parking Lot
 
@@ -65,17 +75,38 @@ The patch must include opt-in, revocation, reload, update, and already-open-tab 
 - Granular consent categories.
 - Firefox and other browser support.
 - Remote telemetry, accounts, or synchronization.
-- Additional Bananer characters and animation polish.
+- Bananer characters, Learn dashboard, and animation polish (removed from the
+  shipped package in this change; code remains in git history).
+- Quantcast Choice "Necessary only" support (needs a settings-panel adapter;
+  see BB-013).
 
 ## Latest handoff
 
-- Artifact shipped: PR #37 — working `npm run lint` (flat eslint config for eslint 10 covering `src/` and `extension/`) and a clean `npm audit`.
-- Files or behavior changed: New `eslint.config.js`; 27 lint errors fixed across 11 files (unused bindings, imports, and typing cleanups — no behavior changes); `package.json` security overrides bumped (`postcss` 8.5.25, `minimatch` 3.1.5) plus `npm audit fix`, taking audit findings from 4 to 0. Extension runtime behavior is unchanged.
-- Checks passed: `npm run lint` exits 0 (7 warnings, all the standard shadcn fast-refresh warning); `npm audit` reports 0 vulnerabilities; `npm run build` passes; `tsc --noEmit` output is byte-identical before and after the change.
-- Manual evidence: Command output verified in the PR #37 session; the diff is the record.
-- Remaining uncertainty: Lint and audit run locally only — no CI executes them yet, and there are no unit, browser-integration, manifest, or package checks, so PB-10 remains open. The 36 pre-existing `tsc` errors (lucide-react deep imports) are untouched.
-- Release gate changed: None closed; PB-10 evidence updated to record partial progress (local lint and audit green).
-- Next shippable artifact: Issue #24, genuine per-origin opt-in.
+- Artifact shipped: PR #37 — repo-wide eslint in CI on top of the merged v0.1
+  hardening rewrite: flat eslint config for eslint 10 (`eslint.config.js`
+  covering `src/`, the ES-module extension runtime, `scripts/`, and both test
+  suites), `.github/workflows/lint.yml`, and a clean `npm audit`.
+- Files or behavior changed: `eslint.config.js` and `.github/workflows/lint.yml`
+  added; 27 lint errors fixed in `src/` (unused bindings/imports, typing
+  cleanups — no behavior changes) and 3 in the rewritten runtime/tooling
+  (`lib/dom-probe.js` useless assignment, unused test arg, unused import in
+  `validate-package.mjs`); `package.json` security overrides bumped
+  (`postcss` 8.5.25, `minimatch` 3.1.5) plus `npm audit fix`, taking audit
+  findings from 4 to 0. Runtime behavior is unchanged; the merge kept main's
+  v0.1 runtime (including the deletion of `bananer.js`) intact.
+- Checks passed: `npm run lint` exits 0 (7 warnings, all the stock shadcn
+  fast-refresh warning); 70/70 unit tests; `npm audit` 0 vulnerabilities;
+  `npm run build` passes.
+- Manual evidence: Command output verified in the PR #37 session; the diff is
+  the record.
+- Remaining uncertainty: the lint workflow has not yet run on GitHub-hosted
+  runners (first run happens on this PR); `npm audit` is clean locally but is
+  deliberately not a CI check. The pre-existing `tsc --noEmit` errors in `src/`
+  (lucide-react deep imports) are untouched.
+- Release gate changed: None closed; PB-10 evidence extended with the
+  repo-wide eslint CI workflow.
+- Next shippable artifact: unchanged — completed `docs/REAL_SITE_TEST_MATRIX.md`
+  rows and the final claim audit (issue #32).
 
 ## Session handoff template
 

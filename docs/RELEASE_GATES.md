@@ -7,55 +7,55 @@ A gate is closed only when its checkbox is checked and its Evidence field points
 - [ ] **PB-01: Genuine per-origin opt-in**
   - A clean install does not inject or execute BannerBanner on arbitrary websites.
   - Access begins only after explicit origin authorization.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/browser/specs/boundary.spec.mjs` (clean install executes nothing, registers nothing; a registered script without a grant still does not run) and `extension/test/unit/registry.test.mjs`. Pending: manual grant-flow run recorded in the matrix.
 
 - [ ] **PB-02: Complete revocation**
   - Removing an origin prevents future injection and stops BannerBanner activity in already-open matching tabs.
   - Restart and extension update do not restore revoked access.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/unit/registry.test.mjs` (revocation/unregistration planning, update cannot broaden) and the BB_STOP test in `extension/test/browser/specs/pipeline.spec.mjs`. Pending: manual revoke-flow run recorded in the matrix.
 
 - [ ] **PB-03: Verified supported-CMP decisions**
   - Each claimed CMP and each supported mode activates the intended control.
   - Success is recorded only after an adapter-specific postcondition passes.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/unit/cmp-adapters.test.mjs` and CMP fixture cases in `extension/test/browser/specs/pipeline.spec.mjs` (success requires the site-written consent signal; no DOM-removal path exists). Pending: real-site rows in the matrix.
 
 - [ ] **PB-04: Unknown dialogs fail closed**
   - Unknown dialogs receive no click, removal, hiding, style mutation, or synthetic event.
   - The user receives an understandable unsupported status.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: unknown-dialog cases in `extension/test/unit/pipeline.test.mjs` and `unknown-modal`/`newsletter`/`ad-overlay` fixtures in `extension/test/browser/specs/pipeline.spec.mjs` (byte-identical dialogs, zero clicks, honest unsupported status).
 
 - [ ] **PB-05: Sensitive workflows remain untouched**
   - Login, checkout, payment, security, age-verification, session-expiration, and unsaved-work dialogs pass the regression suite without modification.
   - Any destructive false positive reopens this gate.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/unit/classify.test.mjs` plus one fixture regression per protected class in `extension/test/browser/specs/pipeline.spec.mjs`. Pending: real-flow spot checks in the matrix.
 
 - [ ] **PB-06: One awaited consent pipeline**
   - One engine owns detection, decision, execution, verification, and reporting.
   - Settings load before scanning.
   - A banner cannot receive duplicate or competing actions.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/unit/pipeline.test.mjs` (single engine, settings awaited, duplicate/race guards) and the awaited-settings and one-action browser tests in `pipeline.spec.mjs`. The second engine was removed in this change.
 
 - [ ] **PB-07: Shipped settings control shipped behavior**
   - The options UI writes versioned `chrome.storage` settings consumed by the content script.
   - The two v0.1 modes persist across reload, browser restart, and extension update.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/unit/settings-schema.test.mjs` (versioned schema, migration, corruption recovery) and the options-UI persistence test in `boundary.spec.mjs`. Pending: manual restart/update verification.
 
 - [ ] **PB-08: Data handling matches the contract**
   - Normal use stores no full URL, path, query string, title, content, or chronological browsing history.
   - Browsing-derived data does not enter sync storage.
   - The privacy policy describes the observed schema and behavior.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `extension/test/unit/stats.test.mjs` (schema cannot express URLs or history) and the empty-sync-storage test in `boundary.spec.mjs`; privacy policy rewritten to the observed schema (`extension/PRIVACY_POLICY.md`).
 
 - [ ] **PB-09: Complete extension package**
   - Every manifest resource exists.
   - Missing required files fail the build.
   - The packaged directory contains only required runtime assets and loads without errors in a fresh profile.
-  - Evidence: Not yet provided.
+  - Evidence: Automated: `scripts/validate-package.mjs` (missing files fatal, strict inventory) run inside `extension/build-extension.sh` and CI; icons committed and reproducible. Pending: fresh-profile manual load check.
 
 - [ ] **PB-10: Automated release checks**
   - Build, lint, unit, browser integration, manifest, and package checks run in CI and pass.
   - Safety regressions are required checks.
-  - Evidence: Partial, gate remains open. PR #37 made `npm run lint` runnable (flat eslint config, 0 errors) and brought `npm audit` to 0 vulnerabilities, verified locally only. No CI runs any check yet; unit, browser integration, manifest, and package checks do not exist.
+  - Evidence: Automated: `.github/workflows/extension-ci.yml` runs syntax checks, unit tests, icon reproducibility, build + package validation, and both browser suites on every pull request. Local commands documented in `extension/README.md`. `.github/workflows/lint.yml` runs repo-wide eslint (flat config in `eslint.config.js` covering `src/`, `extension/`, `scripts/`, and tests) on every pull request; `npm audit` is clean as of PR #37 but is not a CI check.
 
 - [ ] **PB-11: Real-site acceptance**
   - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.
@@ -66,7 +66,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
 - [ ] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.
   - Nonfunctional or deferred features are not presented as available.
-  - Evidence: Not yet provided.
+  - Evidence: Partial: README, extension README, manifest description, popup/options copy, and privacy policy were reconciled to the v0.1 scope (training, sharing, and the Learn dashboard removed from the shipped package). Pending: PRD and legacy planning documents still describe alpha-era claims and need a final claim-to-code audit.
 
 ## Chrome Web Store candidate
 
@@ -80,7 +80,7 @@ The private-beta section must pass first.
 - [ ] **WS-02: Accurate privacy disclosures**
   - Privacy policy and dashboard answers match code and test evidence.
   - Any browsing-derived processing is disclosed even when local.
-  - Evidence: Not yet provided.
+  - Evidence: Partial: `extension/PRIVACY_POLICY.md` rewritten to the exact storage schema (`bb:settings`, `bb:authorizedOrigins`, `bb:stats`) with the empty-sync assertion tested in `boundary.spec.mjs`. Pending: Web Store dashboard answers at submission time.
 
 - [ ] **WS-03: Listing and asset readiness**
   - Required icons, screenshots, descriptions, support information, and policy links are complete and accurate.

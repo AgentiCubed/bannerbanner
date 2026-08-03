@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "BannerBanner",
-  "version": "1.0.0",
-  "description": "Automatically manage cookie consent banners with your privacy preferences",
+  "version": "0.1.0",
+  "description": "Applies your cookie-consent choice on sites you explicitly enable. Works only with supported consent managers.",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -22,22 +22,8 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["bananer-characters.js", "bananer.js"],
-      "run_at": "document_start",
-      "all_frames": false
-    },
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content.js"],
-      "run_at": "document_idle",
-      "all_frames": false
-    }
-  ],
   "options_ui": {
-    "page": "learn.html",
+    "page": "options.html",
     "open_in_tab": true
   },
   "action": {
@@ -48,12 +34,12 @@
       "48": "icons/icon-48.png",
       "128": "icons/icon-128.png"
     },
-    "default_title": "BannerBanner - Manage Privacy Preferences"
+    "default_title": "BannerBanner — enable or disable on this site"
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/*", "banana-celebration.html"],
-      "matches": ["<all_urls>"]
+      "resources": ["lib/*.js"],
+      "matches": ["http://*/*", "https://*/*"]
     }
   ],
   "content_security_policy": {

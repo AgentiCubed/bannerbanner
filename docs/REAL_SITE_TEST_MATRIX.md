@@ -24,11 +24,11 @@ Candidates are not supported until both v0.1 modes pass with evidence.
 
 | CMP | Necessary only | Accept all | Sites tested | Status | Evidence |
 |---|---:|---:|---:|---|---|
-| OneTrust | 0 | 0 | 0 | Unverified candidate | |
-| Cookiebot | 0 | 0 | 0 | Unverified candidate | |
-| CookieYes | 0 | 0 | 0 | Unverified candidate | |
-| Quantcast Choice | 0 | 0 | 0 | Unverified candidate | |
-| Usercentrics | 0 | 0 | 0 | Unverified candidate | |
+| OneTrust | 0 | 0 | 0 | Unverified candidate (fixture tests pass) | `extension/test/browser/specs/pipeline.spec.mjs` |
+| Cookiebot | 0 | 0 | 0 | Unverified candidate (fixture tests pass) | `extension/test/browser/specs/pipeline.spec.mjs` |
+| CookieYes | 0 | 0 | 0 | Unverified candidate (fixture tests pass) | `extension/test/browser/specs/pipeline.spec.mjs` |
+| Quantcast Choice | n/a — unsupported (BB-013) | 0 | 0 | Unverified candidate (fixture tests pass; Accept all only) | `extension/test/browser/specs/pipeline.spec.mjs` |
+| Usercentrics | 0 | 0 | 0 | Unverified candidate (fixture tests pass) | `extension/test/browser/specs/pipeline.spec.mjs` |
 
 Launch may claim only three to five CMPs that pass. Remove or defer a candidate rather than weakening verification.
 

@@ -7,7 +7,10 @@
         "dev": "vite",
         "kill": "fuser -k 5000/tcp",
         "build": "tsc -b --noCheck && vite build",
-        "build:extension": "npm run build && bash extension/build-extension.sh",
+        "build:extension": "bash extension/build-extension.sh",
+        "test:extension": "node --test extension/test/unit/*.test.mjs",
+        "test:extension:browser": "cd extension/test/browser && npm test",
+        "validate:extension": "node scripts/validate-package.mjs extension",
         "lint": "eslint .",
         "optimize": "vite optimize",
         "preview": "vite preview"

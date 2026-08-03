@@ -1,128 +1,107 @@
-// BannerBanner toolbar popup — quick actions for deploying bananers.
+// BannerBanner toolbar popup.
+//
+// Site authorization lives here: the ONLY way BannerBanner gains access to an
+// origin is the user clicking "Enable on this site", which requests the host
+// permission for that single origin and, when granted, asks the service worker
+// to record it and register the dynamic content script.
 
-(function () {
-  'use strict';
+import { normalizeOrigin, originToMatchPattern } from './lib/origins.js';
 
-  const els = {
-    host: document.getElementById('site-host'),
-    status: document.getElementById('site-status'),
-    statusText: document.getElementById('site-status-text'),
-    deploy: document.getElementById('deploy-btn'),
-    result: document.getElementById('deploy-result'),
-    removeSite: document.getElementById('remove-site-btn'),
-    statFingerprints: document.getElementById('stat-fingerprints'),
-    statDismissals: document.getElementById('stat-dismissals'),
-    statSites: document.getElementById('stat-sites'),
-    openLearn: document.getElementById('open-learn'),
-  };
+const els = {
+  host: document.getElementById('site-host'),
+  status: document.getElementById('site-status'),
+  statusText: document.getElementById('status-text'),
+  authorize: document.getElementById('authorize-btn'),
+  revoke: document.getElementById('revoke-btn'),
+  result: document.getElementById('result'),
+  mode: document.getElementById('mode'),
+  enabled: document.getElementById('enabled'),
+  statSuccess: document.getElementById('stat-success'),
+  statSites: document.getElementById('stat-sites'),
+  openOptions: document.getElementById('open-options'),
+};
 
-  let currentTab = null;
-  let currentOrigin = null;
+let currentOrigin = null;
 
-  function isDeployableUrl(url) {
-    return /^https?:\/\//i.test(url || '');
-  }
-
-  function setStatus(active) {
-    els.status.classList.toggle('on', active);
-    els.statusText.textContent = active
-      ? 'Bananers are on duty here'
-      : 'No bananers deployed here yet';
-    els.removeSite.classList.toggle('hidden', !active);
-    els.deploy.textContent = active ? '🍌 Deploy a bananer now' : '🍌 Deploy a bananer here';
-  }
-
-  function refreshStats() {
-    chrome.runtime.sendMessage({ type: 'BANANER_GET_STATE' }, (state) => {
-      if (chrome.runtime.lastError || !state) return;
-      const kbCount = Object.keys(state.kb || {}).length;
-      const dismissals = Object.values(state.roster || {}).reduce((sum, r) => sum + (r.dismissals || 0), 0);
-      els.statFingerprints.textContent = kbCount;
-      els.statDismissals.textContent = dismissals;
-      els.statSites.textContent = (state.sites || []).length;
-    });
-  }
-
-  function injectAndDeploy(tabId) {
-    chrome.scripting.executeScript(
-      { target: { tabId }, files: ['bananer-characters.js', 'bananer.js'] },
-      () => {
-        void chrome.runtime.lastError;
-        // Give the content script a beat to load its knowledge base.
-        setTimeout(() => {
-          chrome.tabs.sendMessage(tabId, { type: 'BANANER_DEPLOY_NOW' }, (response) => {
-            if (chrome.runtime.lastError || !response) {
-              els.result.textContent = 'Could not reach this page — try reloading it.';
-              return;
-            }
-            els.result.textContent =
-              response.found > 0
-                ? `Bananer found ${response.found} popup${response.found === 1 ? '' : 's'} to handle! 💥`
-                : 'All clear — the bananer found no popups. 🍌';
-            refreshStats();
-          });
-        }, 300);
-      }
-    );
-  }
-
-  function deploy() {
-    if (!currentTab || !currentOrigin) return;
-    els.result.textContent = '';
-    const originPattern = `${currentOrigin}/*`;
-
-    chrome.permissions.contains({ origins: [originPattern] }, (granted) => {
-      if (granted) {
-        setStatus(true);
-        injectAndDeploy(currentTab.id);
-        return;
-      }
-      chrome.permissions.request({ origins: [originPattern] }, (accepted) => {
-        if (!accepted) {
-          els.result.textContent = 'Permission declined — bananers stay home.';
-          return;
-        }
-        chrome.runtime.sendMessage({ type: 'BANANER_SITE_OPTED_IN', origin: currentOrigin }, () => {
-          void chrome.runtime.lastError;
-          setStatus(true);
-          refreshStats();
-          injectAndDeploy(currentTab.id);
-        });
-      });
-    });
-  }
-
-  function removeSite() {
-    if (!currentOrigin) return;
-    chrome.runtime.sendMessage({ type: 'BANANER_SITE_REMOVED', origin: currentOrigin }, () => {
+function sendMessage(message) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response) => {
       void chrome.runtime.lastError;
-      setStatus(false);
-      els.result.textContent = 'Bananers recalled from this site.';
-      refreshStats();
+      resolve(response);
     });
-  }
-
-  els.deploy.addEventListener('click', deploy);
-  els.removeSite.addEventListener('click', removeSite);
-  els.openLearn.addEventListener('click', (e) => {
-    e.preventDefault();
-    chrome.runtime.openOptionsPage();
   });
+}
 
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    currentTab = tabs && tabs[0];
-    const url = currentTab && currentTab.url;
-    if (!currentTab || !isDeployableUrl(url)) {
-      els.host.textContent = 'this page';
-      els.statusText.textContent = 'Bananers cannot work on this page';
-      els.deploy.disabled = true;
-      refreshStats();
+function setAuthorized(authorized) {
+  els.status.classList.toggle('on', authorized);
+  els.statusText.textContent = authorized
+    ? 'Enabled on this site'
+    : 'Not enabled on this site';
+  els.authorize.classList.toggle('hidden', authorized);
+  els.revoke.classList.toggle('hidden', !authorized);
+}
+
+async function refreshState() {
+  const state = await sendMessage({ type: 'BB_GET_STATE' });
+  if (!state) return;
+  els.mode.value = state.settings.mode;
+  els.enabled.checked = state.settings.enabled;
+  els.statSuccess.textContent = state.stats.totals.success;
+  els.statSites.textContent = state.origins.length;
+  if (currentOrigin) setAuthorized(state.origins.includes(currentOrigin));
+}
+
+async function authorize() {
+  if (!currentOrigin) return;
+  els.result.textContent = '';
+  const pattern = originToMatchPattern(currentOrigin);
+  chrome.permissions.request({ origins: [pattern] }, async (granted) => {
+    if (chrome.runtime.lastError || !granted) {
+      els.result.textContent = 'Permission declined — nothing was enabled.';
       return;
     }
-    const parsed = new URL(url);
-    currentOrigin = parsed.origin;
-    els.host.textContent = parsed.hostname;
-    chrome.permissions.contains({ origins: [`${currentOrigin}/*`] }, (granted) => setStatus(!!granted));
-    refreshStats();
+    const response = await sendMessage({ type: 'BB_AUTHORIZE_ORIGIN', origin: currentOrigin });
+    if (response && response.ok) {
+      setAuthorized(true);
+      els.result.textContent = 'Enabled. Reload the page to apply.';
+    } else {
+      els.result.textContent = 'Could not enable this site.';
+    }
+    refreshState();
   });
-})();
+}
+
+async function revoke() {
+  if (!currentOrigin) return;
+  const response = await sendMessage({ type: 'BB_REVOKE_ORIGIN', origin: currentOrigin });
+  els.result.textContent = response && response.ok ? 'Disabled on this site.' : 'Could not disable.';
+  setAuthorized(false);
+  refreshState();
+}
+
+els.authorize.addEventListener('click', authorize);
+els.revoke.addEventListener('click', revoke);
+els.mode.addEventListener('change', () => {
+  sendMessage({ type: 'BB_SET_SETTINGS', patch: { mode: els.mode.value } });
+});
+els.enabled.addEventListener('change', () => {
+  sendMessage({ type: 'BB_SET_SETTINGS', patch: { enabled: els.enabled.checked } });
+});
+els.openOptions.addEventListener('click', (e) => {
+  e.preventDefault();
+  chrome.runtime.openOptionsPage();
+});
+
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  const tab = tabs && tabs[0];
+  currentOrigin = tab ? normalizeOrigin(tab.url) : null;
+  if (!currentOrigin) {
+    els.host.textContent = 'this page';
+    els.statusText.textContent = 'BannerBanner cannot run on this page';
+    els.authorize.disabled = true;
+    refreshState();
+    return;
+  }
+  els.host.textContent = new URL(currentOrigin).hostname;
+  refreshState();
+});

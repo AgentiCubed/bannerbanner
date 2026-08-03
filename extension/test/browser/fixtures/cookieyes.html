@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>CookieYes fixture</title></head>
+<body>
+<main><h1>Blog</h1></main>
+<div class="cky-consent-container" style="position:fixed;bottom:0;left:0;right:0;background:#fafafa;padding:16px;z-index:999;">
+  <p>We use cookies to improve your browsing experience and for marketing. Cookie consent — GDPR/CCPA.</p>
+  <button data-cky-tag="accept-button" class="cky-btn-accept">Accept All</button>
+  <button data-cky-tag="reject-button" class="cky-btn-reject">Reject All</button>
+</div>
+<script>
+  window.__clickCount = 0;
+  function settle(action) {
+    document.cookie = 'cookieyes-consent=consentid:test,consent:yes,action:' + action + '; path=/';
+    document.querySelector('.cky-consent-container').remove();
+  }
+  document.querySelector('[data-cky-tag="accept-button"]')
+    .addEventListener('click', () => { window.__clickCount++; window.__lastClicked = 'accept'; settle('accept'); });
+  document.querySelector('[data-cky-tag="reject-button"]')
+    .addEventListener('click', () => { window.__clickCount++; window.__lastClicked = 'reject'; settle('reject'); });
+</script>
+</body>
+</html>

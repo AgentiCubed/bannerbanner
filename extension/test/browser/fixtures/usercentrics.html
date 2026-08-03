@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Usercentrics fixture</title></head>
+<body>
+<main><h1>App</h1></main>
+<div id="usercentrics-root">
+  <div data-testid="uc-container" style="position:fixed;bottom:24px;left:24px;width:420px;background:#fff;border:1px solid #888;padding:20px;z-index:9999;">
+    <p>We use cookies and similar technologies. Manage your consent preferences — privacy settings.</p>
+    <button data-testid="uc-accept-all-button">Accept All</button>
+    <button data-testid="uc-deny-all-button">Deny</button>
+  </div>
+</div>
+<script>
+  window.__clickCount = 0;
+  function settle(consent) {
+    localStorage.setItem('uc_settings', JSON.stringify({ consent, ts: 1 }));
+    document.getElementById('usercentrics-root').remove();
+  }
+  document.querySelector('[data-testid="uc-accept-all-button"]')
+    .addEventListener('click', () => { window.__clickCount++; window.__lastClicked = 'accept'; settle('all'); });
+  document.querySelector('[data-testid="uc-deny-all-button"]')
+    .addEventListener('click', () => { window.__clickCount++; window.__lastClicked = 'reject'; settle('deny'); });
+</script>
+</body>
+</html>
