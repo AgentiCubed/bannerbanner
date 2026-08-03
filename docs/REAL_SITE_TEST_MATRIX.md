@@ -1,7 +1,8 @@
 # BannerBanner real-site test matrix
 
-Status: Not started  
-Target: 20 to 30 representative real sites, all claimed CMP-mode combinations, and zero destructive false positives.
+Status: Candidates prepared — no evidence recorded yet  
+Target: 20 to 30 representative real sites, all claimed CMP-mode combinations, and zero destructive false positives.  
+How to run: `docs/REAL_SITE_TEST_PROTOCOL.md` (per-row steps, permission-boundary walkthrough, storage inspection, evidence rules).
 
 This document records evidence; it must not be populated from memory, a generated claim, or a test page designed only around BannerBanner's selectors.
 
@@ -35,11 +36,60 @@ Launch may claim only three to five CMPs that pass. Remove or defer a candidate 
 ## Real-site results
 
 One row represents one site, CMP, mode, extension commit, and test date.
+Follow `docs/REAL_SITE_TEST_PROTOCOL.md` for every row.
+
+The rows below are **pre-filled candidates** (29 rows): origins believed to
+run each CMP as of 2026-08, with the expected control and postcondition taken
+from the shipped adapters. Deployments change — step 1 of the protocol
+confirms the CMP on the day of testing; mark a row `Blocked` and substitute a
+site from the same CMP's pool if the vendor changed. Result `Not run` means
+the row is still a candidate, not evidence.
+
+Expected-control shorthand used below:
+- **OT-reject** = `#onetrust-reject-all-handler`; **OT-accept** = `#onetrust-accept-btn-handler`; postcondition: `OptanonConsent` cookie written by the site and banner torn down by OneTrust.
+- **CB-decline** = `#CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll`; **CB-allow** = `…OptinAllowAll`; postcondition: `CookieConsent` cookie + teardown.
+- **CY-reject** / **CY-accept** = `[data-cky-tag="reject-button"|"accept-button"]`; postcondition: `cookieyes-consent` cookie + teardown.
+- **QC-accept** = `#qc-cmp2-ui button[mode="primary"]`; postcondition: `euconsent-v2` cookie + teardown. (*Necessary only* is unsupported for Quantcast in v0.1 — BB-013.)
+- **UC-deny** / **UC-accept** = `[data-testid="uc-deny-all-button"|"uc-accept-all-button"]`; postcondition: `uc_settings` in localStorage + teardown.
 
 | ID | Site origin | CMP and version | Mode | Expected control and postcondition | Result | Page usable | Destructive false positive | Evidence | Date | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
+| RS-01 | https://www.adobe.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
+| RS-02 | https://www.adobe.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-03 | https://open.spotify.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
+| RS-04 | https://open.spotify.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-05 | https://edition.cnn.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | EU/UK exit point may be needed to see the banner | |
+| RS-06 | https://edition.cnn.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-07 | https://www.lego.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
+| RS-08 | https://www.lego.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-09 | https://www.zoom.us | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
+| RS-10 | https://www.zoom.us | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-11 | https://www.cookiebot.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | vendor's own site | |
+| RS-12 | https://www.cookiebot.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | |
+| RS-13 | https://www.bang-olufsen.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | | |
+| RS-14 | https://www.bang-olufsen.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | |
+| RS-15 | https://www.grundfos.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | | |
+| RS-16 | https://www.grundfos.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | |
+| RS-17 | https://www.cookieyes.com | CookieYes | Necessary only | CY-reject → cookieyes-consent | Not run | | | | vendor's own site | |
+| RS-18 | https://www.cookieyes.com | CookieYes | Accept all | CY-accept → cookieyes-consent | Not run | | | | | |
+| RS-19 | (pick from CookieYes showcase / BuiltWith) | CookieYes | Necessary only | CY-reject → cookieyes-consent | Not run | | | | source a live WordPress deployment at test time | |
+| RS-20 | (same site as RS-19) | CookieYes | Accept all | CY-accept → cookieyes-consent | Not run | | | | | |
+| RS-21 | https://sourceforge.net | Quantcast Choice | Accept all | QC-accept → euconsent-v2 | Not run | | | | GDPR banner shows from EU vantage | |
+| RS-22 | https://www.howstuffworks.com | Quantcast Choice | Accept all | QC-accept → euconsent-v2 | Not run | | | | | |
+| RS-23 | (pick a Quantcast publisher via TCF vendor list) | Quantcast Choice | Accept all | QC-accept → euconsent-v2 | Not run | | | | | |
+| RS-24 | https://usercentrics.com | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | vendor's own site | |
+| RS-25 | https://usercentrics.com | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
+| RS-26 | https://www.sixt.de | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | |
+| RS-27 | https://www.sixt.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
+| RS-28 | https://www.kicker.de | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | |
+| RS-29 | https://www.kicker.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
 
-Allowed Result values: `Pass`, `Fail`, `Unsupported`, `Blocked`.
+Replacement pools if a candidate changed CMP vendor: OneTrust —
+mastercard.com, sap.com, heineken.com; Cookiebot — visitdenmark.com,
+carlsberg.com, maersk.com; Usercentrics — tchibo.de, dm.de. Confirm with the
+container selector from the protocol before substituting.
+
+Allowed Result values: `Pass`, `Fail`, `Unsupported`, `Blocked`, `Not run`.
 
 Do not store account identifiers, URL paths, query strings, private page content, or secrets in this public-facing matrix. Use only the origin unless additional public context is essential.
 
