@@ -12,3 +12,27 @@ export interface UserPreferences {
   customCategories?: CookieCategories;
   useCustom: boolean;
 }
+
+export type TestStatus = 'untested' | 'working' | 'failed' | 'partial';
+
+export interface TestResult {
+  url: string;
+  status: TestStatus;
+  timestamp: number;
+  notes?: string;
+  attemptCount: number;
+  lastAttemptTimestamp?: number;
+  successCount: number;
+  failureCount: number;
+  bannerDetected: boolean;
+  bannerClosed: boolean;
+  cookiesVerified: boolean;
+}
+
+export interface TestSite {
+  name: string;
+  url: string;
+  bannerType: string;
+  description: string;
+  testResult?: TestResult;
+}
