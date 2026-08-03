@@ -1,7 +1,7 @@
 # BannerBanner status
 
 Last updated: 2026-08-03  
-Code baseline reviewed: `main` at `3981fdb` (v0.1 hardening rewrite merged)  
+Code baseline reviewed: issue #32 branch on top of `main` at `c981cc8` / merged hardening  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -10,61 +10,42 @@ BannerBanner v0.1, Safe Chrome Private Beta.
 
 ## Current Mode
 
-Release hardening and scope correction.
+Release hardening — claims alignment complete; real-site evidence still human-gated.
 
 ## Current truth
 
-The v0.1 hardening branch (issues #24–#31, plus the automatable parts of #32)
-replaces the alpha runtime:
+The v0.1 hardening branch (issues #24–#31) replaced the alpha runtime:
 
-- No static content scripts remain; access is per-origin, dynamically
-  registered, reconciled against actual grants, and revocable (with a stop
-  signal to open tabs).
-- One awaited consent pipeline (`extension/lib/pipeline.js`) owns detect →
-  classify → decide → execute → verify → report. The second engine
-  (`bananer.js`) and the alpha `content.js` engine were removed.
-- Unknown and sensitive dialogs receive no action of any kind; each protected
-  class has a fixture regression.
-- Consent success requires the CMP's own postcondition (site-written consent
-  signal + banner teardown by the site). All DOM-removal/hiding fallbacks are
-  gone.
-- `chrome.storage.local` is the sole runtime store, with a versioned schema,
-  legacy migration, corruption recovery, and reset. Spark KV is not used by
-  the extension. Training/sharing/Learn-dashboard UI was removed from the
-  shipped package.
-- Storage holds bounded aggregate counters only; nothing browsing-derived
-  enters sync storage; legacy URL-bearing history is purged on update. The
-  privacy policy was rewritten to the observed schema.
-- Icons exist (generated reproducibly), the manifest references only real
-  files, the build packages only runtime files, validates strictly, and emits
-  an inventory plus an archive hash.
-- CI (`.github/workflows/extension-ci.yml`) runs syntax checks, 70 unit
-  tests, icon reproducibility, build + strict package validation, and 33
-  real-Chromium integration tests (permission boundary with the built
-  extension loaded; CMP/sensitive/unknown fixtures against the shipped
-  runtime modules).
+- No static content scripts; per-origin dynamic registration and revocation.
+- One awaited consent pipeline; unknown/sensitive dialogs untouched.
+- Verified CMP postconditions only; five launch-candidate adapters (Quantcast
+  Accept-all only per BB-013; TrustArc/Osano/Cookie Notice removed per BB-014).
+- `chrome.storage.local` sole runtime store; aggregate counters; empty sync.
+- Icons, strict package validation, CI unit + browser suites.
+
+Issue #32 (this branch) completed the **claim-to-code audit** and provenance
+scaffolding. It could **not** complete live real-site rows: the agent/CI
+network cannot resolve external hostnames.
 
 ## Next Shippable Artifact
 
-Issue #32 execution: run `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29
-pre-filled candidate rows in `docs/REAL_SITE_TEST_MATRIX.md` (requires a
-human at a browser), then the final claim-to-code audit of the legacy
-planning documents (PRD and the alpha-era summaries still overstate
-capabilities).
+Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
+rows (and permission walkthrough) on a desktop Chrome profile, then tick PB-11
+(and remaining manual cells) with evidence paths.
 
 ## Blocking Release Gate
 
-`PB-11: Real-site acceptance` (requires human browser evidence). Gates PB-01
-through PB-10 have automated evidence linked in `docs/RELEASE_GATES.md` and
-await James's confirmation runs before their boxes are checked.
+`PB-11: Real-site acceptance` (live rows). PB-12 evidence is prepared in
+`docs/CLAIMS_AUDIT.md` awaiting James's review check. WS-01 draft copy and
+WS-04 build procedure are recorded; both need submission-time finalization.
 
 ## Known blockers
 
-- The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
-  user flows need manual matrix rows.
-- No real-site evidence yet; CMP support claims stay "candidate" until then.
-- PRD.md and other alpha-era documents still contain outdated claims (PB-12
-  is only partially closed).
+- Live real-site and Chrome permission-prompt flows need a human networked
+  browser (agent environment: no external DNS).
+- CMP support claims stay "candidate" until matrix live rows pass.
+- WS-03 screenshots not captured.
+- WS-04 final upload requires a git tag on a gates-green commit.
 
 ## Parking Lot
 
@@ -77,73 +58,31 @@ await James's confirmation runs before their boxes are checked.
 - Firefox and other browser support.
 - Remote telemetry, accounts, or synchronization.
 - Bananer characters, Learn dashboard, and animation polish (removed from the
-  shipped package in this change; code remains in git history).
+  shipped package; code remains in git history).
 - Quantcast Choice "Necessary only" support (needs a settings-panel adapter;
   see BB-013).
 
 ## Latest handoff
 
-- Artifact shipped: PR #37 — repo-wide eslint in CI on top of the merged v0.1
-  hardening rewrite: flat eslint config for eslint 10 (`eslint.config.js`
-  covering `src/`, the ES-module extension runtime, `scripts/`, and both test
-  suites), `.github/workflows/lint.yml`, and a clean `npm audit`.
-- Files or behavior changed: `eslint.config.js` and `.github/workflows/lint.yml`
-  added; 27 lint errors fixed in `src/` (unused bindings/imports, typing
-  cleanups — no behavior changes) and 3 in the rewritten runtime/tooling
-  (`lib/dom-probe.js` useless assignment, unused test arg, unused import in
-  `validate-package.mjs`); `package.json` security overrides bumped
-  (`postcss` 8.5.25, `minimatch` 3.1.5) plus `npm audit fix`, taking audit
-  findings from 4 to 0. Runtime behavior is unchanged; the merge kept main's
-  v0.1 runtime (including the deletion of `bananer.js`) intact.
-- Checks passed: `npm run lint` exits 0 (7 warnings, all the stock shadcn
-  fast-refresh warning); 70/70 unit tests; `npm audit` 0 vulnerabilities;
-  `npm run build` passes.
-- Manual evidence: Command output verified in the PR #37 session; the diff is
-  the record.
-- Remaining uncertainty: the lint workflow has not yet run on GitHub-hosted
-  runners (first run happens on this PR); `npm audit` is clean locally but is
-  deliberately not a CI check. The pre-existing `tsc --noEmit` errors in `src/`
-  (lucide-react deep imports) are untouched.
-- Release gate changed: None closed; PB-10 evidence extended with the
-  repo-wide eslint CI workflow.
-- Next shippable artifact: unchanged — issue #32 execution (run
-  `docs/REAL_SITE_TEST_PROTOCOL.md` against the matrix rows) and the final
-  claim audit.
-
-Previous handoff (PR #38, issue #32 prep):
-
-- Artifact shipped: issue #32 preparation — `docs/REAL_SITE_TEST_PROTOCOL.md`
-  (step-by-step manual procedure covering per-site rows, the
-  permission-boundary walkthrough, sensitive-dialog spot checks, storage
-  inspection, and evidence rules) and 29 pre-filled candidate rows in
-  `docs/REAL_SITE_TEST_MATRIX.md` with adapter-derived expected controls and
-  postconditions. Docs only; no runtime changes. The v0.1 runtime rewrite
-  (#24–#31) merged to `main` in PR #36 with CI green.
-
-Previous handoff (PR #36):
-
-- Artifact shipped: v0.1 permission-boundary, single-pipeline, verified-consent
-  rewrite of the extension runtime with tests, CI, packaging, and aligned
-  privacy/docs (issues #24–#31; #32 partially).
-- Files or behavior changed: `extension/` rewritten (manifest, background,
-  content, popup, new options page, new `lib/` modules); `bananer.js`,
-  `bananer-characters.js`, `learn.*`, `test-page.html` removed;
-  `scripts/generate-icons.mjs` and `scripts/validate-package.mjs` added;
-  `.github/workflows/extension-ci.yml` added; README, extension README,
-  privacy policy, decisions (BB-013, BB-014), release gates, and this file
-  updated.
-- Checks passed: 70/70 unit tests; 24/24 pipeline browser tests and 9/9
-  boundary browser tests in local Chromium; build + strict package validation
-  pass; icons reproduce byte-identically.
-- Manual evidence: none yet — real-site and grant-prompt flows are the next
-  artifact.
-- Remaining uncertainty: real-CMP behavior on live sites (fixtures mimic each
-  CMP's DOM and consent signals but are not the real deployments); Web Store
-  dashboard answers; PRD claim audit.
-- Release gate changed: PB-01…PB-10 evidence fields now link automated proof
-  (checkboxes intentionally left for James); PB-12 and WS-02 marked partial.
-- Next shippable artifact: completed `docs/REAL_SITE_TEST_MATRIX.md` rows and
-  the final claim audit (issue #32).
+- Artifact shipped: issue #32 documentation and evidence alignment — v0.1 PRD,
+  Store listing copy, user/quick-start guides, claims audit, release provenance
+  record, supersession of alpha-era root docs, matrix updates linking automated
+  permission/sensitive/fixture evidence, gate evidence fields for PB-11/12,
+  PB-05, WS-01, WS-04.
+- Files or behavior changed: docs and public markdown only; extension runtime
+  unchanged. Sample package hash recorded from `npm run build:extension` on
+  commit `c981cc8` →
+  `fc96dfa0c725e18475d635f68daefbdbac3b3ec3951965af4625b2b784273662`.
+- Checks passed: 70/70 unit tests; `npm run lint` 0 errors (7 pre-existing shadcn warnings); package validation pass; browser pipeline fixtures 24/24 Pass with system Chrome; boundary suite 2/9 Pass here (service-worker timeouts under headless system Chrome — CI uses Playwright Chromium; not a runtime regression from this docs-only change).
+- Manual evidence: live-site probe attempted; all origins `ERR_NAME_NOT_RESOLVED`.
+  No Pass/Fail live rows fabricated.
+- Remaining uncertainty: real CMP deployments; human grant/revoke UX; Store
+  screenshots.
+- Release gate changed: PB-12 / WS-01 / WS-04 evidence filled (checkboxes still
+  for James); PB-11 still open with honest partial prep; PB-05 evidence note
+  extended with matrix fixture Pass links.
+- Next shippable artifact: completed live rows in
+  `docs/REAL_SITE_TEST_MATRIX.md` via the protocol (human).
 
 ## Session handoff template
 
