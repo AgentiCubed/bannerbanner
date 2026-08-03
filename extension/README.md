@@ -39,7 +39,13 @@ npm run build
 cp extension/manifest.json dist/
 cp extension/background.js dist/
 cp extension/content.js dist/
+cp extension/bananer-characters.js dist/
+cp extension/bananer.js dist/
 cp extension/popup.html dist/
+cp extension/popup.js dist/
+cp extension/learn.html dist/
+cp extension/learn.js dist/
+cp extension/learn.css dist/
 
 # 3. Copy icons (must be generated first)
 mkdir -p dist/icons
@@ -85,7 +91,10 @@ dist/
 ├── manifest.json          # Extension manifest
 ├── background.js          # Background service worker
 ├── content.js            # Content script for banner detection
-├── popup.html            # Extension popup UI
+├── bananer-characters.js  # Shared bananer roster definitions
+├── bananer.js            # Bananer content script (document_start)
+├── popup.html / popup.js  # Toolbar popup (deploy a bananer)
+├── learn.html/js/css      # Learn dashboard (options page)
 ├── icons/                # Extension icons (16, 32, 48, 128px)
 ├── assets/               # Built assets from Vite
 └── [other build files]   # Compiled React app
@@ -111,6 +120,12 @@ dist/
    - [Forbes](https://www.forbes.com)
 4. Verify banner is detected and closed automatically
 5. Check statistics update correctly
+
+**Bananers (Learn):**
+1. Open the toolbar popup on a site and click **"Deploy a bananer here"** — grant the per-site permission when prompted
+2. Open `extension/test-page.html` (or any popup-heavy site) and spawn a popup — watch the bananer investigate and dismiss it
+3. Reload the page — the learned popup should be suppressed pre-paint and dismissed near-instantly
+4. Open the Learn dashboard (options page) to check the character roster, memory browser, and replays
 
 **Full test checklist:**
 
@@ -265,11 +280,13 @@ Complete guides are available:
 
 ## 📝 Notes
 
-- Content script uses vanilla JS (no React) for performance
+- Content scripts use vanilla JS (no React) for performance
 - Background script is a service worker (Manifest V3)
-- Popup uses the full React app
+- Toolbar popup and Learn dashboard are self-contained vanilla JS pages (extension CSP: no inline scripts)
+- Bananers only run on origins the user has opted into (`optional_host_permissions` granted at runtime)
 - Pattern library can be extended by users via the training UI
 - Stats are stored in `chrome.storage.local` and synced across devices via `chrome.storage.sync`
+- The bananer knowledge base lives in `chrome.storage.local` (capped at 300 fingerprints; `chrome.storage.sync` cross-device recall is a possible stretch goal, mindful of its size quotas)
 
 ## 🍌 Banana Town Features
 
