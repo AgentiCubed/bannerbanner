@@ -69,9 +69,9 @@ The patch must include opt-in, revocation, reload, update, and already-open-tab 
 
 ## Latest handoff
 
-- Artifact shipped: v0.1 operating pack and ordered GitHub issue backlog.
-- Files or behavior changed: Governance and release documents only; extension runtime code is unchanged.
-- Checks passed: All eight operating files were read back from `main`; issues #24 through #33 were created.
+- Artifact shipped: v0.1 operating pack, project-scoped Release Steward agent, and ordered GitHub issue backlog.
+- Files or behavior changed: Governance documents and `.codex/agents/bannerbanner-release-steward.toml`; extension runtime code is unchanged.
+- Checks passed: All nine operating and agent files were read back from `main`; issues #24 through #33 were created.
 - Manual evidence: Repository content and issue URLs verified through GitHub.
 - Remaining uncertainty: Every implementation and release gate remains open.
 - Release gate changed: None.
