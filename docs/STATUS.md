@@ -1,7 +1,8 @@
 # BannerBanner status
 
 Last updated: 2026-08-02  
-Baseline: `main` at `1fce8291bce211ab539c9968d24caa19799c722a`
+Code baseline reviewed: `main` at `1fce8291bce211ab539c9968d24caa19799c722a`  
+Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
 
@@ -29,7 +30,7 @@ Current critical mismatches include:
 
 ## Next Shippable Artifact
 
-A permission-boundary patch that removes static all-site content scripts and dynamically registers one unified script only for explicitly accepted origins.
+Issue #24: a permission-boundary patch that removes static all-site content scripts and dynamically registers one unified script only for explicitly accepted origins.
 
 The patch must include opt-in, revocation, reload, update, and already-open-tab tests.
 
@@ -39,13 +40,12 @@ The patch must include opt-in, revocation, reload, update, and already-open-tab 
 
 ## Active sequence
 
-1. Merge the v0.1 operating pack.
-2. Enforce the permission boundary.
-3. Unify the consent pipeline and remove generic destructive behavior.
-4. Implement verified supported-CMP actions.
-5. Connect settings and repair data handling.
-6. Complete packaging, CI, and browser safety testing.
-7. Run the real-site matrix and reconcile public claims.
+1. Implement issue #24 and enforce the permission boundary.
+2. Unify the consent pipeline and remove generic destructive behavior.
+3. Implement verified supported-CMP actions.
+4. Connect settings and repair data handling.
+5. Complete packaging, CI, and browser safety testing.
+6. Run the real-site matrix and reconcile public claims.
 
 ## Known blockers
 
@@ -66,6 +66,16 @@ The patch must include opt-in, revocation, reload, update, and already-open-tab 
 - Firefox and other browser support.
 - Remote telemetry, accounts, or synchronization.
 - Additional Bananer characters and animation polish.
+
+## Latest handoff
+
+- Artifact shipped: v0.1 operating pack and ordered GitHub issue backlog.
+- Files or behavior changed: Governance and release documents only; extension runtime code is unchanged.
+- Checks passed: All eight operating files were read back from `main`; issues #24 through #33 were created.
+- Manual evidence: Repository content and issue URLs verified through GitHub.
+- Remaining uncertainty: Every implementation and release gate remains open.
+- Release gate changed: None.
+- Next shippable artifact: Issue #24, genuine per-origin opt-in.
 
 ## Session handoff template
 
