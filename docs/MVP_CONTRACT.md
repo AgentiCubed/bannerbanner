@@ -1,6 +1,6 @@
 # BannerBanner v0.1 MVP contract
 
-Status: Canonical after merge  
+Status: Canonical  
 Target: Safe Chrome private beta  
 Baseline reviewed: `main` at `1fce8291bce211ab539c9968d24caa19799c722a`  
 Contract date: 2026-08-02
