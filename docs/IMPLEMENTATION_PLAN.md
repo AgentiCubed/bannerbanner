@@ -5,6 +5,8 @@ Execution rule: close the earliest unmet release gate before expanding scope.
 
 ## Work package 0: Operating pack
 
+Status: Complete.
+
 Goal: establish one durable source of truth.
 
 Deliverables:
@@ -17,7 +19,7 @@ Deliverables:
 - real-site evidence matrix; and
 - Release Steward definition.
 
-Complete when the operating-pack pull request is reviewed and merged.
+Completed on `main` on 2026-08-02.
 
 ## Work package 1: Enforce genuine per-site opt-in
 
@@ -174,10 +176,7 @@ Closes: `PB-10`.
 
 ## Work package 8: Prove real-site behavior and align claims
 
-Issue titles:
-
-- `P1: Complete the 20 to 30 site acceptance matrix`
-- `P1: Align README, PRD, manifest, privacy policy, and listing with v0.1`
+Issue title: `P1: Complete real-site acceptance and align all v0.1 claims`
 
 Tasks:
 
