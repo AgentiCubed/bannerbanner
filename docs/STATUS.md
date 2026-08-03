@@ -46,10 +46,11 @@ replaces the alpha runtime:
 
 ## Next Shippable Artifact
 
-Issue #32: real-site acceptance — 20 to 30 live sites across the claimed CMP
-set, both modes per claimed CMP, the manual grant/revoke permission cases,
-and the final claim-to-code audit of the legacy planning documents (PRD and
-the alpha-era summaries still overstate capabilities).
+Issue #32 execution: run `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29
+pre-filled candidate rows in `docs/REAL_SITE_TEST_MATRIX.md` (requires a
+human at a browser), then the final claim-to-code audit of the legacy
+planning documents (PRD and the alpha-era summaries still overstate
+capabilities).
 
 ## Blocking Release Gate
 
@@ -105,8 +106,44 @@ await James's confirmation runs before their boxes are checked.
   (lucide-react deep imports) are untouched.
 - Release gate changed: None closed; PB-10 evidence extended with the
   repo-wide eslint CI workflow.
-- Next shippable artifact: unchanged — completed `docs/REAL_SITE_TEST_MATRIX.md`
-  rows and the final claim audit (issue #32).
+- Next shippable artifact: unchanged — issue #32 execution (run
+  `docs/REAL_SITE_TEST_PROTOCOL.md` against the matrix rows) and the final
+  claim audit.
+
+Previous handoff (PR #38, issue #32 prep):
+
+- Artifact shipped: issue #32 preparation — `docs/REAL_SITE_TEST_PROTOCOL.md`
+  (step-by-step manual procedure covering per-site rows, the
+  permission-boundary walkthrough, sensitive-dialog spot checks, storage
+  inspection, and evidence rules) and 29 pre-filled candidate rows in
+  `docs/REAL_SITE_TEST_MATRIX.md` with adapter-derived expected controls and
+  postconditions. Docs only; no runtime changes. The v0.1 runtime rewrite
+  (#24–#31) merged to `main` in PR #36 with CI green.
+
+Previous handoff (PR #36):
+
+- Artifact shipped: v0.1 permission-boundary, single-pipeline, verified-consent
+  rewrite of the extension runtime with tests, CI, packaging, and aligned
+  privacy/docs (issues #24–#31; #32 partially).
+- Files or behavior changed: `extension/` rewritten (manifest, background,
+  content, popup, new options page, new `lib/` modules); `bananer.js`,
+  `bananer-characters.js`, `learn.*`, `test-page.html` removed;
+  `scripts/generate-icons.mjs` and `scripts/validate-package.mjs` added;
+  `.github/workflows/extension-ci.yml` added; README, extension README,
+  privacy policy, decisions (BB-013, BB-014), release gates, and this file
+  updated.
+- Checks passed: 70/70 unit tests; 24/24 pipeline browser tests and 9/9
+  boundary browser tests in local Chromium; build + strict package validation
+  pass; icons reproduce byte-identically.
+- Manual evidence: none yet — real-site and grant-prompt flows are the next
+  artifact.
+- Remaining uncertainty: real-CMP behavior on live sites (fixtures mimic each
+  CMP's DOM and consent signals but are not the real deployments); Web Store
+  dashboard answers; PRD claim audit.
+- Release gate changed: PB-01…PB-10 evidence fields now link automated proof
+  (checkboxes intentionally left for James); PB-12 and WS-02 marked partial.
+- Next shippable artifact: completed `docs/REAL_SITE_TEST_MATRIX.md` rows and
+  the final claim audit (issue #32).
 
 ## Session handoff template
 
