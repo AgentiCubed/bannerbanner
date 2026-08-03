@@ -55,7 +55,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
 - [ ] **PB-10: Automated release checks**
   - Build, lint, unit, browser integration, manifest, and package checks run in CI and pass.
   - Safety regressions are required checks.
-  - Evidence: Not yet provided.
+  - Evidence: Partial, gate remains open. PR #37 made `npm run lint` runnable (flat eslint config, 0 errors) and brought `npm audit` to 0 vulnerabilities, verified locally only. No CI runs any check yet; unit, browser integration, manifest, and package checks do not exist.
 
 - [ ] **PB-11: Real-site acceptance**
   - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.

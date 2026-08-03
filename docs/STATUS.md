@@ -1,6 +1,6 @@
 # BannerBanner status
 
-Last updated: 2026-08-02  
+Last updated: 2026-08-03  
 Code baseline reviewed: `main` at `1fce8291bce211ab539c9968d24caa19799c722a`  
 Operating pack: committed to `main` on 2026-08-02
 
@@ -69,12 +69,12 @@ The patch must include opt-in, revocation, reload, update, and already-open-tab 
 
 ## Latest handoff
 
-- Artifact shipped: v0.1 operating pack, project-scoped Release Steward agent, and ordered GitHub issue backlog.
-- Files or behavior changed: Governance documents and `.codex/agents/bannerbanner-release-steward.toml`; extension runtime code is unchanged.
-- Checks passed: All nine operating and agent files were read back from `main`; issues #24 through #33 were created.
-- Manual evidence: Repository content and issue URLs verified through GitHub.
-- Remaining uncertainty: Every implementation and release gate remains open.
-- Release gate changed: None.
+- Artifact shipped: PR #37 — working `npm run lint` (flat eslint config for eslint 10 covering `src/` and `extension/`) and a clean `npm audit`.
+- Files or behavior changed: New `eslint.config.js`; 27 lint errors fixed across 11 files (unused bindings, imports, and typing cleanups — no behavior changes); `package.json` security overrides bumped (`postcss` 8.5.25, `minimatch` 3.1.5) plus `npm audit fix`, taking audit findings from 4 to 0. Extension runtime behavior is unchanged.
+- Checks passed: `npm run lint` exits 0 (7 warnings, all the standard shadcn fast-refresh warning); `npm audit` reports 0 vulnerabilities; `npm run build` passes; `tsc --noEmit` output is byte-identical before and after the change.
+- Manual evidence: Command output verified in the PR #37 session; the diff is the record.
+- Remaining uncertainty: Lint and audit run locally only — no CI executes them yet, and there are no unit, browser-integration, manifest, or package checks, so PB-10 remains open. The 36 pre-existing `tsc` errors (lucide-react deep imports) are untouched.
+- Release gate changed: None closed; PB-10 evidence updated to record partial progress (local lint and audit green).
 - Next shippable artifact: Issue #24, genuine per-origin opt-in.
 
 ## Session handoff template
