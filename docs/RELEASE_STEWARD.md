@@ -8,6 +8,9 @@ Description: Moves BannerBanner from functional alpha to a safe Chrome-extension
 
 Required capability: Read and write access to `JamesTRichmond/bannerbanner` through GitHub.
 
+Project-scoped Codex agent: `.codex/agents/bannerbanner-release-steward.toml`  
+Internal agent name: `bannerbanner_release_steward`
+
 The agent is the doorway. The repository is the memory.
 
 ## Ready-to-use agent instructions
@@ -43,6 +46,14 @@ Copy the following into the agent's instruction field:
 Use:
 
 > Read the BannerBanner operating files, inspect current main, and report Current Project, Current Mode, Next Shippable Artifact, and Blocking Release Gate. Do not implement anything until you show me the evidence behind that recommendation.
+
+## Using the project-scoped Codex agent
+
+Ask Codex:
+
+> Delegate this BannerBanner task to `bannerbanner_release_steward`: read the operating files, inspect current main, and report the next shippable artifact and blocking release gate.
+
+The file is available when the repository is opened or synced in a Codex client that supports project-scoped custom agents. The root `AGENTS.md` still supplies the durable rules even when a surface does not expose named-agent spawning.
 
 ## Agent setup notes
 
