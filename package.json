@@ -7,6 +7,7 @@
         "dev": "vite",
         "kill": "fuser -k 5000/tcp",
         "build": "tsc -b --noCheck && vite build",
+        "build:extension": "npm run build && bash extension/build-extension.sh",
         "lint": "eslint .",
         "optimize": "vite optimize",
         "preview": "vite preview"

@@ -1,6 +1,8 @@
 # BannerBanner - Privacy Banner Preference Manager
 
-A privacy-first tool that automatically configures cookie consent banners to user preferences, defaulting to "necessary only" cookies to protect user privacy while streamlining the browsing experience.
+A privacy-first **browser extension** that automatically detects and closes cookie consent banners according to user preferences, defaulting to "necessary only" cookies to protect user privacy while streamlining the browsing experience.
+
+**🎉 MVP STATUS: ACHIEVED** - Iteration 6 complete. Extension is fully functional and ready for Chrome Web Store submission after adding icons.
 
 **Experience Qualities**:
 1. **Protective** - The app should feel like a guardian of user privacy, with clear emphasis on safety and control
