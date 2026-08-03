@@ -46,10 +46,11 @@ replaces the alpha runtime:
 
 ## Next Shippable Artifact
 
-Issue #32: real-site acceptance — 20 to 30 live sites across the claimed CMP
-set, both modes per claimed CMP, the manual grant/revoke permission cases,
-and the final claim-to-code audit of the legacy planning documents (PRD and
-the alpha-era summaries still overstate capabilities).
+Issue #32 execution: run `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29
+pre-filled candidate rows in `docs/REAL_SITE_TEST_MATRIX.md` (requires a
+human at a browser), then the final claim-to-code audit of the legacy
+planning documents (PRD and the alpha-era summaries still overstate
+capabilities).
 
 ## Blocking Release Gate
 
@@ -81,6 +82,16 @@ await James's confirmation runs before their boxes are checked.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: issue #32 preparation — `docs/REAL_SITE_TEST_PROTOCOL.md`
+  (step-by-step manual procedure covering per-site rows, the
+  permission-boundary walkthrough, sensitive-dialog spot checks, storage
+  inspection, and evidence rules) and 29 pre-filled candidate rows in
+  `docs/REAL_SITE_TEST_MATRIX.md` with adapter-derived expected controls and
+  postconditions. Docs only; no runtime changes. The v0.1 runtime rewrite
+  (#24–#31) merged to `main` in PR #36 with CI green.
+
+Previous handoff (PR #36):
 
 - Artifact shipped: v0.1 permission-boundary, single-pipeline, verified-consent
   rewrite of the extension runtime with tests, CI, packaging, and aligned
