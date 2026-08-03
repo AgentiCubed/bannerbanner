@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ShieldCheck, Gear, Eye, Info, ListChecks, GraduationCap, Power, Palette } from '@phosphor-icons/react';
+import { ShieldCheck, Gear, Eye, Info, ListChecks, GraduationCap, Power, Palette, FlaskIcon } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { ThemeProvider, useTheme } from '@/components/ThemeProvider';
 import { ThemeSelector } from '@/components/ThemeSelector';
@@ -17,6 +17,7 @@ import { BananaTownCameo } from '@/components/BananaTownCameo';
 import { LearnBannerPattern } from '@/components/LearnBannerPattern';
 import { GhostBannerPreview } from '@/components/GhostBannerPreview';
 import { BannerTrainerEnhanced } from '@/components/BannerTrainerEnhanced';
+import { RealWorldTester } from '@/components/RealWorldTester';
 import { useAutoBannerHandler, type BannerClosedEvent } from '@/hooks/use-auto-banner-handler';
 import { BANNER_PATTERNS } from '@/lib/banner-patterns';
 import type { PreferenceLevel, CookieCategories, UserPreferences } from '@/lib/types';
@@ -129,7 +130,7 @@ function AppContent() {
           />
 
           <Tabs defaultValue="settings" className="mt-8">
-            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-6">
+            <TabsList className="grid w-full grid-cols-3 sm:grid-cols-7 mb-6">
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Gear size={18} weight="duotone" />
                 <span className="hidden sm:inline">Settings</span>
@@ -149,6 +150,10 @@ function AppContent() {
               <TabsTrigger value="preview" className="flex items-center gap-2">
                 <Eye size={18} weight="duotone" />
                 <span className="hidden sm:inline">Preview</span>
+              </TabsTrigger>
+              <TabsTrigger value="testing" className="flex items-center gap-2">
+                <FlaskIcon size={18} weight="duotone" />
+                <span className="hidden sm:inline">Testing</span>
               </TabsTrigger>
               <TabsTrigger value="info" className="flex items-center gap-2">
                 <Info size={18} weight="duotone" />
@@ -263,6 +268,12 @@ function AppContent() {
                 onSharePubliclyChange={(value: boolean) => setSharePublicly(value)}
               />
             </div>
+          </TabsContent>
+
+          <TabsContent value="testing">
+            <Card className="p-6">
+              <RealWorldTester />
+            </Card>
           </TabsContent>
 
           <TabsContent value="info">
