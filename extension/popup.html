@@ -1,132 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BannerBanner — Bananers</title>
-    <style>
-        :root {
-            --yellow: #fbbf24;
-            --yellow-dark: #d97706;
-            --ink: #1f2937;
-            --paper: #fffbeb;
-        }
-        * { box-sizing: border-box; }
-        body {
-            width: 340px;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--paper);
-            color: var(--ink);
-        }
-        header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 16px 10px;
-            border-bottom: 2px solid var(--yellow);
-        }
-        header .logo { font-size: 24px; }
-        header h1 { font-size: 15px; margin: 0; flex: 1; }
-        main { padding: 14px 16px 16px; }
-        .site {
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 10px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .site strong { color: var(--ink); }
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; }
-        .status.on .dot { background: #16a34a; }
-        button {
-            display: block;
-            width: 100%;
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-        button:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-        .primary { background: var(--yellow); color: var(--ink); }
-        .secondary { background: #fff; border: 2px solid var(--yellow); color: var(--yellow-dark); }
-        .danger { background: #fff; border: 2px solid #fca5a5; color: #b91c1c; }
-        .result {
-            min-height: 18px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--yellow-dark);
-            margin: 4px 0 8px;
-            text-align: center;
-        }
-        .stats {
-            display: flex;
-            gap: 8px;
-            margin: 10px 0;
-        }
-        .stat {
-            flex: 1;
-            background: #fff;
-            border: 1px solid #fde68a;
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-        }
-        .stat .num { font-size: 18px; font-weight: 800; }
-        .stat .label { font-size: 10px; color: #6b7280; }
-        footer {
-            border-top: 1px solid #fde68a;
-            padding: 10px 16px;
-            text-align: center;
-        }
-        footer a {
-            color: var(--yellow-dark);
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-        }
-        .hidden { display: none; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BannerBanner</title>
+  <style>
+    :root { --yellow: #fbbf24; --yellow-dark: #b45309; --ink: #1f2937; --paper: #fffbeb; --muted: #6b7280; }
+    * { box-sizing: border-box; }
+    body { width: 320px; margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--paper); color: var(--ink); }
+    header { display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; border-bottom: 2px solid var(--yellow); }
+    header .logo { font-size: 22px; }
+    header h1 { font-size: 15px; margin: 0; }
+    main { padding: 14px 16px 16px; }
+    .site { font-size: 12px; color: var(--muted); margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .site strong { color: var(--ink); }
+    .status { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; }
+    .status.on .dot { background: #16a34a; }
+    button { display: block; width: 100%; border: none; border-radius: 10px; padding: 11px; margin-bottom: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .primary { background: var(--yellow); color: var(--ink); }
+    .danger { background: #fff; border: 2px solid #fca5a5; color: #b91c1c; }
+    .result { min-height: 16px; font-size: 12px; font-weight: 600; color: var(--yellow-dark); margin: 2px 0 10px; text-align: center; }
+    .field { margin: 12px 0; }
+    .field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    select { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #fde68a; font-size: 13px; background: #fff; }
+    .row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; margin: 10px 0; }
+    .stats { display: flex; gap: 8px; margin: 12px 0 6px; }
+    .stat { flex: 1; background: #fff; border: 1px solid #fde68a; border-radius: 10px; padding: 8px; text-align: center; }
+    .stat .num { font-size: 18px; font-weight: 800; }
+    .stat .label { font-size: 10px; color: var(--muted); }
+    footer { border-top: 1px solid #fde68a; padding: 10px 16px; text-align: center; }
+    footer a { color: var(--yellow-dark); font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-    <header>
-        <span class="logo">🍌</span>
-        <h1>BannerBanner Bananers</h1>
-    </header>
-    <main>
-        <div class="site">Site: <strong id="site-host">…</strong></div>
-        <div class="status" id="site-status"><span class="dot"></span><span id="site-status-text">Checking…</span></div>
+  <header><span class="logo">🍌</span><h1>BannerBanner</h1></header>
+  <main>
+    <div class="site">Site: <strong id="site-host">…</strong></div>
+    <div class="status" id="site-status"><span class="dot"></span><span id="status-text">Checking…</span></div>
 
-        <button id="deploy-btn" class="primary">🍌 Deploy a bananer here</button>
-        <div class="result" id="deploy-result"></div>
+    <button id="authorize-btn" class="primary">Enable on this site</button>
+    <button id="revoke-btn" class="danger hidden">Disable on this site</button>
+    <div class="result" id="result"></div>
 
-        <button id="remove-site-btn" class="danger hidden">Recall bananers from this site</button>
+    <div class="field">
+      <label for="mode">Consent preference</label>
+      <select id="mode">
+        <option value="necessary">Necessary only (reject non-essential)</option>
+        <option value="all">Accept all</option>
+      </select>
+    </div>
 
-        <div class="stats">
-            <div class="stat"><div class="num" id="stat-fingerprints">0</div><div class="label">Popups learned</div></div>
-            <div class="stat"><div class="num" id="stat-dismissals">0</div><div class="label">Dismissals</div></div>
-            <div class="stat"><div class="num" id="stat-sites">0</div><div class="label">Sites protected</div></div>
-        </div>
-    </main>
-    <footer>
-        <a href="#" id="open-learn">🎓 Open the Learn dashboard →</a>
-    </footer>
-    <script src="bananer-characters.js"></script>
-    <script src="popup.js"></script>
+    <div class="row"><span>Automatic handling</span>
+      <input type="checkbox" id="enabled" />
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="stat-success">0</div><div class="label">Verified</div></div>
+      <div class="stat"><div class="num" id="stat-sites">0</div><div class="label">Sites enabled</div></div>
+    </div>
+  </main>
+  <footer><a id="open-options">Settings &amp; privacy →</a></footer>
+  <script type="module" src="popup.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 # BannerBanner status
 
-Last updated: 2026-08-02  
-Code baseline reviewed: `main` at `1fce8291bce211ab539c9968d24caa19799c722a`  
+Last updated: 2026-08-03  
+Code baseline reviewed: `main` at `8d20396` plus the v0.1 hardening branch  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -14,46 +14,56 @@ Release hardening and scope correction.
 
 ## Current truth
 
-BannerBanner is a functional alpha with Manifest V3 scaffolding, an options page, optional host-permission declarations, content scripts, and local learning behavior. It is not yet a safe MVP.
+The v0.1 hardening branch (issues #24–#31, plus the automatable parts of #32)
+replaces the alpha runtime:
 
-Current critical mismatches include:
-
-- static all-site content-script injection despite the per-site opt-in claim;
-- two independent detection and dismissal engines;
-- automatic destructive handling of unknown dialogs;
-- DOM removal being recorded as cookie-consent success;
-- extension settings split between Spark KV and `chrome.storage`;
-- a training flow that does not capture a usable extension pattern;
-- URL-bearing history and privacy-policy contradictions;
-- absent release-grade tests and CI; and
-- missing or dead package assets.
+- No static content scripts remain; access is per-origin, dynamically
+  registered, reconciled against actual grants, and revocable (with a stop
+  signal to open tabs).
+- One awaited consent pipeline (`extension/lib/pipeline.js`) owns detect →
+  classify → decide → execute → verify → report. The second engine
+  (`bananer.js`) and the alpha `content.js` engine were removed.
+- Unknown and sensitive dialogs receive no action of any kind; each protected
+  class has a fixture regression.
+- Consent success requires the CMP's own postcondition (site-written consent
+  signal + banner teardown by the site). All DOM-removal/hiding fallbacks are
+  gone.
+- `chrome.storage.local` is the sole runtime store, with a versioned schema,
+  legacy migration, corruption recovery, and reset. Spark KV is not used by
+  the extension. Training/sharing/Learn-dashboard UI was removed from the
+  shipped package.
+- Storage holds bounded aggregate counters only; nothing browsing-derived
+  enters sync storage; legacy URL-bearing history is purged on update. The
+  privacy policy was rewritten to the observed schema.
+- Icons exist (generated reproducibly), the manifest references only real
+  files, the build packages only runtime files, validates strictly, and emits
+  an inventory plus an archive hash.
+- CI (`.github/workflows/extension-ci.yml`) runs syntax checks, 70 unit
+  tests, icon reproducibility, build + strict package validation, and 33
+  real-Chromium integration tests (permission boundary with the built
+  extension loaded; CMP/sensitive/unknown fixtures against the shipped
+  runtime modules).
 
 ## Next Shippable Artifact
 
-Issue #24: a permission-boundary patch that removes static all-site content scripts and dynamically registers one unified script only for explicitly accepted origins.
-
-The patch must include opt-in, revocation, reload, update, and already-open-tab tests.
+Issue #32: real-site acceptance — 20 to 30 live sites across the claimed CMP
+set, both modes per claimed CMP, the manual grant/revoke permission cases,
+and the final claim-to-code audit of the legacy planning documents (PRD and
+the alpha-era summaries still overstate capabilities).
 
 ## Blocking Release Gate
 
-`PB-01: Genuine per-origin opt-in`.
-
-## Active sequence
-
-1. Implement issue #24 and enforce the permission boundary.
-2. Unify the consent pipeline and remove generic destructive behavior.
-3. Implement verified supported-CMP actions.
-4. Connect settings and repair data handling.
-5. Complete packaging, CI, and browser safety testing.
-6. Run the real-site matrix and reconcile public claims.
+`PB-11: Real-site acceptance` (requires human browser evidence). Gates PB-01
+through PB-10 have automated evidence linked in `docs/RELEASE_GATES.md` and
+await James's confirmation runs before their boxes are checked.
 
 ## Known blockers
 
-- No release-grade automated test harness.
-- No committed real-site verification evidence.
-- Current extension package references missing assets.
-- Current documentation overstates implemented capabilities.
-- Chrome Web Store disclosures do not yet match behavior.
+- The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
+  user flows need manual matrix rows.
+- No real-site evidence yet; CMP support claims stay "candidate" until then.
+- PRD.md and other alpha-era documents still contain outdated claims (PB-12
+  is only partially closed).
 
 ## Parking Lot
 
@@ -65,17 +75,35 @@ The patch must include opt-in, revocation, reload, update, and already-open-tab 
 - Granular consent categories.
 - Firefox and other browser support.
 - Remote telemetry, accounts, or synchronization.
-- Additional Bananer characters and animation polish.
+- Bananer characters, Learn dashboard, and animation polish (removed from the
+  shipped package in this change; code remains in git history).
+- Quantcast Choice "Necessary only" support (needs a settings-panel adapter;
+  see BB-013).
 
 ## Latest handoff
 
-- Artifact shipped: v0.1 operating pack, project-scoped Release Steward agent, and ordered GitHub issue backlog.
-- Files or behavior changed: Governance documents and `.codex/agents/bannerbanner-release-steward.toml`; extension runtime code is unchanged.
-- Checks passed: All nine operating and agent files were read back from `main`; issues #24 through #33 were created.
-- Manual evidence: Repository content and issue URLs verified through GitHub.
-- Remaining uncertainty: Every implementation and release gate remains open.
-- Release gate changed: None.
-- Next shippable artifact: Issue #24, genuine per-origin opt-in.
+- Artifact shipped: v0.1 permission-boundary, single-pipeline, verified-consent
+  rewrite of the extension runtime with tests, CI, packaging, and aligned
+  privacy/docs (issues #24–#31; #32 partially).
+- Files or behavior changed: `extension/` rewritten (manifest, background,
+  content, popup, new options page, new `lib/` modules); `bananer.js`,
+  `bananer-characters.js`, `learn.*`, `test-page.html` removed;
+  `scripts/generate-icons.mjs` and `scripts/validate-package.mjs` added;
+  `.github/workflows/extension-ci.yml` added; README, extension README,
+  privacy policy, decisions (BB-013, BB-014), release gates, and this file
+  updated.
+- Checks passed: 70/70 unit tests; 24/24 pipeline browser tests and 9/9
+  boundary browser tests in local Chromium; build + strict package validation
+  pass; icons reproduce byte-identically.
+- Manual evidence: none yet — real-site and grant-prompt flows are the next
+  artifact.
+- Remaining uncertainty: real-CMP behavior on live sites (fixtures mimic each
+  CMP's DOM and consent signals but are not the real deployments); Web Store
+  dashboard answers; PRD claim audit.
+- Release gate changed: PB-01…PB-10 evidence fields now link automated proof
+  (checkboxes intentionally left for James); PB-12 and WS-02 marked partial.
+- Next shippable artifact: completed `docs/REAL_SITE_TEST_MATRIX.md` rows and
+  the final claim audit (issue #32).
 
 ## Session handoff template
 

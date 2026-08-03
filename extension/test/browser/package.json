@@ -1,0 +1,11 @@
+{
+  "name": "bannerbanner-browser-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test specs/*.spec.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0"
+  }
+}

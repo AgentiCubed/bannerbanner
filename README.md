@@ -1,140 +1,94 @@
-# 🍌 BannerBanner - Privacy Banner Manager
+# 🍌 BannerBanner
 
-**Automatically manage cookie consent banners with your privacy preferences.**
+**Applies your cookie-consent choice on websites you explicitly enable.**
 
-BannerBanner is a browser extension that detects and closes cookie banners on websites, applying your privacy preferences automatically. No more clicking through tedious consent dialogs!
+BannerBanner v0.1 is a per-site opt-in Chrome extension for cookie-consent
+banners. On sites you enable, it recognizes a small allowlist of
+consent-management platforms (CMPs), clicks that platform's own
+"necessary only" or "accept all" control according to your preference,
+verifies the platform recorded the choice, and reports the outcome locally.
+Everything else on a page is left alone.
 
-## ✨ Features
+The authoritative scope, safety rules, and release process live in the
+operating pack: [`docs/MVP_CONTRACT.md`](docs/MVP_CONTRACT.md),
+[`docs/RELEASE_GATES.md`](docs/RELEASE_GATES.md),
+[`docs/DECISIONS.md`](docs/DECISIONS.md).
 
-- 🛡️ **Automatic Banner Detection** - Recognizes 8+ major cookie consent frameworks
-- 🎯 **Privacy-First Defaults** - Starts with "Necessary Only" to protect your privacy
-- 🎨 **Beautiful Themes** - Light, Dark, Banana, and Dark Banana themes
-- 🍌 **Delightful Celebrations** - Random banana animations when banners are closed
-- 📊 **Statistics Dashboard** - Track how many banners you've avoided
-- 🧪 **Pattern Training** - Teach BannerBanner to recognize new banner types
-- ⚙️ **Advanced Mode** - Granular control over individual cookie categories
-- 🍌🎓 **Bananers** - Learning companions that investigate, dismiss, and remember popups (see below)
+## ✨ What v0.1 does
 
-## 🚀 Quick Start
+- 🔒 **Genuine per-site opt-in** — no static content scripts; the extension
+  starts with access to zero websites. Enabling a site requests Chrome's
+  permission for that one origin and dynamically registers the content script
+  for it. Disabling a site (or revoking in `chrome://extensions`) removes the
+  registration and stops activity in open tabs.
+- 🎯 **Two consent modes** — *Necessary only* (default) or *Accept all*.
+- ✅ **Verified outcomes** — a banner counts as handled only after the CMP's
+  own control was clicked *and* its consent signal (cookie/storage write plus
+  banner teardown by the site) is observed. Hiding or removing a banner is
+  never treated as consent.
+- 🛡️ **Hard safety line** — unknown dialogs get no automatic action of any
+  kind. Login, checkout, payment, security, age-verification,
+  session-expiration, and unsaved-work dialogs are never touched, enforced by
+  a regression suite.
+- 📊 **Local aggregate counters only** — no URLs, page titles, content, or
+  browsing history are stored; nothing enters sync storage; nothing is
+  transmitted anywhere. See the
+  [privacy policy](extension/PRIVACY_POLICY.md).
+- 🍌 **Optional celebration** — a small banana animation, only after a
+  verified success.
 
-### Development
+## 🚫 What v0.1 deliberately does not do
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+Newsletter/ad/paywall popup removal, generic modal dismissal, user-trained
+patterns, community pattern sharing, granular per-category consent,
+cross-browser support, and any remote service are all out of scope — see the
+[MVP contract](docs/MVP_CONTRACT.md). The GitHub Spark web app under `src/`
+is a design playground and is not part of the extension runtime.
 
-2. **Run locally (web app mode):**
-   ```bash
-   npm run dev
-   ```
+## 🎯 Supported CMPs (launch candidates)
 
-3. **Build the browser extension:**
-   ```bash
-   npm run build:extension
-   ```
+OneTrust, Cookiebot, CookieYes, Usercentrics (both modes), and Quantcast
+Choice (*Accept all* only). Each has fixture-tested adapters with verified
+postconditions; public support claims follow real-site evidence in
+[`docs/REAL_SITE_TEST_MATRIX.md`](docs/REAL_SITE_TEST_MATRIX.md).
 
-4. **Load in Chrome:**
-   - Open `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked"
-   - Select the `dist/` folder
+## 🚀 Quick start
 
-### Testing
+```bash
+# Build + validate the extension package
+npm run build:extension
 
-Visit any website with a cookie banner (e.g., bbc.com, cnn.com) and watch BannerBanner automatically close it based on your preferences!
-
-## 📖 Documentation
-
-- **[Extension MVP Guide](EXTENSION_MVP.md)** - How the browser extension works
-- **[Extension README](extension/README.md)** - Build and deployment instructions
-- **[PRD](PRD.md)** - Product requirements and design decisions
-- **[MVP Assessment](MVP_ASSESSMENT.md)** - Detailed feature analysis
-- **[Banana Town Docs](BANANA_TOWN_DOCS.md)** - Theme implementation details
-
-## 🎯 Supported Banner Frameworks
-
-- ✅ Cookiebot
-- ✅ OneTrust
-- ✅ CookieYes
-- ✅ Quantcast Choice
-- ✅ Usercentrics
-- ✅ TrustArc
-- ✅ Osano
-- ✅ Cookie Notice
-
-Users can train BannerBanner to recognize additional frameworks through the built-in training wizard.
-
-## 🍌🎓 Bananers — Popup-Dismissing Learning Companions
-
-The **Learn** section of the extension introduces *bananers*: anthropomorphized banana characters you deploy to investigate and dismiss popups (cookie consent modals, newsletter interstitials, ad overlays) — and learn from every takedown.
-
-- **Opt-in per site** — bananers only run on sites you invite them to. Open the toolbar popup on any site and click *"Deploy a bananer here"*; host permission is requested for that origin only (no blanket `<all_urls>` access).
-- **Investigate & dismiss** — a content script injected at `document_start` detects popups heuristically, inspects their DOM/CSS/listeners, picks a dismissal strategy (reject/close/click, or peel-off removal), and acts it out with an animated character and educational captions.
-- **Learn & remember** — every dismissal is fingerprinted into a knowledge base (`chrome.storage.local`). On repeat visits, known popups are suppressed *before they even paint* and dismissed near-instantly.
-- **Learn dashboard** — the options page hosts the character roster (XP and levels per bananer), a per-banner-type memory browser with animated replays of past takedowns, and preferences (auto-dismiss, character visibility, captions, pre-paint suppression) plus opted-in site management.
-
-Meet the crew: 🍌🔍 Peelock Holmes (cookie consent), 🍌📰 Scoop (newsletters), 🍌💥 Splat (ad overlays), and 🍌🎓 Professor Nana (mystery popups).
-
-## 🛠️ Tech Stack
-
-- **React 19** - UI framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **Vite** - Build tool
-- **shadcn/ui** - Component library
-- **Framer Motion** - Animations
-- **Chrome Extension API** - Browser integration
-
-## 🍌 About Banana Town
-
-BannerBanner features a delightful "Banana Town" theme with 8 unique banana character animations:
-
-1. 🍌💼 Zipline Banana
-2. 🍌👔 Lawyer Banana
-3. 🍌🚲 Bicycle Banana
-4. 🍌📰 Newspaper Banana
-5. 🍌🍌🍌 Dance Troupe
-6. 🍌🔍 Detective Banana
-7. 🍌🪑🐦 Park Bench Banana
-8. 🍌👨‍🍳 Chef Banana
-
-These playful animations appear when banners are successfully closed, making privacy protection fun!
-
-## 📦 Project Structure
-
-```
-.
-├── src/                    # React application
-│   ├── components/         # UI components
-│   ├── hooks/              # React hooks
-│   └── lib/                # Utilities and types
-├── extension/              # Browser extension files
-│   ├── manifest.json       # Extension configuration
-│   ├── background.js       # Service worker
-│   ├── content.js          # Banner detection script
-│   └── build-extension.sh  # Build script
-└── dist/                   # Built extension (after build)
+# Load in Chrome
+#   chrome://extensions → Developer mode → Load unpacked → select dist-extension/
 ```
 
-## 🤝 Contributing
+Then visit a site with a supported cookie banner, click the BannerBanner
+toolbar icon, and choose **Enable on this site**.
 
-Contributions welcome! Areas for improvement:
+### Tests
 
-- [ ] Add more banner patterns
-- [ ] Firefox support (Manifest V2)
-- [ ] Automated pattern testing
-- [ ] Community pattern sharing backend
-- [ ] Per-site preference overrides
-- [ ] More banana animations! 🍌
+```bash
+npm run test:extension            # unit tests (no dependencies, node --test)
+npm run validate:extension        # manifest/package validation
+cd extension/test/browser && npm install && npm test   # real-Chromium tests
+```
+
+CI runs all of these on every pull request
+(`.github/workflows/extension-ci.yml`).
+
+## 📦 Project structure
+
+```
+extension/           The Chrome extension (see extension/README.md)
+  lib/               Unit-tested core modules (pipeline, adapters, registry…)
+  test/unit/         node --test suites
+  test/browser/      Playwright integration tests + CMP/sensitive fixtures
+scripts/             Icon generation + package validation
+docs/                Operating pack: contract, decisions, gates, status, matrix
+src/                 GitHub Spark web app (not part of the extension runtime)
+```
 
 ## 📄 License
 
-The Spark Template files and resources from GitHub are licensed under the terms of the MIT license, Copyright GitHub, Inc.
-
-## 🧹 Just Exploring?
-
-No problem! If you were just checking things out and don't need to keep this code:
-
-- Simply delete your Spark
-- Everything will be cleaned up — no traces left behind
+The Spark Template files and resources from GitHub are licensed under the
+terms of the MIT license, Copyright GitHub, Inc.

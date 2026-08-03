@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Quantcast Choice fixture</title></head>
+<body>
+<main><h1>News</h1></main>
+<div id="qc-cmp2-ui" style="position:fixed;top:15%;left:15%;width:70%;background:#fff;border:1px solid #777;padding:24px;z-index:9999;">
+  <p>We and our partners use cookies and process personal data based on your consent. Privacy choices under GDPR.</p>
+  <div class="qc-cmp2-summary-buttons">
+    <button mode="secondary">MORE OPTIONS</button>
+    <button mode="primary">AGREE</button>
+  </div>
+</div>
+<script>
+  window.__clickCount = 0;
+  document.querySelector('button[mode="primary"]').addEventListener('click', () => {
+    window.__clickCount++; window.__lastClicked = 'accept';
+    document.cookie = 'euconsent-v2=CPtestConsentString; path=/';
+    document.getElementById('qc-cmp2-ui').remove();
+  });
+  document.querySelector('button[mode="secondary"]').addEventListener('click', () => {
+    window.__clickCount++; window.__lastClicked = 'more-options';
+  });
+</script>
+</body>
+</html>

@@ -1,177 +1,102 @@
 # Privacy Policy for BannerBanner
 
-**Last Updated:** December 2024
+**Last updated:** August 2026
+**Applies to:** BannerBanner v0.1.x
 
 ## Overview
 
-BannerBanner ("we", "our", or "the extension") is committed to protecting your privacy. This Privacy Policy explains how we handle information when you use our browser extension.
+BannerBanner is a Chrome extension that applies your cookie-consent choice
+("Necessary only" or "Accept all") on websites you explicitly enable, and only
+when it recognizes a supported consent-management platform. This policy
+describes exactly what the extension stores and does. It is written to match
+the shipped code, and the repository's automated tests check the storage
+behavior described here.
 
-## The Short Version
+## The short version
 
-**We don't collect, store, or transmit any of your personal data. Period.**
+- BannerBanner runs **only on sites you explicitly enable**, one site at a time.
+- Everything it stores stays **on your device** in Chrome's extension storage.
+- It keeps **aggregate counters only** — never page URLs, page titles, page
+  content, or any chronological browsing history.
+- It has **no servers, no analytics, no telemetry**, and transmits nothing.
 
-All settings and preferences stay on your device. We have no servers, no analytics, and no tracking.
+## What BannerBanner stores (all local)
 
-## Information We Don't Collect
+BannerBanner stores exactly three things, in `chrome.storage.local`:
 
-BannerBanner does NOT collect, store, or transmit:
+1. **Settings** (`bb:settings`) — your consent mode (`necessary` or `all`),
+   whether automatic handling is on, and whether the celebration animation is
+   on, plus a schema version number.
+2. **Enabled sites** (`bb:authorizedOrigins`) — the list of website origins
+   (for example `https://example.com`) you have explicitly enabled. This is
+   the record of your own opt-in choices, not a browsing history: an origin is
+   added only when you click "Enable on this site" and approve Chrome's
+   permission prompt, and it is removed when you disable the site.
+3. **Aggregate statistics** (`bb:stats`) — counters of outcomes: how many
+   verified successes, unverified attempts, unsupported banners, and skipped
+   dialogs, plus per-consent-manager success counts. Counters only; they
+   contain no URLs, timestamps, or per-page records.
 
-- ❌ Browsing history
-- ❌ Personal information
-- ❌ Website content you view
-- ❌ Cookies or tracking data
-- ❌ IP addresses
-- ❌ Usage analytics
-- ❌ Error reports
-- ❌ Device information
-- ❌ Any other personal data
+BannerBanner does **not** store:
 
-## Information Stored Locally
+- full page URLs, URL paths, or query strings;
+- page titles or page content;
+- a chronological history of pages visited or banners handled;
+- cookies or data from the sites you visit;
+- anything in `chrome.storage.sync` (sync storage is not used).
 
-BannerBanner stores the following information **on your device only** using Chrome's local storage:
+If you are upgrading from a pre-0.1 build, the old build's stored history is
+deleted on update.
 
-### User Preferences
-- Your selected privacy level (Necessary Only, Functional, Analytics, or All Cookies)
-- Custom category settings (if you use advanced mode)
-- Theme preference (Light, Dark, Banana, or Dark Banana)
-- Whether automatic banner closing is enabled
-- Whether banana celebrations are enabled
-- Statistics (number of banners closed, last banner detected, etc.)
+## What BannerBanner transmits
 
-### Custom Patterns (Optional)
-- If you use the "Learn Banner Pattern" feature, the patterns you create are stored locally
-- These patterns contain CSS selectors and button patterns, not personal data
-- You can choose whether to share patterns publicly (opt-in only)
+Nothing. There are no remote servers, no analytics platforms, no error
+reporting services, no CDNs, and no network requests made by the extension.
 
-### Test Results (Optional)
-- If you use the "Testing" tab, results from your tests are stored locally
-- These include website URLs and whether banners were detected
-- This data never leaves your device
+## Permissions explained
 
-**Important:** All this data is stored using `chrome.storage.local`, which means:
-- It stays on your device
-- It's not synced to any server
-- It's not accessible to us or any third party
-- You can clear it at any time by uninstalling the extension
+- **`storage`** — saves the three items above on your device.
+- **`activeTab` / toolbar button** — lets the popup show which site you are on
+  so you can enable or disable BannerBanner for that site.
+- **`scripting`** — registers the content script for a site *after* you enable
+  it, and removes that registration when you disable it.
+- **Optional host access (`http://*/*`, `https://*/*`)** — these are
+  *optional* permissions: BannerBanner starts with access to no websites at
+  all. When you click "Enable on this site", Chrome asks you to grant access
+  to that one origin. Only granted origins are ever injected, and revoking a
+  site (from the popup, the options page, or `chrome://extensions`) stops
+  BannerBanner there.
 
-## Permissions Explained
+## What the extension does on an enabled site
 
-BannerBanner requests the following permissions:
+On a site you enabled, BannerBanner looks for a small allowlist of known
+cookie-consent managers. If it finds one it clicks that manager's own
+"reject all"/"necessary only" or "accept all" control according to your
+setting, verifies the manager recorded the choice, and counts the outcome.
+If it does not recognize the dialog, it does nothing to the page. It never
+fills forms, reads personal data, or interacts with login, checkout, payment,
+or other sensitive dialogs — those are explicitly excluded and covered by
+regression tests.
 
-### `storage`
-**Why we need it:** To save your privacy preferences locally on your device.
-**What we do with it:** Store your settings so they persist between browser sessions.
-**What we DON'T do:** Sync data to any server or share it with anyone.
+## Your controls
 
-### `activeTab`
-**Why we need it:** To detect and interact with cookie banners on the page you're viewing.
-**What we do with it:** Read the page structure to find cookie banners and click the appropriate buttons.
-**What we DON'T do:** Monitor your browsing, track what sites you visit, or collect page content.
+- **See your data:** the options page shows your settings, enabled sites, and
+  the counters.
+- **Delete your data:** disable sites individually, use "Reset settings to
+  defaults", or uninstall the extension — uninstalling removes all stored
+  data.
 
-### `<all_urls>` (Host Permissions)
-**Why we need it:** Cookie banners appear on all websites, so we need permission to work everywhere.
-**What we do with it:** Run our content script to detect and close banners on any website you visit.
-**What we DON'T do:** Transmit any information about the sites you visit or their content.
+## Children's privacy
 
-## Third-Party Services
+BannerBanner collects no data from anyone, including children.
 
-**BannerBanner uses zero third-party services.**
+## Changes to this policy
 
-- No analytics platforms (Google Analytics, Mixpanel, etc.)
-- No error tracking (Sentry, Rollbar, etc.)
-- No A/B testing services
-- No advertising networks
-- No remote servers or APIs
-- No CDN or external resources
-
-Everything runs entirely in your browser.
-
-## Data Sharing
-
-**We don't share any data because we don't collect any data.**
-
-The only exception is if you **explicitly opt-in** to share custom banner patterns you create using the "Learn Banner Pattern" feature. Even then:
-
-- Only the pattern itself (CSS selectors and button text) is shared
-- No personal information is included
-- Sharing is completely optional
-- You control what gets shared
-- Shared patterns are anonymized
-
-## Children's Privacy
-
-BannerBanner does not knowingly collect data from anyone, including children under 13. Since we don't collect any data at all, the extension is safe for users of all ages.
-
-## Data Security
-
-Since we don't collect or transmit data, there's no data for anyone to intercept or steal. Your preferences stay encrypted in Chrome's local storage, protected by your browser's built-in security.
-
-## Your Rights
-
-You have complete control over your data:
-
-### Access Your Data
-All your settings are visible in the extension popup and settings page.
-
-### Export Your Data
-You can view all stored data in Chrome DevTools:
-1. Right-click the extension popup
-2. Select "Inspect"
-3. Go to Application > Storage > Local Storage
-
-### Delete Your Data
-Simply uninstall the extension, and all local data is automatically removed.
-
-Or use the "Reset All Settings" option in the extension settings (if available).
-
-## Changes to Privacy Policy
-
-If we ever make changes to this privacy policy, we will:
-1. Update the "Last Updated" date at the top
-2. Notify users through the extension's update notes
-3. Never introduce data collection without explicit consent
-
-## Open Source Transparency
-
-BannerBanner's source code is publicly available for review. You can verify that we do what we say by examining the code yourself.
-
-Repository: [Link to GitHub repository]
+Changes update the date above and ship in the extension's release notes. The
+policy will never describe less than what the code actually does; the
+repository's tests compare stored data against the schema described here.
 
 ## Contact
 
-If you have questions about this Privacy Policy or BannerBanner's privacy practices:
-
-- Open an issue on our GitHub repository
-- Review the code yourself - it's open source!
-
-## Compliance
-
-This privacy policy is designed to comply with:
-- Chrome Web Store Developer Program Policies
-- General Data Protection Regulation (GDPR)
-- California Consumer Privacy Act (CCPA)
-- Other applicable privacy regulations
-
-Since we don't collect data, compliance is straightforward: there's nothing to regulate.
-
-## Summary
-
-**What BannerBanner Does:**
-✅ Automatically closes cookie banners based on your preferences
-✅ Stores your settings locally on your device
-✅ Works entirely in your browser
-
-**What BannerBanner Doesn't Do:**
-❌ Collect your personal information
-❌ Track your browsing history
-❌ Send data to any server
-❌ Use analytics or telemetry
-❌ Display ads or monetize your data
-
----
-
-**You have our commitment:** BannerBanner was built to protect your privacy, not invade it. We'll never compromise that promise.
-
----
-
-*This privacy policy is effective as of December 2024 and applies to version 1.0.0 and all subsequent versions of BannerBanner.*
+Open an issue on the GitHub repository. The source code is public and this
+policy can be checked against it.
