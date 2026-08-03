@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BannerBanner Icon Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .icon-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .icon-card h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 18px;
+        }
+        .icon-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+        .icon-display.light {
+            background: #e0e0e0;
+        }
+        canvas {
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        button {
+            background: #FFD93D;
+            border: 2px solid #000;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #FFCC00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+        .instructions h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .instructions ol {
+            color: #666;
+            line-height: 1.8;
+        }
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .preview-item {
+            text-align: center;
+        }
+        .preview-item span {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍌 BannerBanner Icon Generator 🛡️</h1>
+    <p class="subtitle">Generate all required Chrome extension icons with one click</p>
+
+    <div class="preview-grid">
+        <div class="preview-item">
+            <div class="icon-display light">
+                <canvas id="preview-16" width="16" height="16" style="width: 64px; height: 64px;"></canvas>
+            </div>
+            <span>16×16px<br>Toolbar</span>
+        </div>
+        <div class="preview-item">
+            <div class="icon-display light">
+                <canvas id="preview-32" width="32" height="32" style="width: 64px; height: 64px;"></canvas>
+            </div>
+            <span>32×32px<br>Toolbar @2x</span>
+        </div>
+        <div class="preview-item">
+            <div class="icon-display">
+                <canvas id="preview-48" width="48" height="48" style="width: 96px; height: 96px;"></canvas>
+            </div>
+            <span>48×48px<br>Extension Page</span>
+        </div>
+        <div class="preview-item">
+            <div class="icon-display">
+                <canvas id="preview-128" width="128" height="128" style="width: 128px; height: 128px;"></canvas>
+            </div>
+            <span>128×128px<br>Web Store</span>
+        </div>
+    </div>
+
+    <div class="icon-grid">
+        <div class="icon-card">
+            <h2>16×16px - Toolbar Icon</h2>
+            <div class="icon-display light">
+                <canvas id="icon-16" width="16" height="16" style="width: 128px; height: 128px;"></canvas>
+            </div>
+            <button onclick="downloadIcon(16)">Download icon-16.png</button>
+        </div>
+
+        <div class="icon-card">
+            <h2>32×32px - Toolbar @2x</h2>
+            <div class="icon-display light">
+                <canvas id="icon-32" width="32" height="32" style="width: 128px; height: 128px;"></canvas>
+            </div>
+            <button onclick="downloadIcon(32)">Download icon-32.png</button>
+        </div>
+
+        <div class="icon-card">
+            <h2>48×48px - Extension Page</h2>
+            <div class="icon-display">
+                <canvas id="icon-48" width="48" height="48" style="width: 128px; height: 128px;"></canvas>
+            </div>
+            <button onclick="downloadIcon(48)">Download icon-48.png</button>
+        </div>
+
+        <div class="icon-card">
+            <h2>128×128px - Web Store</h2>
+            <div class="icon-display">
+                <canvas id="icon-128" width="128" height="128" style="width: 256px; height: 256px;"></canvas>
+            </div>
+            <button onclick="downloadIcon(128)">Download icon-128.png</button>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <button onclick="downloadAll()" style="font-size: 16px; padding: 16px 32px;">
+            📦 Download All Icons as ZIP
+        </button>
+    </div>
+
+    <div class="instructions">
+        <h3>📋 How to Use These Icons</h3>
+        <ol>
+            <li>Click "Download All Icons as ZIP" or download each size individually</li>
+            <li>Extract the icons to <code>extension/icons/</code> directory</li>
+            <li>The manifest.json is already configured to use these icons</li>
+            <li>Build your extension using <code>./extension/build-extension.sh</code></li>
+            <li>The icons will be included in the distribution package</li>
+        </ol>
+        
+        <h3>🎨 Design Details</h3>
+        <p style="color: #666; line-height: 1.8;">
+            The BannerBanner icon features a stylized shield with an integrated banana - representing both privacy protection and the playful banana theme. The design uses bold, high-contrast colors to ensure readability at small sizes (16px toolbar icon). The shield shape communicates security and trust, while the banana adds personality and makes the extension memorable.
+        </p>
+    </div>
+
+    <script>
+        function drawIcon(size) {
+            const canvas = document.getElementById(`icon-${size}`);
+            const preview = document.getElementById(`preview-${size}`);
+            
+            [canvas, preview].forEach(cnv => {
+                if (!cnv) return;
+                const ctx = cnv.getContext('2d');
+                const scale = size / 128;
+                
+                ctx.clearRect(0, 0, size, size);
+                
+                ctx.save();
+                ctx.scale(scale, scale);
+                
+                ctx.fillStyle = '#FFD93D';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 8;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(64, 10);
+                ctx.lineTo(100, 35);
+                ctx.lineTo(100, 90);
+                ctx.quadraticCurveTo(100, 110, 64, 120);
+                ctx.quadraticCurveTo(28, 110, 28, 90);
+                ctx.lineTo(28, 35);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = '#FFCC00';
+                ctx.beginPath();
+                ctx.ellipse(64, 55, 22, 35, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 6;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#8B7355';
+                ctx.beginPath();
+                ctx.ellipse(64, 35, 8, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(64, 35);
+                ctx.quadraticCurveTo(56, 30, 54, 22);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(64, 35);
+                ctx.quadraticCurveTo(72, 30, 74, 22);
+                ctx.stroke();
+                
+                if (size >= 48) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.beginPath();
+                    ctx.ellipse(50, 50, 8, 20, 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            });
+        }
+        
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`icon-${size}`);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        async function downloadAll() {
+            const JSZip = await loadJSZip();
+            const zip = new JSZip();
+            
+            [16, 32, 48, 128].forEach(size => {
+                const canvas = document.getElementById(`icon-${size}`);
+                const dataUrl = canvas.toDataURL('image/png');
+                const data = dataUrl.split(',')[1];
+                zip.file(`icon-${size}.png`, data, {base64: true});
+            });
+            
+            const content = await zip.generateAsync({type: 'blob'});
+            const link = document.createElement('a');
+            link.download = 'bannerbanner-icons.zip';
+            link.href = URL.createObjectURL(content);
+            link.click();
+        }
+        
+        function loadJSZip() {
+            return new Promise((resolve) => {
+                if (window.JSZip) {
+                    resolve(window.JSZip);
+                } else {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                    script.onload = () => resolve(window.JSZip);
+                    document.head.appendChild(script);
+                }
+            });
+        }
+        
+        [16, 32, 48, 128].forEach(drawIcon);
+    </script>
+</body>
+</html>
