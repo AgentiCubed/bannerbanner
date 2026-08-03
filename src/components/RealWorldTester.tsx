@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { 
   GlobeHemisphereWest, 
@@ -20,7 +21,9 @@ import {
   Warning,
   Clock,
   Target,
-  ChartBar
+  ChartBar,
+  Plus,
+  Trash
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import type { TestSite, TestResult, TestStatus } from '@/lib/types';
@@ -66,14 +69,22 @@ const INITIAL_TEST_SITES: Omit<TestSite, 'testResult'>[] = [
 
 export function RealWorldTester() {
   const [testResults, setTestResults] = useKV<Record<string, TestResult>>('test-results', {});
+  const [customSites, setCustomSites] = useKV<Omit<TestSite, 'testResult'>[]>('custom-test-sites', []);
   const [selectedSite, setSelectedSite] = useState<TestSite | null>(null);
   const [isRecordingResult, setIsRecordingResult] = useState(false);
+  const [isAddingSite, setIsAddingSite] = useState(false);
   const [detailedNotes, setDetailedNotes] = useState('');
   const [bannerDetected, setBannerDetected] = useState(true);
   const [bannerClosed, setBannerClosed] = useState(true);
   const [cookiesVerified, setCookiesVerified] = useState(false);
 
-  const testSites: TestSite[] = INITIAL_TEST_SITES.map(site => ({
+  const [newSiteName, setNewSiteName] = useState('');
+  const [newSiteUrl, setNewSiteUrl] = useState('');
+  const [newSiteBannerType, setNewSiteBannerType] = useState('');
+  const [newSiteDescription, setNewSiteDescription] = useState('');
+
+  const allSites = [...INITIAL_TEST_SITES, ...(customSites || [])];
+  const testSites: TestSite[] = allSites.map(site => ({
     ...site,
     testResult: testResults?.[site.url],
   }));
@@ -146,6 +157,66 @@ export function RealWorldTester() {
   const resetTests = () => {
     setTestResults({});
     toast.info('All test results cleared');
+  };
+
+  const handleAddCustomSite = () => {
+    if (!newSiteName.trim() || !newSiteUrl.trim()) {
+      toast.error('Please provide at least a name and URL');
+      return;
+    }
+
+    let formattedUrl = newSiteUrl.trim();
+    if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://')) {
+      formattedUrl = 'https://' + formattedUrl;
+    }
+
+    try {
+      new URL(formattedUrl);
+    } catch {
+      toast.error('Please provide a valid URL');
+      return;
+    }
+
+    const exists = allSites.some(site => site.url === formattedUrl);
+    if (exists) {
+      toast.error('This site is already in your test list');
+      return;
+    }
+
+    const newSite: Omit<TestSite, 'testResult'> = {
+      name: newSiteName.trim(),
+      url: formattedUrl,
+      bannerType: newSiteBannerType.trim() || 'Unknown',
+      description: newSiteDescription.trim() || 'Custom test site',
+    };
+
+    setCustomSites((current) => [...(current || []), newSite]);
+
+    toast.success(`Added ${newSiteName} to your test sites`);
+    setIsAddingSite(false);
+    setNewSiteName('');
+    setNewSiteUrl('');
+    setNewSiteBannerType('');
+    setNewSiteDescription('');
+  };
+
+  const handleDeleteCustomSite = (url: string) => {
+    const site = customSites?.find(s => s.url === url);
+    if (!site) return;
+
+    setCustomSites((current) => (current || []).filter(s => s.url !== url));
+    
+    setTestResults((current) => {
+      const updated = { ...(current || {}) };
+      delete updated[url];
+      return updated;
+    });
+
+    toast.info(`Removed ${site.name} from test sites`);
+  };
+
+  const isCustomSite = (url: string) => {
+    return customSites?.some(s => s.url === url) || false;
   };
 
   const getSuccessRate = (): number => {
@@ -238,7 +309,7 @@ export function RealWorldTester() {
             </div>
             <div>
               <div className="text-2xl font-bold">
-                {Object.keys(testResults || {}).length}/{INITIAL_TEST_SITES.length}
+                {Object.keys(testResults || {}).length}/{allSites.length}
               </div>
               <div className="text-xs text-muted-foreground">Sites Tested</div>
             </div>
@@ -339,9 +410,31 @@ export function RealWorldTester() {
         </TabsContent>
 
         <TabsContent value="sites" className="space-y-3 mt-4">
+          <Card className="p-4 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <Plus size={20} weight="duotone" className="text-primary" />
+                  Add Custom Test Site
+                </h4>
+                <p className="text-sm text-muted-foreground">
+                  Found a site with a cookie banner? Add it to your test list and track its performance.
+                </p>
+              </div>
+              <Button 
+                size="sm"
+                onClick={() => setIsAddingSite(true)}
+              >
+                <Plus size={16} weight="bold" className="mr-2" />
+                Add Site
+              </Button>
+            </div>
+          </Card>
+
           {testSites.map((site) => {
             const result = site.testResult;
             const status = getStatusFromResult(result);
+            const isCustom = isCustomSite(site.url);
             
             return (
               <Card key={site.url} className="p-4 hover:border-primary/50 transition-colors">
@@ -352,6 +445,11 @@ export function RealWorldTester() {
                       <Badge variant="outline" className="text-xs">
                         {site.bannerType}
                       </Badge>
+                      {isCustom && (
+                        <Badge variant="outline" className="text-xs bg-accent/10 text-accent border-accent/30">
+                          Custom
+                        </Badge>
+                      )}
                       {status !== 'untested' && (
                         <Badge className={`text-xs ${getStatusBadgeColor(status)}`}>
                           {status === 'working' && <CheckCircle size={12} weight="fill" className="mr-1" />}
@@ -365,7 +463,7 @@ export function RealWorldTester() {
                     
                     {result && (
                       <div className="space-y-2">
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                           <span className="flex items-center gap-1">
                             <Clock size={14} />
                             Last tested: {formatTimestamp(result.lastAttemptTimestamp || result.timestamp)}
@@ -375,7 +473,7 @@ export function RealWorldTester() {
                           <span className="text-red-600">✗ {result.failureCount}</span>
                         </div>
                         
-                        <div className="flex items-center gap-3 text-xs">
+                        <div className="flex items-center gap-3 text-xs flex-wrap">
                           <span className={result.bannerDetected ? 'text-green-600' : 'text-red-600'}>
                             {result.bannerDetected ? '✓' : '✗'} Banner detected
                           </span>
@@ -426,22 +524,35 @@ export function RealWorldTester() {
                         </Button>
                       </div>
                     )}
+                    {isCustom && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteCustomSite(site.url)}
+                        title="Remove custom site"
+                      >
+                        <Trash size={16} weight="duotone" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
             );
           })}
 
-          <Card className="p-4 bg-muted/30">
-            <h4 className="font-semibold mb-2">Add Your Own Test Site</h4>
-            <p className="text-sm text-muted-foreground mb-3">
-              Found a site with a cookie banner you want to test? Open it in a new tab and observe the behavior, 
-              then report your findings in the extension's feedback form.
-            </p>
-            <Button variant="outline" size="sm" disabled>
-              Coming Soon: Custom Site Testing
-            </Button>
-          </Card>
+          {testSites.length === 0 && (
+            <Card className="p-8 text-center">
+              <FlaskIcon size={48} weight="duotone" className="mx-auto mb-3 opacity-50 text-muted-foreground" />
+              <p className="font-medium mb-2">No test sites yet</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                Add your first custom site to start testing
+              </p>
+              <Button onClick={() => setIsAddingSite(true)}>
+                <Plus size={16} weight="bold" className="mr-2" />
+                Add Test Site
+              </Button>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="results" className="mt-4">
@@ -674,6 +785,104 @@ export function RealWorldTester() {
               disabled={!selectedSite}
             >
               Save Result
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAddingSite} onOpenChange={setIsAddingSite}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add Custom Test Site</DialogTitle>
+            <DialogDescription>
+              Add a website to your testing list to track how BannerBanner handles its cookie banner
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="site-name" className="text-sm font-medium">
+                Site Name <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="site-name"
+                placeholder="e.g., The New York Times"
+                value={newSiteName}
+                onChange={(e) => setNewSiteName(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="site-url" className="text-sm font-medium">
+                Website URL <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="site-url"
+                type="url"
+                placeholder="e.g., https://www.nytimes.com or nytimes.com"
+                value={newSiteUrl}
+                onChange={(e) => setNewSiteUrl(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter the full URL or domain name
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="banner-type" className="text-sm font-medium">
+                Banner Type (optional)
+              </Label>
+              <Input
+                id="banner-type"
+                placeholder="e.g., OneTrust, Cookiebot, Custom"
+                value={newSiteBannerType}
+                onChange={(e) => setNewSiteBannerType(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                If known, specify the cookie consent framework used
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="site-description" className="text-sm font-medium">
+                Description (optional)
+              </Label>
+              <Textarea
+                id="site-description"
+                placeholder="e.g., News site with complex consent manager"
+                value={newSiteDescription}
+                onChange={(e) => setNewSiteDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <Alert>
+              <Info size={16} weight="duotone" />
+              <AlertDescription className="text-xs">
+                Custom sites are saved locally and will persist between sessions. You can test them just like the preset sites.
+              </AlertDescription>
+            </Alert>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsAddingSite(false);
+                setNewSiteName('');
+                setNewSiteUrl('');
+                setNewSiteBannerType('');
+                setNewSiteDescription('');
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddCustomSite}
+              disabled={!newSiteName.trim() || !newSiteUrl.trim()}
+            >
+              <Plus size={16} weight="bold" className="mr-2" />
+              Add Site
             </Button>
           </DialogFooter>
         </DialogContent>
