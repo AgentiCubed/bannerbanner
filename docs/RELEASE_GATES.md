@@ -27,7 +27,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
 - [ ] **PB-05: Sensitive workflows remain untouched**
   - Login, checkout, payment, security, age-verification, session-expiration, and unsaved-work dialogs pass the regression suite without modification.
   - Any destructive false positive reopens this gate.
-  - Evidence: Automated: `extension/test/unit/classify.test.mjs` plus one fixture regression per protected class in `extension/test/browser/specs/pipeline.spec.mjs`. Pending: real-flow spot checks in the matrix.
+  - Evidence: Automated: `extension/test/unit/classify.test.mjs` plus one fixture regression per protected class in `extension/test/browser/specs/pipeline.spec.mjs` (matrix sensitive section marked Pass for fixtures). Pending: optional real-flow spot checks in the matrix protocol.
 
 - [ ] **PB-06: One awaited consent pipeline**
   - One engine owns detection, decision, execution, verification, and reporting.
@@ -61,12 +61,12 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.
   - All claimed CMP-mode combinations have passing evidence.
   - There are zero destructive false positives.
-  - Evidence: Not yet provided.
+  - Evidence: Partial preparation only. Matrix has 29 candidate rows, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
 
 - [x] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.
   - Nonfunctional or deferred features are not presented as available.
-  - Evidence: README, extension README, manifest description, popup/options copy, and privacy policy were reconciled to the v0.1 scope in the hardening rewrite. The legacy planning documents (PRD.md, ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md, PROJECT_STATUS.md, COMPLETE_PICTURE.md) were rewritten 2026-08-15 to remove all alpha-era claims (training wizard, community sharing, granular categories, learning system) and to defer to the operating pack as canonical. Closed at James's direction, 2026-08-15.
+  - Evidence: Claim-to-code audit in `docs/CLAIMS_AUDIT.md` (2026-08-03). README, extension README, manifest description, popup/options copy, and privacy policy were reconciled to the v0.1 scope in the hardening rewrite; `PRD.md`, `USER_GUIDE.md`, `QUICK_START.md`, `extension/CHROME_WEB_STORE_SUBMISSION.md`, `extension/QUICK_START_SUBMISSION.md`, the submission checklist/tracker, and `DOCUMENTATION_INDEX.md` were rewritten to the MVP contract; and the legacy planning documents (`PRD.md`, `ITERATION_6_SUMMARY.md`, `MVP_ASSESSMENT.md`, `PROJECT_STATUS.md`, `COMPLETE_PICTURE.md`) were rewritten 2026-08-15 to remove alpha-era claims and defer to the operating pack as canonical. Closed at James's direction, 2026-08-15. Public CMP wording remains "candidate" until PB-11.
 
 ## Chrome Web Store candidate
 
@@ -75,7 +75,7 @@ The private-beta section must pass first.
 - [ ] **WS-01: Single purpose and minimum permissions**
   - Store copy describes the narrow cookie-consent purpose.
   - Requested permissions are necessary, explained, and exercised as described.
-  - Evidence: Not yet provided.
+  - Evidence: Draft Store summary/description and permission justifications in `extension/CHROME_WEB_STORE_SUBMISSION.md` match `manifest.json` (`storage`, `activeTab`, `scripting`, optional hosts) and the MVP contract. Final dashboard paste still pending at submission time.
 
 - [ ] **WS-02: Accurate privacy disclosures**
   - Privacy policy and dashboard answers match code and test evidence.
@@ -89,7 +89,7 @@ The private-beta section must pass first.
 - [ ] **WS-04: Release artifact provenance**
   - The submitted archive is reproducibly built from a tagged, passing commit.
   - Its hash and package inventory are recorded.
-  - Evidence: Not yet provided.
+  - Evidence: Build procedure + strict inventory enforced by `extension/build-extension.sh` / `scripts/validate-package.mjs`. Record template and a pre-tag sample hash are in `docs/RELEASE_PROVENANCE.md`. Final row requires a release tag on a gates-green commit and the hash of that tagged build.
 
 ## Release rule
 

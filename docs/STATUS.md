@@ -1,7 +1,7 @@
 # BannerBanner status
 
 Last updated: 2026-08-15  
-Code baseline reviewed: `main` at `3981fdb` (v0.1 hardening rewrite merged)  
+Code baseline reviewed: `main` at `3981fdb` with issue #32 documentation/provenance work merged on top  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -10,7 +10,7 @@ BannerBanner v0.1, Safe Chrome Private Beta.
 
 ## Current Mode
 
-Release hardening and scope correction.
+Release hardening — PB-12 closed; PB-11 real-site evidence still human-gated.
 
 ## Current truth
 
@@ -38,32 +38,32 @@ replaces the alpha runtime:
 - Icons exist (generated reproducibly), the manifest references only real
   files, the build packages only runtime files, validates strictly, and emits
   an inventory plus an archive hash.
-- CI (`.github/workflows/extension-ci.yml`) runs syntax checks, 70 unit
-  tests, icon reproducibility, build + strict package validation, and 33
-  real-Chromium integration tests (permission boundary with the built
-  extension loaded; CMP/sensitive/unknown fixtures against the shipped
-  runtime modules).
+- Issue #32 added the claim-to-code audit, release notes, release provenance
+  record, Store-copy alignment, and the PB-11 matrix/protocol scaffolding. The
+  live real-site rows still require a human browser run.
 
 ## Next Shippable Artifact
 
-Issue #32 execution: run `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29
-pre-filled candidate rows in `docs/REAL_SITE_TEST_MATRIX.md` (requires a
-human at a browser). The claim-to-code audit of the legacy planning
-documents is done: PRD.md, ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md,
-PROJECT_STATUS.md, and COMPLETE_PICTURE.md were rewritten to the v0.1
-reality, closing PB-12.
+Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
+rows in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
+walkthrough/revocation checks), then a tagged gates-green build with the final
+WS-04 provenance row.
 
 ## Blocking Release Gate
 
-`PB-11: Real-site acceptance` (requires human browser evidence). Gates PB-01
-through PB-10 have automated evidence linked in `docs/RELEASE_GATES.md` and
-await James's confirmation runs before their boxes are checked.
+`PB-11: Real-site acceptance` (requires human browser evidence). `PB-12` is
+closed; `WS-01` and `WS-04` now have repository evidence prepared but still
+need submission-time/dashboard finalization.
 
 ## Known blockers
 
 - The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
   user flows need manual matrix rows.
-- No real-site evidence yet; CMP support claims stay "candidate" until then.
+- Agent/CI hosts cannot resolve the external sites needed for PB-11; live real
+  CMP evidence must be gathered on a human desktop browser.
+- CMP support claims stay "candidate" until the live rows pass.
+- WS-03 screenshots are not yet captured.
+- WS-04 still needs the final tagged-build hash on a gates-green commit.
 
 ## Parking Lot
 
@@ -76,22 +76,48 @@ await James's confirmation runs before their boxes are checked.
 - Firefox and other browser support.
 - Remote telemetry, accounts, or synchronization.
 - Bananer characters, Learn dashboard, and animation polish (removed from the
-  shipped package in this change; code remains in git history).
+  shipped package; code remains in git history).
 - Quantcast Choice "Necessary only" support (needs a settings-panel adapter;
   see BB-013).
 
 ## Latest handoff
 
-- Artifact shipped: PB-12 documentation reconciliation — PRD.md,
-  ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md, PROJECT_STATUS.md, and
-  COMPLETE_PICTURE.md rewritten to describe only the shipped v0.1 Manifest
-  V3 extension. All alpha-era claims of a pattern training wizard,
-  community sharing, granular consent categories, or a learning system were
-  removed; each document now points to the operating pack
+- Artifact shipped: merge-conflict resolution for the issue #32 PR while
+  preserving both sets of truthful v0.1 documentation: `main`'s rewritten
+  legacy planning docs plus this branch's claim audit, release provenance,
+  Store-copy, and matrix evidence scaffolding.
+- Files or behavior changed: resolved conflicts in `PRD.md`,
+  `COMPLETE_PICTURE.md`, `ITERATION_6_SUMMARY.md`, `PROJECT_STATUS.md`,
+  `docs/RELEASE_GATES.md`, and this file; the merge also brought forward
+  `main`'s non-conflicting updates to `MVP_ASSESSMENT.md`, `package.json`,
+  and `package-lock.json`. No extension runtime files under `extension/`
+  changed.
+- Checks passed: merge state resolved cleanly; `git diff --check` and a
+  repository scan for conflict markers both pass; `npm run build:extension`
+  passes; `npm run lint` passes with 7 pre-existing fast-refresh warnings.
+- Manual evidence: none; merge result inspected against `origin/main` and the
+  issue #32 branch state.
+- Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
+  WS-03 screenshots, the final tagged-build provenance row, and one current
+  transitive `nanoid` advisory reported by `npm audit` from the merged main
+  dependency tree.
+- Release gate changed: none materially. `PB-12` remains closed; `PB-11`
+  remains open; `WS-01`/`WS-04` evidence remains recorded in-repo.
+- Next shippable artifact: human execution of
+  `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
+
+Previous handoff:
+
+- Artifact shipped: PB-12 documentation reconciliation — `PRD.md`,
+  `ITERATION_6_SUMMARY.md`, `MVP_ASSESSMENT.md`, `PROJECT_STATUS.md`, and
+  `COMPLETE_PICTURE.md` rewritten to describe only the shipped v0.1 Manifest
+  V3 extension. All alpha-era claims of a pattern training wizard, community
+  sharing, granular consent categories, or a learning system were removed;
+  each document now points to the operating pack
   (`docs/MVP_CONTRACT.md`, `docs/DECISIONS.md`, `docs/RELEASE_GATES.md`,
   this file) as canonical.
-- Files or behavior changed: the five legacy documents above, this file,
-  and the PB-12 row in `docs/RELEASE_GATES.md`. Docs only; no code changed;
+- Files or behavior changed: the five legacy documents above, this file, and
+  the PB-12 row in `docs/RELEASE_GATES.md`. Docs only; no code changed;
   `extension/` is untouched.
 - Checks passed: 70/70 unit tests, `npm run lint` 0 errors,
   `npm run build:extension` + strict package validation pass,
