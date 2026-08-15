@@ -1,6 +1,6 @@
 # BannerBanner status
 
-Last updated: 2026-08-03  
+Last updated: 2026-08-15  
 Code baseline reviewed: `main` at `3981fdb` (v0.1 hardening rewrite merged)  
 Operating pack: committed to `main` on 2026-08-02
 
@@ -48,9 +48,10 @@ replaces the alpha runtime:
 
 Issue #32 execution: run `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29
 pre-filled candidate rows in `docs/REAL_SITE_TEST_MATRIX.md` (requires a
-human at a browser), then the final claim-to-code audit of the legacy
-planning documents (PRD and the alpha-era summaries still overstate
-capabilities).
+human at a browser). The claim-to-code audit of the legacy planning
+documents is done: PRD.md, ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md,
+PROJECT_STATUS.md, and COMPLETE_PICTURE.md were rewritten to the v0.1
+reality, closing PB-12.
 
 ## Blocking Release Gate
 
@@ -63,8 +64,6 @@ await James's confirmation runs before their boxes are checked.
 - The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
   user flows need manual matrix rows.
 - No real-site evidence yet; CMP support claims stay "candidate" until then.
-- PRD.md and other alpha-era documents still contain outdated claims (PB-12
-  is only partially closed).
 
 ## Parking Lot
 
@@ -83,7 +82,31 @@ await James's confirmation runs before their boxes are checked.
 
 ## Latest handoff
 
-- Artifact shipped: PR #37 — repo-wide eslint in CI on top of the merged v0.1
+- Artifact shipped: PB-12 documentation reconciliation — PRD.md,
+  ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md, PROJECT_STATUS.md, and
+  COMPLETE_PICTURE.md rewritten to describe only the shipped v0.1 Manifest
+  V3 extension. All alpha-era claims of a pattern training wizard,
+  community sharing, granular consent categories, or a learning system were
+  removed; each document now points to the operating pack
+  (`docs/MVP_CONTRACT.md`, `docs/DECISIONS.md`, `docs/RELEASE_GATES.md`,
+  this file) as canonical.
+- Files or behavior changed: the five legacy documents above, this file,
+  and the PB-12 row in `docs/RELEASE_GATES.md`. Docs only; no code changed;
+  `extension/` is untouched.
+- Checks passed: 70/70 unit tests, `npm run lint` 0 errors,
+  `npm run build:extension` + strict package validation pass,
+  `git diff --stat` confirms no `extension/` changes.
+- Manual evidence: the diff is the record.
+- Remaining uncertainty: none for PB-12 within the repository; external
+  copy (e.g. future Web Store listing) is covered separately by WS-01/WS-02.
+- Release gate changed: PB-12 closed (checkbox checked in
+  `docs/RELEASE_GATES.md` at James's direction, 2026-08-15).
+- Next shippable artifact: issue #32 execution — the real-site test matrix
+  rows (PB-11).
+
+Previous handoff (PR #37):
+
+- Artifact shipped: repo-wide eslint in CI on top of the merged v0.1
   hardening rewrite: flat eslint config for eslint 10 (`eslint.config.js`
   covering `src/`, the ES-module extension runtime, `scripts/`, and both test
   suites), `.github/workflows/lint.yml`, and a clean `npm audit`.
