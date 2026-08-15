@@ -63,10 +63,10 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - There are zero destructive false positives.
   - Evidence: Partial preparation only. Matrix has 29 candidate rows, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
 
-- [ ] **PB-12: Claims match the product**
+- [x] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.
   - Nonfunctional or deferred features are not presented as available.
-  - Evidence: Claim-to-code audit in `docs/CLAIMS_AUDIT.md` (2026-08-03). Rewrote `PRD.md`, `USER_GUIDE.md`, `QUICK_START.md`, `extension/CHROME_WEB_STORE_SUBMISSION.md`, `extension/QUICK_START_SUBMISSION.md`, submission checklist/tracker, and `DOCUMENTATION_INDEX.md` to v0.1. Supersession banners on alpha-era root docs. README, extension README, manifest, popup/options, and privacy policy already matched. Checkbox left for James after review; public CMP wording remains "candidate" until PB-11.
+  - Evidence: Claim-to-code audit in `docs/CLAIMS_AUDIT.md` (2026-08-03). README, extension README, manifest description, popup/options copy, and privacy policy were reconciled to the v0.1 scope in the hardening rewrite; `PRD.md`, `USER_GUIDE.md`, `QUICK_START.md`, `extension/CHROME_WEB_STORE_SUBMISSION.md`, `extension/QUICK_START_SUBMISSION.md`, the submission checklist/tracker, and `DOCUMENTATION_INDEX.md` were rewritten to the MVP contract; and the legacy planning documents (`PRD.md`, `ITERATION_6_SUMMARY.md`, `MVP_ASSESSMENT.md`, `PROJECT_STATUS.md`, `COMPLETE_PICTURE.md`) were rewritten 2026-08-15 to remove alpha-era claims and defer to the operating pack as canonical. Closed at James's direction, 2026-08-15. Public CMP wording remains "candidate" until PB-11.
 
 ## Chrome Web Store candidate
 
