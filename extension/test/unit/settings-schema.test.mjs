@@ -79,9 +79,15 @@ test('legacy migration carries over disable flags', () => {
     'banner-preferences': { level: 'necessary' },
     'auto-close-enabled': false,
     'show-banana-celebration': false,
+    bannersClosedHistory: [{ url: 'https://example.com/private' }],
+    theme: 'dark',
   });
-  assert.equal(r.settings.enabled, false);
-  assert.equal(r.settings.celebrate, false);
+  assert.deepEqual(r.settings, {
+    version: SETTINGS_VERSION,
+    mode: 'necessary',
+    enabled: false,
+    celebrate: false,
+  });
 });
 
 test('migration is a no-op when current-schema settings already exist', () => {
