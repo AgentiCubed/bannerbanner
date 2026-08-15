@@ -54,7 +54,7 @@ commits.
 
 | Date (UTC) | git commit | tag | zip sha256 | Builder | Notes |
 |---|---|---|---|---|---|
-| 2026-08-03 | `c981cc8b1d758dcbe18e09ea7f8b5ddffd04f611` | — | see builder log | copilot-agent (issue #32 branch) | Pre-tag package checks on branch `copilot/pb-11-complete-real-site-acceptance`. Zip sha256 is **not bit-stable across runs** (zip metadata timestamps); always record the hash from the exact `npm run build:extension` invocation used for upload. Not a Web Store upload. Rebuild and re-hash after the release tag is cut on a gates-green commit. |
+| 2026-08-03 | `c981cc8b1d758dcbe18e09ea7f8b5ddffd04f611` | — | `fc96dfa0c725e18475d635f68daefbdbac3b3ec3951965af4625b2b784273662` | copilot-agent (issue #32 branch) | Pre-tag package checks on branch `copilot/pb-11-complete-real-site-acceptance`. Zip sha256 is **not bit-stable across runs** (zip metadata timestamps); always record the hash from the exact `npm run build:extension` invocation used for upload. Not a Web Store upload. Rebuild and re-hash after the release tag is cut on a gates-green commit. |
 
 ## Hash discipline
 
