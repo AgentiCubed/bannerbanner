@@ -1,3 +1,6 @@
+> **SUPERSEDED for v0.1 product claims.** This document describes alpha-era Spark UI / planning work. Canonical scope, safety rules, and release status live in [`docs/MVP_CONTRACT.md`](docs/MVP_CONTRACT.md), [`docs/RELEASE_GATES.md`](docs/RELEASE_GATES.md), [`docs/STATUS.md`](docs/STATUS.md), and [`PRD.md`](PRD.md). Do not treat features listed below (training, granular categories, TrustArc/Osano, all-site automation, community sharing) as shipped.
+
+
 # 🧪 BannerBanner Testing Guide
 
 Complete guide for testing BannerBanner on real websites with live cookie banners.

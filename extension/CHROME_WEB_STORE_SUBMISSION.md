@@ -1,439 +1,146 @@
-# Chrome Web Store Submission Package
+# Chrome Web Store submission package (v0.1)
 
-## 📦 Submission Checklist
+Status: Draft aligned to shipped v0.1 code  
+Authority: `docs/MVP_CONTRACT.md`, `extension/manifest.json`, `extension/PRIVACY_POLICY.md`  
+Do not paste alpha-era claims (training, 30+ CMPs, all-site automation, granular categories).
 
-### ✅ Required Files
+## Required extension files
 
-#### Extension Files
-- [ ] `manifest.json` - Configured and ready
-- [ ] `icons/icon-16.png` - 16×16px toolbar icon
-- [ ] `icons/icon-32.png` - 32×32px toolbar icon @2x
-- [ ] `icons/icon-48.png` - 48×48px extension management
-- [ ] `icons/icon-128.png` - 128×128px Chrome Web Store listing
-- [ ] `background.js` - Service worker
-- [ ] `content.js` - Content script
-- [ ] `popup.html` - Extension popup
-- [ ] All other extension files in `dist/` folder
+Built by `npm run build:extension` → `dist-extension/` (and optional
+`bannerbanner-v0.1.0.zip` + `.sha256`). Inventory is strict; missing icons or
+manifest targets fail the build.
 
-#### Store Listing Assets
-- [ ] **Promotional tile** - 440×280px (required for featured placement)
-- [ ] **Marquee tile** - 1400×560px (optional but recommended)
-- [ ] **Screenshots** - 1280×800px or 640×400px (minimum 1, maximum 5)
-- [ ] **Small tile** - 128×128px (matches icon-128.png)
+- `manifest.json`
+- `background.js`, `content.js`
+- `popup.html` / `popup.js`
+- `options.html` / `options.js`
+- `lib/*.js` (pipeline, adapters, registry, settings, stats, …)
+- `icons/icon-{16,32,48,128}.png`
 
----
-
-## 📝 Store Listing Content
+## Store listing copy (v0.1)
 
 ### Name
+
 **BannerBanner**
 
-Character count: 13/75 ✅
+### Summary (≤132 characters)
 
-### Summary
-Automatically manage cookie consent banners with your privacy preferences - no more clicking!
+```
+Applies your cookie-consent choice on sites you enable. Supported consent managers only.
+```
 
-Character count: 97/132 ✅
+Character count: 88/132
 
 ### Description
 
 ```
-🍌 Say Goodbye to Cookie Banner Fatigue 🛡️
+BannerBanner applies your cookie-consent preference on websites you explicitly
+enable. It recognizes a small allowlist of consent-management platforms (CMPs),
+activates that platform's own "Necessary only" or "Accept all" control, verifies
+the platform recorded the choice, and reports the outcome locally.
 
-BannerBanner automatically handles cookie consent banners for you, applying your privacy preferences without interrupting your browsing. No more clicking "Accept" or "Reject" on every website!
+WHAT IT DOES
+• Per-site opt-in — starts with access to zero websites
+• Two modes: Necessary only (default) or Accept all
+• Verified outcomes — success only after the CMP's own consent signal is observed
+• Hard safety line — unknown dialogs and login/checkout/payment/security prompts
+  are never touched
+• Local aggregate counters only — no browsing history, no remote servers
 
-✨ KEY FEATURES
+SUPPORTED CONSENT MANAGERS (v0.1 launch candidates)
+• OneTrust — Necessary only and Accept all
+• Cookiebot — Necessary only and Accept all
+• CookieYes — Necessary only and Accept all
+• Usercentrics — Necessary only and Accept all
+• Quantcast Choice — Accept all only
 
-🚀 Automatic Banner Management
-• Detects and closes cookie banners instantly
-• Applies your privacy preferences automatically
-• Works on 30+ popular consent frameworks (Cookiebot, OneTrust, CookieYes, and more)
-• Seamless browsing experience with zero interruptions
+Public support claims follow real-site evidence in the project repository.
+Unsupported banners are left alone.
 
-🛡️ Privacy-First Approach
-• Choose from 4 privacy levels: Necessary Only, Functional, Analytics, or All Cookies
-• Advanced mode for granular category control
-• Your preferences are stored locally and never shared
-• Complete transparency about what you're accepting
+WHAT IT DOES NOT DO
+• Does not run on sites you have not enabled
+• Does not remove newsletters, ads, paywalls, or generic popups
+• Does not train on or share custom patterns
+• Does not offer granular per-category automation beyond the two modes
+• Does not sync or transmit your data anywhere
 
-🎨 Multiple Themes
-• Professional light and dark themes
-• Fun Banana Town themes for personality
-• Customizable appearance to match your style
-
-📊 Track Your Impact
-• See how many banners you've avoided
-• View your privacy statistics
-• Test the extension on real websites
-• Learn about different banner types
-
-🎓 Smart Training System
-• Teach BannerBanner to recognize new banners
-• Contribute patterns to help the community
-• Simple, guided interface for adding custom patterns
-
-🎉 Delightful Experience
-• Optional banana celebrations when banners are closed
-• Smooth, fast performance
-• Respects reduced-motion preferences
-• Works on all websites
-
----
-
-💡 HOW IT WORKS
-
+HOW TO USE
 1. Install BannerBanner
-2. Set your privacy preferences (defaults to "Necessary Only")
-3. Browse the web normally
-4. BannerBanner handles all cookie banners for you!
+2. Open the toolbar popup on a site and choose Enable on this site
+3. Approve Chrome's permission prompt for that one origin
+4. Choose Necessary only or Accept all
+5. Disable the site anytime from the popup, options page, or chrome://extensions
 
-The extension runs quietly in the background, detecting cookie consent banners using a comprehensive pattern library. When a banner is found, it automatically clicks the appropriate button based on your preferences - all before you even notice the banner appeared.
+PRIVACY
+Everything stays on your device in chrome.storage.local (settings, enabled
+origins, aggregate counters). Sync storage is unused. See the privacy policy
+linked on the listing.
 
----
-
-🎯 PERFECT FOR
-
-• Privacy-conscious users who want control without the hassle
-• People tired of clicking the same cookie dialogs repeatedly
-• Anyone who values a cleaner, faster browsing experience
-• Users who want to support websites while maintaining privacy boundaries
-
----
-
-🔒 YOUR PRIVACY MATTERS
-
-• All data stored locally on your device
-• No tracking, no analytics, no telemetry
-• Open source code available for review
-• No account required, no data collection
-
----
-
-🌟 SUPPORTED FRAMEWORKS
-
-BannerBanner recognizes 30+ popular cookie consent implementations including:
-• Cookiebot
-• OneTrust
-• CookieYes
-• Quantcast Choice
-• Usercentrics
-• Osano
-• Termly
-• Civic Cookie Control
-• TrustArc
-• Didomi
-• And many more!
-
-Can't find your banner? Use the built-in training system to teach BannerBanner new patterns in seconds.
-
----
-
-🍌 WHY "BANANA"?
-
-Because dealing with cookie banners shouldn't drive you bananas! We've added a touch of whimsy to a frustrating problem. Toggle the Banana Town theme for a fun, personality-filled interface - or stick with professional themes for a clean look.
-
----
-
-📬 SUPPORT & FEEDBACK
-
-Have questions or found a banner that doesn't work? We're here to help!
-
-Report issues, request features, or contribute to the project on our GitHub repository.
-
----
-
-🆓 100% FREE, NO ADS
-
-BannerBanner is completely free with no hidden costs, premium tiers, or advertisements. We built this because we were frustrated by cookie banners too!
-
----
-
-Start browsing without interruptions. Install BannerBanner today! 🚀
+BannerBanner is free, open source, and single-purpose: cookie-consent on sites
+you choose.
 ```
-
-Character count: ~3,280/16,000 ✅
 
 ### Category
-**Productivity** (Primary)
-**Privacy & Security** (Secondary - implied by functionality)
+
+Productivity (primary). Privacy-related single purpose is explained in the
+description and permission justifications.
 
 ### Language
+
 English (United States)
 
----
+## Permission justifications (dashboard)
 
-## 🖼️ Visual Assets Guide
+| Permission | Justification |
+|---|---|
+| `storage` | Save consent mode, enabled site origins, and local aggregate counters on the device. |
+| `activeTab` | Read the current tab's origin in the popup so the user can enable or disable BannerBanner for that site. |
+| `scripting` | Register and remove the content script only for origins the user has granted. |
+| Host access (optional) | Requested one origin at a time after the user clicks Enable on this site. No broad static content-script matches. |
 
-### Icon (Already Created)
-- **128×128px** - icon-128.png
-- Displayed in Chrome Web Store and extension management
-- Yellow banana-shield design with black outline
+## Privacy practices (dashboard answers)
 
-### Promotional Tile (440×280px) - REQUIRED
-**Design specs:**
-- Format: PNG or JPG
-- Max file size: 1MB
-- Background: Gradient (yellow to orange) or solid color
-- Content: BannerBanner logo + tagline
-- Text: "Say Goodbye to Cookie Banners" + "Automatic Privacy Management"
+- Single purpose: apply user cookie-consent preference on enabled sites.
+- No remote code.
+- No user data sold or used for ads.
+- Data collection: none transmitted off device.
+- Locally stored: settings, authorized origins, aggregate outcome counters
+  (see `extension/PRIVACY_POLICY.md`).
+- Host permission used only after explicit per-origin grant.
 
-**Sample layout:**
-```
-┌────────────────────────────────────────────┐
-│                                            │
-│  🛡️🍌  BannerBanner                       │
-│                                            │
-│  Say Goodbye to Cookie Banners             │
-│  Automatic Privacy Management              │
-│                                            │
-└────────────────────────────────────────────┘
-```
+## Visual assets
 
-### Marquee Tile (1400×560px) - OPTIONAL
-**Design specs:**
-- Format: PNG or JPG
-- Max file size: 2MB
-- Used when extension is featured on Chrome Web Store
-- More detailed visual design with screenshots
+| Asset | Status |
+|---|---|
+| Icons 16/32/48/128 | Generated by `node scripts/generate-icons.mjs`; committed under `extension/icons/` |
+| Screenshots (1–5) | Capture from popup + options on a fresh profile (WS-03) |
+| Promo tile 440×280 | Optional helper: `extension/assets/generate-store-assets.html` — must not claim out-of-scope features |
+| Marquee 1400×560 | Optional; same claim rules |
 
-### Screenshots (1280×800 or 640×400px) - MINIMUM 1
-**Required screenshots:**
+Screenshot subjects that match v0.1:
 
-1. **Main Dashboard** (Settings panel with privacy options)
-   - Show the preference level selector
-   - Display statistics cards
-   - Include "Automatic Banner Closing" toggle
+1. Popup showing Enable on this site + Necessary only
+2. Options page with enabled sites list and local stats
+3. (Optional) Before/after on a supported CMP site after real-site matrix pass
 
-2. **Patterns List** (Show supported banner frameworks)
-   - Display the list of 30+ patterns
-   - Show filter/search capabilities
+Do **not** screenshot training wizards, theme pickers, pattern libraries, or
+Spark dashboard UI as if they were the extension.
 
-3. **Theme Selection** (Banana Town theme in action)
-   - Demonstrate the themed interface
-   - Show personality of the extension
+## Build and package
 
-4. **Real-World Test** (Testing tab showing actual websites)
-   - BBC, CNN, Forbes examples
-   - Test results with checkmarks
-
-5. **Banner Training** (Optional - learn new patterns interface)
-   - Show how easy it is to train new patterns
-
-**Screenshot tips:**
-- Use 1280×800px for best quality
-- Capture at 2x resolution then scale down
-- Add subtle drop shadows for depth
-- Include browser chrome/context if helpful
-- Annotate key features with arrows/labels
-
----
-
-## 🚀 Submission Process
-
-### Step 1: Create Developer Account
-1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-2. Pay one-time $5 registration fee
-3. Complete developer profile
-
-### Step 2: Prepare Distribution Package
 ```bash
-cd extension
-./build-extension.sh
+git rev-parse HEAD
+npm run build:extension
+# → dist-extension/
+# → bannerbanner-v0.1.0.zip + bannerbanner-v0.1.0.zip.sha256
+cat dist-extension-inventory.txt
 ```
 
-This creates `dist/` folder with:
-- All extension files
-- Icons in correct locations
-- Manifest properly configured
-- Minified/optimized code
+Record commit, zip sha256, and inventory under `docs/RELEASE_PROVENANCE.md`
+before submission (WS-04). Private-beta gates in `docs/RELEASE_GATES.md` must
+pass first.
 
-### Step 3: Create ZIP Archive
-```bash
-cd dist
-zip -r ../bannerbanner-v1.0.0.zip .
-```
+## Submission checklist pointer
 
-Or use the Chrome Web Store's "Upload" button to drag the `dist/` folder.
-
-### Step 4: Upload to Chrome Web Store
-
-1. **Go to Developer Dashboard**
-   - Click "New Item"
-   - Upload `bannerbanner-v1.0.0.zip`
-
-2. **Fill Store Listing**
-   - Copy/paste content from this document
-   - Upload all visual assets
-   - Select category: Productivity
-
-3. **Set Privacy Practices**
-   - Permissions explanation:
-     - `storage`: Store user preferences locally
-     - `activeTab`: Detect and close banners on current page
-     - `<all_urls>`: Work on all websites (required for content script)
-   - Data handling:
-     - ✅ Does not collect or transmit user data
-     - ✅ All data stored locally
-     - ✅ No remote servers or analytics
-
-4. **Pricing & Distribution**
-   - Free
-   - All countries
-   - All languages (English only currently)
-
-5. **Review & Publish**
-   - Submit for review
-   - Typical review time: 1-3 business days
-   - May request clarifications about permissions
-
----
-
-## 🔍 Review Preparation
-
-### Common Review Questions
-
-**Q: Why do you need `<all_urls>` permission?**
-A: BannerBanner needs to detect and close cookie banners on all websites. This permission allows the content script to run on any page the user visits.
-
-**Q: What data do you collect?**
-A: None. All user preferences are stored locally using chrome.storage.local. No data is transmitted to any server.
-
-**Q: Why do you need `activeTab`?**
-A: To detect when the user is actively browsing and to interact with the current page's DOM to find and close cookie banners.
-
-### Privacy Policy (Required for extensions with host permissions)
-
-See `PRIVACY_POLICY.md` for the complete privacy policy.
-
-**TL;DR:**
-- No data collection
-- No tracking
-- No analytics
-- No remote servers
-- All data stays on your device
-
----
-
-## 📊 Post-Launch Checklist
-
-### After Approval
-- [ ] Share on social media
-- [ ] Post on Product Hunt
-- [ ] Submit to extension directories
-- [ ] Create demo video (optional)
-- [ ] Set up update schedule
-
-### Monitoring
-- [ ] Check Chrome Web Store reviews daily
-- [ ] Respond to user feedback
-- [ ] Monitor error reports
-- [ ] Track installation metrics
-
-### Updates
-- [ ] Increment version in manifest.json
-- [ ] Create new build
-- [ ] Upload to store
-- [ ] Add release notes
-
----
-
-## 🎯 Success Metrics
-
-### Week 1 Goals
-- 100+ installations
-- 4+ star rating
-- First user reviews
-
-### Month 1 Goals
-- 1,000+ installations
-- 4.5+ star rating
-- Feature requests collected
-
-### Month 3 Goals
-- 10,000+ installations
-- Active user community
-- Regular updates based on feedback
-
----
-
-## 🔗 Helpful Links
-
-- [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-- [Chrome Extension Publishing Guide](https://developer.chrome.com/docs/webstore/publish/)
-- [Chrome Web Store Program Policies](https://developer.chrome.com/docs/webstore/program-policies/)
-- [Extension Manifest V3 Guide](https://developer.chrome.com/docs/extensions/mv3/intro/)
-
----
-
-## 📸 Asset Creation Resources
-
-### Design Tools
-- **Figma** - Free online design tool
-- **Canva** - Quick graphics for promotional tiles
-- **GIMP** - Free image editor for screenshots
-- **Chrome DevTools** - Capture screenshots at exact dimensions
-
-### AI Image Generation Prompts
-
-**Promotional Tile Prompt:**
-```
-Create a 440×280px banner for a browser extension called "BannerBanner".
-Features: Yellow shield with banana icon, playful but professional.
-Text: "Say Goodbye to Cookie Banners" + "Automatic Privacy Management"
-Style: Modern, clean, high contrast. Yellow (#FFD93D) and black color scheme.
-```
-
-**Marquee Tile Prompt:**
-```
-Create a 1400×560px promotional banner for BannerBanner browser extension.
-Show: Multiple cookie banner examples being automatically closed.
-Style: Modern tech product marketing, playful banana theme.
-Include: Extension icon, screenshots, benefit statements.
-Colors: Yellow, black, white, with gradient background.
-```
-
----
-
-## ✅ Final Pre-Submission Checklist
-
-Before uploading to Chrome Web Store:
-
-### Technical
-- [ ] Extension works in latest Chrome version
-- [ ] All permissions are minimal and justified
-- [ ] No console errors or warnings
-- [ ] Icons load correctly at all sizes
-- [ ] Popup opens without errors
-- [ ] Background script initializes properly
-- [ ] Content script works on test sites
-
-### Assets
-- [ ] All 4 icon sizes created and optimized
-- [ ] Promotional tile designed and exported
-- [ ] Screenshots captured and annotated
-- [ ] Privacy policy written and accessible
-- [ ] Store description proofread
-
-### Legal
-- [ ] No trademark violations
-- [ ] No copyrighted material without permission
-- [ ] Privacy policy compliant with regulations
-- [ ] Terms of service created (optional but recommended)
-
-### Testing
-- [ ] Tested on Windows
-- [ ] Tested on macOS
-- [ ] Tested on Linux (if applicable)
-- [ ] Tested on multiple websites
-- [ ] Tested with different privacy settings
-- [ ] Tested theme switching
-
----
-
-## 🎉 You're Ready!
-
-Everything is prepared for Chrome Web Store submission. Follow the steps above and your extension will be live within a few business days!
-
-Need help? Check the troubleshooting section or reach out to the Chrome Web Store developer support.
-
-**Good luck! 🚀🍌**
+Use `extension/SUBMISSION_CHECKLIST.md` (v0.1) and do not submit while PB-11
+real-site acceptance or other open private-beta gates remain unchecked.
