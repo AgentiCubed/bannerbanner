@@ -26,7 +26,6 @@ function storageArea(initial) {
 test('install and update purge all alpha storage, including local browsing-derived knowledge', async () => {
   let onInstalled;
   const local = storageArea({
-    'bb:settings': { version: 1, mode: 'necessary', enabled: true, celebrate: true },
     'bananer-settings': { enabled: true },
     'bananer-sites': ['https://private.example'],
     'bananer-kb': { fingerprint: { hostname: 'private.example' } },
@@ -74,6 +73,7 @@ test('install and update purge all alpha storage, including local browsing-deriv
     'bb:settings',
     'bb:stats',
   ]);
+  assert.equal(local.data['bb:settings'].mode, 'necessary');
   assert.deepEqual(sync.data, {});
 
   local.data['bananer-kb'] = { fingerprint: { hostname: 'private.example' } };
