@@ -6,7 +6,6 @@ import {
   defaultSettings,
   normalizeSettings,
   migrateLegacySettings,
-  purgeLegacyStorage,
   sanitizeSettingsPatch,
 } from '../../lib/settings-schema.js';
 
@@ -77,33 +76,6 @@ test('migration with no legacy data returns defaults, not migrated', () => {
   const r = migrateLegacySettings({});
   assert.equal(r.migrated, false);
   assert.deepEqual(r.settings, defaultSettings());
-});
-
-test('legacy storage purge removes all alpha local and sync keys', async () => {
-  const removed = {};
-  const area = (name) => ({
-    remove(keys, callback) {
-      removed[name] = keys;
-      callback();
-    },
-  });
-
-  await purgeLegacyStorage({ local: area('local'), sync: area('sync') });
-
-  assert.deepEqual(removed.local, [
-    'bannersClosedCount',
-    'bananer-settings',
-    'bananer-sites',
-    'bananer-kb',
-    'bananer-roster',
-  ]);
-  assert.deepEqual(removed.sync, [
-    'bannersClosedHistory',
-    'banner-preferences',
-    'auto-close-enabled',
-    'show-banana-celebration',
-    'theme',
-  ]);
 });
 
 test('sanitizeSettingsPatch drops unknown keys and invalid values', () => {

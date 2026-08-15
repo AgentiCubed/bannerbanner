@@ -90,7 +90,10 @@ For the site's assigned CMP and mode (`Necessary only` or `Accept all`):
 8. **Capture evidence**: screenshot of the settled page + a DevTools shot of
    the cookie/storage value, saved as
    `evidence/<matrix-id>-<origin-host>-<mode>.png`. No URLs beyond the origin,
-   no personal data in shots.
+   no personal data in shots. Commit sanitized captures or link them from the
+   matrix to a durable external artifact accessible to reviewers. Exclude a
+   capture only when it cannot be safely sanitized; a local-only capture does
+   not count as release-gate evidence.
 
 9. **Fill the matrix row**: `Pass` / `Fail` / `Unsupported` / `Blocked`, page
    usable yes/no, destructive false positive yes/no, evidence path, date,
@@ -145,7 +148,9 @@ the matrix's real-flow column:
 - Append rows to `REAL_SITE_TEST_MATRIX.md` (never overwrite past runs).
 - Update the candidate CMP support ledger counts.
 - If every claimed CMP passed both its claimed modes with zero destructive
-  false positives across 20–30 rows, update `PB-11` in
+  false positives across 20–30 distinct site origins (count unique origins,
+  not separate mode rows), and every Pass has durable accessible evidence,
+  update `PB-11` in
   `docs/RELEASE_GATES.md` with a link to the matrix section and the evidence
   folder, and update `docs/STATUS.md`.
 - Any destructive false positive: stop the run, file an issue, record the
