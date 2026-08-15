@@ -63,10 +63,10 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - There are zero destructive false positives.
   - Evidence: Not yet provided.
 
-- [ ] **PB-12: Claims match the product**
+- [x] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.
   - Nonfunctional or deferred features are not presented as available.
-  - Evidence: Partial: README, extension README, manifest description, popup/options copy, and privacy policy were reconciled to the v0.1 scope (training, sharing, and the Learn dashboard removed from the shipped package). Pending: PRD and legacy planning documents still describe alpha-era claims and need a final claim-to-code audit.
+  - Evidence: README, extension README, manifest description, popup/options copy, and privacy policy were reconciled to the v0.1 scope in the hardening rewrite. The legacy planning documents (PRD.md, ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md, PROJECT_STATUS.md, COMPLETE_PICTURE.md) were rewritten 2026-08-15 to remove all alpha-era claims (training wizard, community sharing, granular categories, learning system) and to defer to the operating pack as canonical. Closed at James's direction, 2026-08-15.
 
 ## Chrome Web Store candidate
 
