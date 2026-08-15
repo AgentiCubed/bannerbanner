@@ -89,8 +89,10 @@ need submission-time/dashboard finalization.
   all five legacy sync keys; focused lifecycle coverage added. User/security
   docs and the PB-11 matrix/protocol were corrected; no consent pipeline,
   permissions, or supported-dialog behavior changed.
-- Checks passed: focused update-migration tests and JavaScript syntax checks;
-  final repository checks pending.
+- Checks passed: 72/72 extension unit tests; repository lint (0 errors, 7
+  pre-existing fast-refresh warnings); extension build and strict 21-file
+  package validation; `git diff --check`; manual matrix count confirms 33 rows
+  across 20 distinct candidate origins.
 - Manual evidence: reviewed the historical alpha `bananer.js` storage writes
   against the cleanup inventory and inspected all eight review threads.
 - Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
