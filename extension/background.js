@@ -19,6 +19,9 @@ function localGet(keys) {
 function localSet(obj) {
   return new Promise((resolve) => chrome.storage.local.set(obj, () => resolve()));
 }
+function storageRemove(area, keys) {
+  return new Promise((resolve) => area.remove(keys, () => resolve()));
+}
 
 async function getSettings() {
   const data = await localGet(STORAGE_KEYS.settings);
@@ -123,10 +126,27 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         chrome.storage.sync.get(['banner-preferences', 'auto-close-enabled', 'show-banana-celebration'], (d) => resolve(d || {}))
       );
       settings = migrateLegacySettings(legacySync).settings;
-      // Purge legacy URL-bearing history from the previous alpha (privacy).
-      chrome.storage.sync.remove(['bannersClosedHistory', 'banner-preferences', 'auto-close-enabled', 'show-banana-celebration', 'theme']);
     }
     await localSet({ [STORAGE_KEYS.settings]: settings });
+  }
+  if (details.reason === 'update') {
+    // Purge all alpha-era data, including URL-bearing local knowledge records.
+    await Promise.all([
+      storageRemove(chrome.storage.local, [
+        'bananer-settings',
+        'bananer-sites',
+        'bananer-kb',
+        'bananer-roster',
+        'bannersClosedCount',
+      ]),
+      storageRemove(chrome.storage.sync, [
+        'bannersClosedHistory',
+        'banner-preferences',
+        'auto-close-enabled',
+        'show-banana-celebration',
+        'theme',
+      ]),
+    ]);
   }
   if (existing[STORAGE_KEYS.origins] === undefined) {
     await localSet({ [STORAGE_KEYS.origins]: [] });
