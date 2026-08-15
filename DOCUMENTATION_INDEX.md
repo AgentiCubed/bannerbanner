@@ -25,7 +25,6 @@
 - [`QUICK_START.md`](QUICK_START.md) — build/load/test
 - [`extension/CHROME_WEB_STORE_SUBMISSION.md`](extension/CHROME_WEB_STORE_SUBMISSION.md) — Store copy + permissions
 - [`extension/SUBMISSION_CHECKLIST.md`](extension/SUBMISSION_CHECKLIST.md)
-- [`SECURITY.md`](SECURITY.md) — vulnerability reporting (GitHub template)
 
 ## Superseded alpha-era documents
 
