@@ -33,8 +33,9 @@ replaces the alpha runtime:
   the extension. Training/sharing/Learn-dashboard UI was removed from the
   shipped package.
 - Storage holds bounded aggregate counters only; nothing browsing-derived
-  enters sync storage; legacy URL-bearing history is purged on update. The
-  privacy policy was rewritten to the observed schema.
+  enters sync storage; all alpha-era local knowledge/history and sync data are
+  purged on install and update. The privacy policy was rewritten to the
+  observed schema.
 - Icons exist (generated reproducibly), the manifest references only real
   files, the build packages only runtime files, validates strictly, and emits
   an inventory plus an archive hash.
@@ -44,8 +45,9 @@ replaces the alpha runtime:
 
 ## Next Shippable Artifact
 
-Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 33 candidate
-rows across 18 named origins in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
+Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
+rows covering 20 concrete distinct origins in
+`docs/REAL_SITE_TEST_MATRIX.md` (including the permission
 walkthrough/revocation checks), then a tagged gates-green build with the final
 WS-04 provenance row.
 
@@ -82,74 +84,25 @@ need submission-time/dashboard finalization.
 
 ## Latest handoff
 
-- Artifact shipped: merge-conflict resolution for the PR #39 review-fix branch,
-  preserving the privacy cleanup, candidate-only claims, durable evidence rules,
-  and project-specific vulnerability reporting on current `main`.
-- Files or behavior changed: merged `origin/main`; reconciled eight conflicts;
-  retained centralized alpha-storage allowlists and added lifecycle coverage for
-  both preserving current settings and migrating safe legacy settings before
-  cleanup. Corrected the matrix inventory to 33 rows across 18 named origins,
-  reaching 20 distinct origins when its two placeholders are assigned.
-- Checks passed: 73/73 extension unit tests; repository lint (0 errors, 7
-  pre-existing fast-refresh warnings); extension build and strict 21-file
-  package validation; matrix count assertion; `git diff --check`; no repository
-  conflict markers.
-- Manual evidence: inspected the three merge stages for all eight conflicts and
-  confirmed the merge retains a two-parent `MERGE_HEAD`.
-- Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
-  WS-03 screenshots, the final tagged-build provenance row, and the existing
-  transitive dependency advisory remain open.
-- Release gate changed: none. PB-11 remains open and requires durable evidence
-  from 20–30 completed distinct origins.
-- Next shippable artifact: human execution of
-  `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
-
-Previous handoff:
-
-- Artifact shipped: PR #39 review fixes — honest candidate wording, enough
-  distinct PB-11 site candidates, durable evidence requirements, complete
-  alpha-storage cleanup, and project-specific private vulnerability reporting.
-- Files or behavior changed: updates now purge all five alpha local keys and
-  all five legacy sync keys; focused lifecycle coverage added. User/security
-  docs and the PB-11 matrix/protocol were corrected; no consent pipeline,
-  permissions, or supported-dialog behavior changed.
-- Checks passed: 72/72 extension unit tests; repository lint (0 errors, 7
-  pre-existing fast-refresh warnings); extension build and strict 21-file
-  package validation; `git diff --check`; manual matrix count confirms 33 rows,
-  18 named origins, and two placeholders for different sites.
-- Manual evidence: reviewed the historical alpha `bananer.js` storage writes
-  against the cleanup inventory and inspected all eight review threads.
-- Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
-  WS-03 screenshots, and the final tagged-build provenance row.
-- Release gate changed: none closed. PB-11 still requires 20–30 distinct
-  completed origins with durable evidence; the candidate matrix will cover 20
-  distinct origins after its two placeholders are assigned different sites.
-- Next shippable artifact: human execution of
-  `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
-
-Previous handoff:
-
-- Artifact shipped: merge-conflict resolution for the issue #32 PR while
-  preserving both sets of truthful v0.1 documentation: `main`'s rewritten
-  legacy planning docs plus this branch's claim audit, release provenance,
-  Store-copy, and matrix evidence scaffolding.
-- Files or behavior changed: resolved conflicts in `PRD.md`,
-  `COMPLETE_PICTURE.md`, `ITERATION_6_SUMMARY.md`, `PROJECT_STATUS.md`,
-  `docs/RELEASE_GATES.md`, and this file; the merge also brought forward
-  `main`'s non-conflicting updates to `MVP_ASSESSMENT.md`, `package.json`,
-  and `package-lock.json`. No extension runtime files under `extension/`
-  changed.
-- Checks passed: merge state resolved cleanly; `git diff --check` and a
-  repository scan for conflict markers both pass; `npm run build:extension`
-  passes; `npm run lint` passes with 7 pre-existing fast-refresh warnings.
-- Manual evidence: none; merge result inspected against `origin/main` and the
-  issue #32 branch state.
+- Artifact shipped: merge-conflict resolution for the PR #39 review-fix branch
+  against current `main`.
+- Files or behavior changed: reconciled nine conflicts while retaining the
+  centralized legacy-storage allowlists, safe settings migration, cleanup on
+  install and update, BannerBanner-specific private vulnerability reporting,
+  durable PB-11 evidence rules, and the 20-concrete-origin candidate matrix.
+- Checks passed: 74/74 extension unit tests; repository lint with 0 errors and 7
+  pre-existing fast-refresh warnings; extension build and strict 21-file package
+  validation; matrix count assertion; `git diff --check`; no conflict markers.
+- Manual evidence: inspected both merge sides, retained a two-parent merge state,
+  and counted 29 candidate rows across 20 concrete origins. No live-site browser
+  testing occurred.
 - Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
   WS-03 screenshots, the final tagged-build provenance row, and one current
-  transitive `nanoid` advisory reported by `npm audit` from the merged main
+  transitive high-severity advisory reported by `npm audit` from the existing
   dependency tree.
-- Release gate changed: none materially. `PB-12` remains closed; `PB-11`
-  remains open; `WS-01`/`WS-04` evidence remains recorded in-repo.
+- Release gate changed: none closed. PB-08 evidence now covers complete legacy
+  cleanup; PB-11 remains open and explicitly requires 20–30 distinct origins
+  with durable accessible evidence.
 - Next shippable artifact: human execution of
   `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
 

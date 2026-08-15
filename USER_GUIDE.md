@@ -1,8 +1,8 @@
 # Getting started with BannerBanner (v0.1)
 
 BannerBanner applies your cookie-consent choice on websites **you explicitly
-enable**. It only acts on a small allowlist of supported consent managers and
-leaves everything else alone.
+enable**. It only acts on a small allowlist of fixture-tested consent-manager
+candidates and leaves everything else alone.
 
 Canonical product rules: [`docs/MVP_CONTRACT.md`](docs/MVP_CONTRACT.md).
 
@@ -26,7 +26,7 @@ A clean install has access to **no** websites.
 3. Choose **Necessary only** (default) or **Accept all**.
 4. Click **Enable on this site** and accept Chrome's permission prompt for that
    one origin.
-5. Reload if the banner is already visible. On a supported CMP, BannerBanner
+5. Reload if the banner is already visible. On a candidate CMP, BannerBanner
    clicks the matching control and counts a success only after the CMP records
    the choice.
 
@@ -38,17 +38,17 @@ A clean install has access to **no** websites.
 
 Revoking stops future injection and signals open tabs on that origin to stop.
 
-## Fixture-tested CMP candidates
+## Fixture-tested launch candidates
 
-These CMPs remain candidates until the real-site acceptance matrix passes.
+These candidates are not supported claims until the linked real-site matrix passes.
 
 | CMP | Necessary only | Accept all |
 |---|---|---|
-| OneTrust | Candidate (fixture-tested) | Candidate (fixture-tested) |
-| Cookiebot | Candidate (fixture-tested) | Candidate (fixture-tested) |
-| CookieYes | Candidate (fixture-tested) | Candidate (fixture-tested) |
-| Usercentrics | Candidate (fixture-tested) | Candidate (fixture-tested) |
-| Quantcast Choice | Unsupported | Candidate (fixture-tested) |
+| OneTrust | candidate (fixtures pass) | candidate (fixtures pass) |
+| Cookiebot | candidate (fixtures pass) | candidate (fixtures pass) |
+| CookieYes | candidate (fixtures pass) | candidate (fixtures pass) |
+| Usercentrics | candidate (fixtures pass) | candidate (fixtures pass) |
+| Quantcast Choice | unsupported | candidate (fixtures pass) |
 
 Real-site evidence: [`docs/REAL_SITE_TEST_MATRIX.md`](docs/REAL_SITE_TEST_MATRIX.md).
 

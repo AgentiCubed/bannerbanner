@@ -135,10 +135,6 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
   if (details.reason === 'update') {
     legacySync = await syncGet(LEGACY_SYNC_STORAGE_KEYS);
-    await Promise.all([
-      localRemove(LEGACY_LOCAL_STORAGE_KEYS),
-      syncRemove(LEGACY_SYNC_STORAGE_KEYS),
-    ]);
   }
 
   if (existing[STORAGE_KEYS.settings] === undefined) {
@@ -147,6 +143,12 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       ? migrateLegacySettings(legacySync).settings
       : defaultSettings();
     await localSet({ [STORAGE_KEYS.settings]: settings });
+  }
+  if (details.reason === 'install' || details.reason === 'update') {
+    await Promise.all([
+      localRemove(LEGACY_LOCAL_STORAGE_KEYS),
+      syncRemove(LEGACY_SYNC_STORAGE_KEYS),
+    ]);
   }
   if (existing[STORAGE_KEYS.origins] === undefined) {
     await localSet({ [STORAGE_KEYS.origins]: [] });

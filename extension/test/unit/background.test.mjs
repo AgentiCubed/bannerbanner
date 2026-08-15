@@ -112,3 +112,20 @@ test('extension update migrates allowlisted settings before purging alpha storag
   assert.deepEqual(sync.data, {});
   delete globalThis.chrome;
 });
+
+test('extension install purges alpha local and sync storage', async () => {
+  const local = storageArea({
+    'bananer-kb': { record: { hostname: 'example.com' } },
+  });
+  const sync = storageArea({
+    bannersClosedHistory: [{ url: 'https://example.com/private' }],
+  });
+  const triggerOnInstalled = installChromeMock(local, sync);
+
+  await import(`../../background.js?test=${Date.now()}`);
+  await triggerOnInstalled({ reason: 'install' });
+
+  assert.deepEqual(Object.keys(local.data).sort(), ['bb:authorizedOrigins', 'bb:settings', 'bb:stats']);
+  assert.deepEqual(sync.data, {});
+  delete globalThis.chrome;
+});
