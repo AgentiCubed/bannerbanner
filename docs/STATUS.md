@@ -44,8 +44,9 @@ replaces the alpha runtime:
 
 ## Next Shippable Artifact
 
-Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
-rows in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
+Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 33 candidate
+rows representing 20 potential unique origins in
+`docs/REAL_SITE_TEST_MATRIX.md` (including the permission
 walkthrough/revocation checks), then a tagged gates-green build with the final
 WS-04 provenance row.
 
@@ -81,6 +82,29 @@ need submission-time/dashboard finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: PR #39 review corrections for honest candidate-CMP wording,
+  durable PB-11 evidence, sufficient unique-site candidates, project-specific
+  security reporting, and complete alpha-storage purging on update.
+- Files or behavior changed: the update lifecycle now removes all legacy local
+  Bananer knowledge/settings/site/roster/count keys as well as legacy sync
+  keys; focused migration coverage was added; user/release documentation was
+  corrected without changing CMP behavior or release status.
+- Checks passed: 71/71 unit tests; focused 10/10 settings-schema tests;
+  `npm run lint` (0 errors, 7 pre-existing Fast Refresh warnings);
+  `npm run build:extension` and strict package validation; `git diff --check`.
+- Manual evidence: review thread checked against the final diff; the existing
+  PRD authority order and recorded WS-04 sample hash already satisfy their
+  comments. No live-site browser testing occurred.
+- Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
+  WS-03 screenshots, and the final tagged-build provenance row.
+- Release gate changed: none closed. PB-08 evidence now includes the legacy
+  local/sync purge regression; PB-11 still requires 20–30 completed unique
+  origins with durable evidence.
+- Next shippable artifact: human execution of
+  `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
+
+Previous handoff:
 
 - Artifact shipped: merge-conflict resolution for the issue #32 PR while
   preserving both sets of truthful v0.1 documentation: `main`'s rewritten

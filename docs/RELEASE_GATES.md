@@ -44,7 +44,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - Normal use stores no full URL, path, query string, title, content, or chronological browsing history.
   - Browsing-derived data does not enter sync storage.
   - The privacy policy describes the observed schema and behavior.
-  - Evidence: Automated: `extension/test/unit/stats.test.mjs` (schema cannot express URLs or history) and the empty-sync-storage test in `boundary.spec.mjs`; privacy policy rewritten to the observed schema (`extension/PRIVACY_POLICY.md`).
+  - Evidence: Automated: `extension/test/unit/stats.test.mjs` (schema cannot express URLs or history), the legacy local/sync purge regression in `settings-schema.test.mjs`, and the empty-sync-storage test in `boundary.spec.mjs`; privacy policy rewritten to the observed schema (`extension/PRIVACY_POLICY.md`).
 
 - [ ] **PB-09: Complete extension package**
   - Every manifest resource exists.
@@ -61,7 +61,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.
   - All claimed CMP-mode combinations have passing evidence.
   - There are zero destructive false positives.
-  - Evidence: Partial preparation only. Matrix has 29 candidate rows, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
+  - Evidence: Partial preparation only. Matrix has 33 candidate rows representing 20 potential unique origins, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). Closure requires completed rows from 20–30 unique origins. **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
 
 - [x] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.

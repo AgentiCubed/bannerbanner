@@ -14,6 +14,30 @@ export const STORAGE_KEYS = Object.freeze({
   stats: 'bb:stats',
 });
 
+const LEGACY_LOCAL_KEYS = Object.freeze([
+  'bannersClosedCount',
+  'bananer-settings',
+  'bananer-sites',
+  'bananer-kb',
+  'bananer-roster',
+]);
+const LEGACY_SYNC_KEYS = Object.freeze([
+  'bannersClosedHistory',
+  'banner-preferences',
+  'auto-close-enabled',
+  'show-banana-celebration',
+  'theme',
+]);
+
+/** Remove all pre-v0.1 storage after an update. */
+export function purgeLegacyStorage(storage) {
+  const remove = (area, keys) => new Promise((resolve) => area.remove(keys, resolve));
+  return Promise.all([
+    remove(storage.local, LEGACY_LOCAL_KEYS),
+    remove(storage.sync, LEGACY_SYNC_KEYS),
+  ]);
+}
+
 /**
  * The two v0.1 consent modes. Anything else is invalid.
  * - "necessary": reject all non-essential categories.

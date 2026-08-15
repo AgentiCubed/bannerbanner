@@ -1,7 +1,7 @@
 # BannerBanner real-site test matrix
 
 Status: Candidates prepared — **live rows still require a human browser**  
-Target: 20 to 30 representative real sites, all claimed CMP-mode combinations, and zero destructive false positives.  
+Target: 20 to 30 representative unique real sites, all claimed CMP-mode combinations, and zero destructive false positives.
 How to run: `docs/REAL_SITE_TEST_PROTOCOL.md` (per-row steps, permission-boundary walkthrough, storage inspection, evidence rules).
 
 This document records evidence; it must not be populated from memory, a generated claim, or a test page designed only around BannerBanner's selectors.
@@ -31,7 +31,7 @@ Complete this block for each test run or link a versioned run record.
 - Profile state: Fresh or named test profile
 - Date:
 - Tester:
-- Evidence location: `evidence/` (local, not committed if it contains unnecessary detail)
+- Evidence location: committed sanitized files under `evidence/`, or durable external artifact links. Captures that cannot be safely sanitized must not be used as release-gate evidence.
 
 ## Candidate CMP support ledger
 
@@ -53,7 +53,7 @@ Launch may claim only three to five CMPs that pass. Remove or defer a candidate 
 One row represents one site, CMP, mode, extension commit, and test date.
 Follow `docs/REAL_SITE_TEST_PROTOCOL.md` for every row.
 
-The rows below are **pre-filled candidates** (29 rows): origins believed to
+The rows below are **pre-filled candidates** (33 rows): origins believed to
 run each CMP as of 2026-08, with the expected control and postcondition taken
 from the shipped adapters. Deployments change — step 1 of the protocol
 confirms the CMP on the day of testing; mark a row `Blocked` and substitute a
@@ -98,6 +98,10 @@ Expected-control shorthand used below:
 | RS-27 | https://www.sixt.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
 | RS-28 | https://www.kicker.de | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | |
 | RS-29 | https://www.kicker.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
+| RS-30 | https://www.mastercard.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | replacement-pool candidate |
+| RS-31 | https://www.visitdenmark.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | | replacement-pool candidate |
+| RS-32 | https://www.carlsberg.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | replacement-pool candidate |
+| RS-33 | https://www.tchibo.de | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | replacement-pool candidate |
 
 Replacement pools if a candidate changed CMP vendor: OneTrust —
 mastercard.com, sap.com, heineken.com; Cookiebot — visitdenmark.com,
@@ -172,7 +176,8 @@ For every failure, capture:
 
 ## Exit criteria
 
-- 20 to 30 real-site rows are complete.
+- 20 to 30 unique real-site origins have at least one complete row; duplicate
+  mode rows for the same origin count once.
 - Every claimed CMP passes both supported modes **on real sites**.
 - Permission grant and revocation cases pass (manual + automated).
 - Every sensitive-dialog case passes (fixtures done; real spot checks recommended).

@@ -38,15 +38,17 @@ A clean install has access to **no** websites.
 
 Revoking stops future injection and signals open tabs on that origin to stop.
 
-## What v0.1 supports
+## Fixture-tested launch candidates
+
+These CMPs remain candidates until the real-site acceptance matrix passes.
 
 | CMP | Necessary only | Accept all |
 |---|---|---|
-| OneTrust | yes | yes |
-| Cookiebot | yes | yes |
-| CookieYes | yes | yes |
-| Usercentrics | yes | yes |
-| Quantcast Choice | no | yes |
+| OneTrust | fixture-tested candidate | fixture-tested candidate |
+| Cookiebot | fixture-tested candidate | fixture-tested candidate |
+| CookieYes | fixture-tested candidate | fixture-tested candidate |
+| Usercentrics | fixture-tested candidate | fixture-tested candidate |
+| Quantcast Choice | unsupported | fixture-tested candidate |
 
 Real-site evidence: [`docs/REAL_SITE_TEST_MATRIX.md`](docs/REAL_SITE_TEST_MATRIX.md).
 
