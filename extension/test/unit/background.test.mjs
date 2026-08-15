@@ -1,28 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-test('update purges all alpha storage while preserving migrated settings', async () => {
-  const local = {
-    'bananer-settings': { enabled: true },
-    'bananer-sites': ['https://example.com'],
-    'bananer-kb': { record: { hostname: 'example.com' } },
-    'bananer-roster': { professor: { xp: 10 } },
-    bannersClosedCount: 4,
-  };
-  const sync = {
-    'banner-preferences': { level: 'all', useCustom: false },
-    'auto-close-enabled': true,
-    'show-banana-celebration': true,
-    bannersClosedHistory: [{ url: 'https://example.com/private' }],
-    theme: 'light',
-  };
-  let onInstalled;
-
-  const storageArea = (data) => ({
+function storageArea(initial) {
+  const data = { ...initial };
+  return {
+    data,
     get(keys, callback) {
       const selected = {};
       for (const key of Array.isArray(keys) ? keys : [keys]) {
-        if (data[key] !== undefined) selected[key] = data[key];
+        if (key in data) selected[key] = data[key];
       }
       callback(selected);
     },
@@ -34,19 +20,33 @@ test('update purges all alpha storage while preserving migrated settings', async
       for (const key of keys) delete data[key];
       callback?.();
     },
+  };
+}
+
+test('install and update purge all alpha storage, including local browsing-derived knowledge', async () => {
+  let onInstalled;
+  const local = storageArea({
+    'bananer-settings': { enabled: true },
+    'bananer-sites': ['https://private.example'],
+    'bananer-kb': { fingerprint: { hostname: 'private.example' } },
+    'bananer-roster': { scout: { dismissals: 1 } },
+    bannersClosedCount: 1,
+  });
+  const sync = storageArea({
+    bannersClosedHistory: [{ url: 'https://private.example/path' }],
+    'banner-preferences': { level: 'necessary' },
+    'auto-close-enabled': true,
+    'show-banana-celebration': true,
+    theme: 'light',
   });
 
   globalThis.chrome = {
+    storage: { local, sync },
     runtime: {
       onInstalled: { addListener(listener) { onInstalled = listener; } },
       onStartup: { addListener() {} },
       onMessage: { addListener() {} },
-      getURL: (path) => path,
-    },
-    storage: {
-      local: storageArea(local),
-      sync: storageArea(sync),
-      onChanged: { addListener() {} },
+      getURL(path) { return `chrome-extension://test/${path}`; },
     },
     permissions: {
       getAll(callback) { callback({ origins: [] }); },
@@ -64,12 +64,27 @@ test('update purges all alpha storage while preserving migrated settings', async
     },
   };
 
-  await import(`../../background.js?test=${Date.now()}`);
+  await import('../../background.js?unit-test');
+  assert.equal(typeof onInstalled, 'function');
   await onInstalled({ reason: 'update' });
 
-  assert.deepEqual(Object.keys(local).sort(), ['bb:authorizedOrigins', 'bb:settings', 'bb:stats']);
-  assert.equal(local['bb:settings'].mode, 'all');
-  assert.deepEqual(sync, {});
+  assert.deepEqual(Object.keys(local.data).sort(), [
+    'bb:authorizedOrigins',
+    'bb:settings',
+    'bb:stats',
+  ]);
+  assert.deepEqual(local.data['bb:settings'], {
+    version: 1,
+    mode: 'necessary',
+    enabled: true,
+    celebrate: true,
+  });
+  assert.deepEqual(sync.data, {});
 
-  delete globalThis.chrome;
+  local.data['bananer-kb'] = { fingerprint: { hostname: 'private.example' } };
+  sync.data.bannersClosedHistory = [{ url: 'https://private.example/path' }];
+  await onInstalled({ reason: 'install' });
+
+  assert.equal(local.data['bananer-kb'], undefined);
+  assert.equal(sync.data.bannersClosedHistory, undefined);
 });

@@ -33,8 +33,9 @@ replaces the alpha runtime:
   the extension. Training/sharing/Learn-dashboard UI was removed from the
   shipped package.
 - Storage holds bounded aggregate counters only; nothing browsing-derived
-  enters sync storage; legacy URL-bearing history is purged on update. The
-  privacy policy was rewritten to the observed schema.
+  enters sync storage; all alpha-era local knowledge/history and sync data are
+  purged on install and update. The privacy policy was rewritten to the
+  observed schema.
 - Icons exist (generated reproducibly), the manifest references only real
   files, the build packages only runtime files, validates strictly, and emits
   an inventory plus an archive hash.
@@ -45,7 +46,8 @@ replaces the alpha runtime:
 ## Next Shippable Artifact
 
 Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
-rows in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
+rows covering 20 concrete distinct origins in
+`docs/REAL_SITE_TEST_MATRIX.md` (including the permission
 walkthrough/revocation checks), then a tagged gates-green build with the final
 WS-04 provenance row.
 
@@ -82,27 +84,28 @@ need submission-time/dashboard finalization.
 
 ## Latest handoff
 
-- Artifact shipped: PR #39 review fixes for candidate-only public CMP claims,
-  PB-11 unique-site/evidence rules, complete alpha-storage cleanup, authority
-  ordering, provenance verification, and the misleading security-policy index
-  entry.
-- Files or behavior changed: extension updates now purge all five legacy local
-  keys plus legacy sync keys while preserving safely migrated settings;
-  `extension/test/unit/background.test.mjs` covers the update lifecycle. The
-  user guide, matrix/protocol, PRD, documentation index, and release-gate
-  evidence now match the review requirements.
-- Checks passed: 71/71 extension unit tests; `npm run lint` with 0 errors and 7
-  pre-existing fast-refresh warnings; `npm run build:extension` with strict
-  21-file package validation; `git diff --check`.
-- Manual evidence: matrix audit confirms 29 rows resolve to 20 unique sites;
-  the user-guide table contains candidate/fixture wording rather than
-  unconditional support; the sample provenance hash is present in
-  `docs/RELEASE_PROVENANCE.md`.
+- Artifact shipped: PR #39 review corrections — honest candidate labels,
+  a 20-distinct-origin PB-11 candidate set with durable evidence rules,
+  BannerBanner-specific private vulnerability reporting, and complete
+  alpha-storage cleanup on update.
+- Files or behavior changed: `extension/background.js` now removes all legacy
+  local knowledge/history keys and sync keys on install and update, with focused
+  coverage in `extension/test/unit/background.test.mjs`; `USER_GUIDE.md`,
+  `SECURITY.md`, `DOCUMENTATION_INDEX.md`, the real-site matrix/protocol, and
+  release-gate evidence were aligned to the review.
+- Checks passed: 71/71 unit tests; 33/33 browser integration tests; `npm run
+  lint` with 0 errors and 7 pre-existing fast-refresh warnings; `npm run
+  build:extension` and strict 21-file package validation; `git diff --check`.
+- Manual evidence: the service-worker update lifecycle test was exercised with
+  seeded URL-bearing alpha local/sync data; the matrix was counted at 20
+  concrete unique origins. No live-site browser testing occurred.
 - Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
-  WS-03 screenshots, the final tagged-build provenance row, and the existing
-  transitive dependency advisory remain open.
-- Release gate changed: none. PB-08 evidence now includes the alpha-storage
-  purge regression; PB-11 remains open and explicitly counts distinct origins.
+  WS-03 screenshots, the final tagged-build provenance row, and one current
+  transitive high-severity advisory reported by `npm audit` from the existing
+  dependency tree.
+- Release gate changed: none closed. PB-08 evidence now covers complete legacy
+  cleanup; PB-11 remains open and explicitly requires 20–30 distinct origins
+  with durable accessible evidence.
 - Next shippable artifact: human execution of
   `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
 

@@ -19,24 +19,9 @@ function localGet(keys) {
 function localSet(obj) {
   return new Promise((resolve) => chrome.storage.local.set(obj, () => resolve()));
 }
-function localRemove(keys) {
-  return new Promise((resolve) => chrome.storage.local.remove(keys, () => resolve()));
+function storageRemove(area, keys) {
+  return new Promise((resolve) => area.remove(keys, () => resolve()));
 }
-
-const LEGACY_LOCAL_KEYS = [
-  'bananer-settings',
-  'bananer-sites',
-  'bananer-kb',
-  'bananer-roster',
-  'bannersClosedCount',
-];
-const LEGACY_SYNC_KEYS = [
-  'bannersClosedHistory',
-  'banner-preferences',
-  'auto-close-enabled',
-  'show-banana-celebration',
-  'theme',
-];
 
 async function getSettings() {
   const data = await localGet(STORAGE_KEYS.settings);
@@ -132,24 +117,36 @@ async function broadcastSettings(settings) {
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   const existing = await localGet([STORAGE_KEYS.settings, STORAGE_KEYS.origins, STORAGE_KEYS.stats]);
-  let legacySync = {};
-
-  if (details.reason === 'update') {
-    legacySync = await new Promise((resolve) =>
-      chrome.storage.sync.get(['banner-preferences', 'auto-close-enabled', 'show-banana-celebration'], (d) => resolve(d || {}))
-    );
-    await Promise.all([
-      localRemove(LEGACY_LOCAL_KEYS),
-      new Promise((resolve) => chrome.storage.sync.remove(LEGACY_SYNC_KEYS, () => resolve())),
-    ]);
-  }
 
   if (existing[STORAGE_KEYS.settings] === undefined) {
     // Fresh install or upgrade from legacy alpha: migrate what we safely can.
-    const settings = details.reason === 'update'
-      ? migrateLegacySettings(legacySync).settings
-      : defaultSettings();
+    let settings = defaultSettings();
+    if (details.reason === 'update') {
+      const legacySync = await new Promise((resolve) =>
+        chrome.storage.sync.get(['banner-preferences', 'auto-close-enabled', 'show-banana-celebration'], (d) => resolve(d || {}))
+      );
+      settings = migrateLegacySettings(legacySync).settings;
+    }
     await localSet({ [STORAGE_KEYS.settings]: settings });
+  }
+  if (details.reason === 'install' || details.reason === 'update') {
+    // Purge all alpha-era data, including URL-bearing local knowledge records.
+    await Promise.all([
+      storageRemove(chrome.storage.local, [
+        'bananer-settings',
+        'bananer-sites',
+        'bananer-kb',
+        'bananer-roster',
+        'bannersClosedCount',
+      ]),
+      storageRemove(chrome.storage.sync, [
+        'bannersClosedHistory',
+        'banner-preferences',
+        'auto-close-enabled',
+        'show-banana-celebration',
+        'theme',
+      ]),
+    ]);
   }
   if (existing[STORAGE_KEYS.origins] === undefined) {
     await localSet({ [STORAGE_KEYS.origins]: [] });

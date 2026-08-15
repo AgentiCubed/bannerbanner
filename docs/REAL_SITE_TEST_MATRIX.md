@@ -31,9 +31,9 @@ Complete this block for each test run or link a versioned run record.
 - Profile state: Fresh or named test profile
 - Date:
 - Tester:
-- Evidence location: committed sanitized evidence path or durable external
-  artifact URL. Captures that cannot be safely sanitized must be excluded and
-  cannot support a `Pass` row.
+- Evidence location: (commit sanitized evidence under `evidence/` or link a
+  durable external artifact; exclude captures only when they cannot be safely
+  sanitized, and do not count an inaccessible capture as evidence)
 
 ## Candidate CMP support ledger
 
@@ -55,8 +55,7 @@ Launch may claim only three to five CMPs that pass. Remove or defer a candidate 
 One row represents one site, CMP, mode, extension commit, and test date.
 Follow `docs/REAL_SITE_TEST_PROTOCOL.md` for every row.
 
-The rows below are **pre-filled candidates** (29 rows covering 20 distinct
-candidate sites once RS-19 and RS-23 select different origins): origins believed to
+The rows below are **pre-filled candidates** (29 rows): origins believed to
 run each CMP as of 2026-08, with the expected control and postcondition taken
 from the shipped adapters. Deployments change — step 1 of the protocol
 confirms the CMP on the day of testing; mark a row `Blocked` and substitute a
@@ -77,17 +76,17 @@ Expected-control shorthand used below:
 | RS-03 | https://open.spotify.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
 | RS-04 | https://open.spotify.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
 | RS-05 | https://edition.cnn.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | EU/UK exit point may be needed to see the banner |
-| RS-06 | https://edition.cnn.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-06 | https://www.mastercard.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | replacement-pool candidate |
 | RS-07 | https://www.lego.com | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
-| RS-08 | https://www.mastercard.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-08 | https://www.lego.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
 | RS-09 | https://www.zoom.us | OneTrust | Necessary only | OT-reject → OptanonConsent | Not run | | | | | |
-| RS-10 | https://www.sap.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | |
+| RS-10 | https://www.sap.com | OneTrust | Accept all | OT-accept → OptanonConsent | Not run | | | | | replacement-pool candidate |
 | RS-11 | https://www.cookiebot.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | | vendor's own site |
 | RS-12 | https://www.cookiebot.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | |
 | RS-13 | https://www.bang-olufsen.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | | |
-| RS-14 | https://www.visitdenmark.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | |
+| RS-14 | https://www.visitdenmark.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | replacement-pool candidate |
 | RS-15 | https://www.grundfos.com | Cookiebot | Necessary only | CB-decline → CookieConsent | Not run | | | | | |
-| RS-16 | https://www.carlsberg.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | |
+| RS-16 | https://www.carlsberg.com | Cookiebot | Accept all | CB-allow → CookieConsent | Not run | | | | | replacement-pool candidate |
 | RS-17 | https://www.cookieyes.com | CookieYes | Necessary only | CY-reject → cookieyes-consent | Not run | | | | | vendor's own site |
 | RS-18 | https://www.cookieyes.com | CookieYes | Accept all | CY-accept → cookieyes-consent | Not run | | | | | |
 | RS-19 | (pick from CookieYes showcase / BuiltWith) | CookieYes | Necessary only | CY-reject → cookieyes-consent | Not run | | | | | source a live WordPress deployment at test time |
@@ -98,9 +97,9 @@ Expected-control shorthand used below:
 | RS-24 | https://usercentrics.com | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | vendor's own site |
 | RS-25 | https://usercentrics.com | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
 | RS-26 | https://www.sixt.de | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | |
-| RS-27 | https://www.sixt.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
+| RS-27 | https://www.tchibo.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | replacement-pool candidate |
 | RS-28 | https://www.kicker.de | Usercentrics | Necessary only | UC-deny → uc_settings | Not run | | | | | |
-| RS-29 | https://www.kicker.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | |
+| RS-29 | https://www.dm.de | Usercentrics | Accept all | UC-accept → uc_settings | Not run | | | | | replacement-pool candidate |
 
 Replacement pools if a candidate changed CMP vendor: OneTrust —
 mastercard.com, sap.com, heineken.com; Cookiebot — visitdenmark.com,
@@ -175,10 +174,13 @@ For every failure, capture:
 
 ## Exit criteria
 
-- 20 to 30 real-site rows are complete.
+- 20 to 30 distinct real sites are complete (count unique `Site origin` values,
+  not separate mode rows for the same origin).
 - Every claimed CMP passes both supported modes **on real sites**.
 - Permission grant and revocation cases pass (manual + automated).
 - Every sensitive-dialog case passes (fixtures done; real spot checks recommended).
 - No destructive false positive remains.
 - All failures are fixed, explicitly unsupported, or cause the relevant support claim to be removed.
+- Every passing row links committed sanitized evidence or a durable external
+  artifact accessible to reviewers.
 - `PB-03`, `PB-04`, `PB-05`, and `PB-11` link to this evidence.
