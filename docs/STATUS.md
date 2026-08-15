@@ -82,27 +82,27 @@ need submission-time/dashboard finalization.
 
 ## Latest handoff
 
-- Artifact shipped: merge-conflict resolution for the issue #32 PR while
-  preserving both sets of truthful v0.1 documentation: `main`'s rewritten
-  legacy planning docs plus this branch's claim audit, release provenance,
-  Store-copy, and matrix evidence scaffolding.
-- Files or behavior changed: resolved conflicts in `PRD.md`,
-  `COMPLETE_PICTURE.md`, `ITERATION_6_SUMMARY.md`, `PROJECT_STATUS.md`,
-  `docs/RELEASE_GATES.md`, and this file; the merge also brought forward
-  `main`'s non-conflicting updates to `MVP_ASSESSMENT.md`, `package.json`,
-  and `package-lock.json`. No extension runtime files under `extension/`
-  changed.
-- Checks passed: merge state resolved cleanly; `git diff --check` and a
-  repository scan for conflict markers both pass; `npm run build:extension`
-  passes; `npm run lint` passes with 7 pre-existing fast-refresh warnings.
-- Manual evidence: none; merge result inspected against `origin/main` and the
-  issue #32 branch state.
+- Artifact shipped: PR #39 review fixes for candidate-only public CMP claims,
+  PB-11 unique-site/evidence rules, complete alpha-storage cleanup, authority
+  ordering, provenance verification, and the misleading security-policy index
+  entry.
+- Files or behavior changed: extension updates now purge all five legacy local
+  keys plus legacy sync keys while preserving safely migrated settings;
+  `extension/test/unit/background.test.mjs` covers the update lifecycle. The
+  user guide, matrix/protocol, PRD, documentation index, and release-gate
+  evidence now match the review requirements.
+- Checks passed: 71/71 extension unit tests; `npm run lint` with 0 errors and 7
+  pre-existing fast-refresh warnings; `npm run build:extension` with strict
+  21-file package validation; `git diff --check`.
+- Manual evidence: matrix audit confirms 29 rows resolve to 20 unique sites;
+  the user-guide table contains candidate/fixture wording rather than
+  unconditional support; the sample provenance hash is present in
+  `docs/RELEASE_PROVENANCE.md`.
 - Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
-  WS-03 screenshots, the final tagged-build provenance row, and one current
-  transitive `nanoid` advisory reported by `npm audit` from the merged main
-  dependency tree.
-- Release gate changed: none materially. `PB-12` remains closed; `PB-11`
-  remains open; `WS-01`/`WS-04` evidence remains recorded in-repo.
+  WS-03 screenshots, the final tagged-build provenance row, and the existing
+  transitive dependency advisory remain open.
+- Release gate changed: none. PB-08 evidence now includes the alpha-storage
+  purge regression; PB-11 remains open and explicitly counts distinct origins.
 - Next shippable artifact: human execution of
   `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
 
