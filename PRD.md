@@ -1,98 +1,129 @@
-# BannerBanner product requirements (v0.1)
+# BannerBanner v0.1 — Product Requirements
 
-Status: Canonical for the shipped Chrome extension  
-Supersedes: alpha-era PRD content (training, granular categories, 30+ CMPs, all-site automation)  
-Authority: When this file conflicts with older root markdown, prefer
-`docs/MVP_CONTRACT.md`, then this PRD, then code and tests.
+> **Scope note.** This document describes the shipped v0.1 product: a Chrome
+> Manifest V3 extension. Earlier revisions of this PRD described alpha-era
+> concepts (a pattern training wizard, community pattern sharing, granular
+> per-category consent, a learning system) that were removed from the product
+> and are out of scope for v0.1. The canonical scope, safety rules, and
+> release process live in [`docs/MVP_CONTRACT.md`](docs/MVP_CONTRACT.md),
+> [`docs/DECISIONS.md`](docs/DECISIONS.md), and
+> [`docs/RELEASE_GATES.md`](docs/RELEASE_GATES.md); if this document ever
+> disagrees with them, they win.
 
-## Mission
+## Product summary
 
-BannerBanner v0.1 is a per-site opt-in Chrome extension that applies a user's
-chosen cookie-consent preference on explicitly authorized websites. It acts
-only when it can identify and activate a supported consent-management platform
-(CMP) control, verifies the result, and reports success locally.
+BannerBanner v0.1 is a per-site opt-in Chrome extension that applies the
+user's chosen cookie-consent preference on websites the user explicitly
+enables. On an enabled site, it recognizes a strict allowlist of
+consent-management platforms (CMPs), activates that platform's own
+"necessary only" or "accept all" control, verifies the platform recorded the
+choice, and reports the outcome locally. There is no backend, no account, no
+telemetry, and no network activity of any kind.
 
-## Product promise
+**Status:** release hardening for a Safe Chrome private beta. Automated
+release gates PB-01 through PB-10 have evidence; the blocking gate is PB-11
+(real-site acceptance), which requires manual browser evidence recorded in
+[`docs/REAL_SITE_TEST_MATRIX.md`](docs/REAL_SITE_TEST_MATRIX.md).
 
-- Cookie-consent banners only.
-- Genuine per-origin opt-in enforced with dynamic content-script registration.
-- Two preference modes: **Necessary only** (default) and **Accept all**.
-- Success only after the intended control is activated and an adapter-specific
-  postcondition is verified.
-- Unknown and sensitive dialogs receive no automatic action.
-- Local aggregate counters only; no URL-bearing history; no remote services.
+## Experience qualities
 
-## In scope (v0.1)
+1. **Protective** — a guardian of user privacy, with a hard safety line:
+   unknown or sensitive dialogs are never touched.
+2. **Honest** — a banner counts as handled only after the CMP's own control
+   was activated *and* its consent signal was verified. Hiding a banner is
+   never treated as consent.
+3. **Trustworthy** — genuinely minimal permissions: the extension starts with
+   access to zero websites and gains access one origin at a time, only after
+   an explicit user action.
 
-| Area | Requirement |
-|---|---|
-| Platform | Chrome Manifest V3 |
-| Access model | Optional host permissions; no static all-site content scripts |
-| CMP allowlist | OneTrust, Cookiebot, CookieYes, Usercentrics (both modes); Quantcast Choice (**Accept all** only — BB-013) |
-| Modes | `necessary`, `all` |
-| UI | Toolbar popup (enable/disable site, mode, stats) + options page |
-| Storage | `chrome.storage.local` keys `bb:settings`, `bb:authorizedOrigins`, `bb:stats` |
-| Celebration | Optional banana animation only after verified success |
-| Evidence | Unit, browser integration, package validation, real-site matrix |
+## Essential features (v0.1, as shipped)
 
-## Out of scope (v0.1)
+### 1. Per-site opt-in
 
-Recorded in `docs/MVP_CONTRACT.md` and the Parking Lot in `docs/STATUS.md`:
+- No static content scripts. Enabling a site requests Chrome's optional host
+  permission for that one origin and dynamically registers the content
+  script for it.
+- Disabling a site (or revoking access in `chrome://extensions`) removes the
+  registration and signals already-open matching tabs to stop.
+- Success criteria: a clean install injects nothing anywhere; revocation is
+  complete and survives restart and extension update.
 
-- Newsletter, advertisement, paywall, age-gate, or generic popup removal
-- Automatic action on unknown dialogs
-- DOM removal/hiding as a consent fallback
-- Granular per-category consent automation
-- User-trained selectors / training wizard
-- Community pattern sharing or any backend
-- Spark dashboard as extension runtime UI
-- Cross-browser support
-- Remote analytics, accounts, sync, or cloud storage
-- TrustArc, Osano, Cookie Notice, and other non-allowlisted CMPs (BB-014)
+### 2. Two consent modes
 
-## Safety invariants
+- **Necessary only** (default) or **Accept all**, chosen in the options UI.
+- The stored preference is loaded before any classification or execution.
+- Success criteria: the selected mode persists across reload, browser
+  restart, and extension update (versioned `chrome.storage.local` schema
+  with migration and corruption recovery).
 
-See `docs/MVP_CONTRACT.md`. Non-negotiable summary:
+### 3. Allowlisted CMP handling with verified outcomes
 
-1. Unknown means no automatic action.
-2. Sensitive workflows remain untouched.
-3. Consent is an action, not the absence of a banner.
-4. Settings load before classification or execution.
-5. One pipeline owns detect → decide → execute → verify → report.
-6. Revoking an origin stops injection and current activity.
-7. No full URL/path/query/title/content stored as history.
-8. Success requires verified postcondition.
-9. Celebration cannot delay or substitute for consent.
-10. A destructive false positive blocks release.
+- Supported platforms (launch candidates): OneTrust, Cookiebot, CookieYes,
+  Usercentrics (both modes), and Quantcast Choice (*Accept all* only).
+- One awaited pipeline owns detect → classify → decide → execute → verify →
+  report (`extension/lib/pipeline.js`). One page can never have two engines
+  acting independently.
+- Success is recorded only after an adapter-specific postcondition passes:
+  the site-written consent signal (cookie/storage) plus banner teardown by
+  the site itself. There is no DOM-removal or hiding fallback.
+- Success criteria: fixture-tested adapters per CMP and mode; public support
+  claims follow real-site evidence in the test matrix.
 
-## Permissions
+### 4. Fail-closed safety
 
-| Permission | Why |
-|---|---|
-| `storage` | Settings, authorized origins, aggregate stats |
-| `activeTab` | Popup knows the current tab origin for enable/disable |
-| `scripting` | Register/unregister the content script per granted origin |
-| Optional `http(s)://*/*` | Requested one origin at a time after explicit user action |
+- Unknown dialogs receive no click, removal, hiding, style mutation, or
+  synthetic event — the user gets an honest "unsupported" status.
+- Login, checkout, payment, security, age-verification, session-expiration,
+  and unsaved-work dialogs are never touched, enforced by one fixture
+  regression per protected class.
+- Success criteria: the safety regression suite passes; any destructive
+  false positive blocks release.
 
-## User experience
+### 5. Local aggregate statistics
 
-1. Install → extension has access to **zero** sites.
-2. User opens popup on a site → **Enable on this site** → Chrome permission prompt.
-3. On grant, content script registers for that origin only.
-4. If a supported CMP is present, BannerBanner clicks the mode-appropriate
-   control and verifies the CMP's own consent signal.
-5. Popup/options show local status and aggregate counters.
-6. **Disable on this site** unregisters the script, drops the origin, and stops
-   open tabs on that origin.
+- Bounded aggregate success/failure counters in `chrome.storage.local` only.
+- No URLs, paths, query strings, page titles, page content, or chronological
+  browsing history are stored; nothing enters sync storage; nothing is
+  transmitted anywhere. See
+  [`extension/PRIVACY_POLICY.md`](extension/PRIVACY_POLICY.md).
 
-## Acceptance
+### 6. Optional banana celebration
 
-v0.1 private beta requires every `PB-*` gate in `docs/RELEASE_GATES.md` with
-linked evidence. Chrome Web Store submission additionally requires every
-`WS-*` gate. No percentage-complete claim overrides an open gate.
+- A small banana animation after a verified success only. It can be disabled
+  and can never delay or substitute for the consent operation.
 
-## Design notes (non-blocking)
+## Explicitly out of scope for v0.1
 
-The GitHub Spark app under `src/` is a design playground and is **not** part of
-the extension runtime. Visual polish there must not be described as shipped
-extension functionality.
+These are Parking Lot items, not features. Some existed in alpha builds and
+were deliberately removed from the shipped package:
+
+- Pattern training wizard / user-trained selectors.
+- Community pattern sharing or any sharing backend.
+- Granular per-category consent beyond the two modes.
+- Any "learning system" or adaptive detection.
+- Newsletter, advertisement, paywall, age-gate, or generic popup removal.
+- Remote analytics, telemetry, accounts, synchronization, or cloud storage.
+- Cross-browser support.
+- The GitHub Spark web app under `src/` as extension runtime UI — it is a
+  design playground only and is not part of the shipped extension.
+
+Reintroducing any of these requires the private-beta gates to pass first and
+a recorded scope change in `docs/DECISIONS.md`.
+
+## Technical shape
+
+- Chrome Manifest V3; permissions `storage`, `activeTab`, `scripting`; host
+  access only via `optional_host_permissions`, granted per origin.
+- Plain ES-module JavaScript runtime under `extension/` with zero runtime
+  dependencies and no bundler.
+- `chrome.storage.local` is the sole runtime store (versioned schema).
+- Zero backend, zero database, zero network I/O.
+- Automated checks: 70 unit tests, 33 real-Chromium integration tests,
+  strict package validation, reproducible icons, repo-wide lint — all in CI.
+
+## Success criteria for the private beta
+
+Defined by the release gates in `docs/RELEASE_GATES.md` (PB-01 – PB-12). The
+remaining blocking work is PB-11: manual real-site evidence for the
+candidate CMP rows in `docs/REAL_SITE_TEST_MATRIX.md`, following
+`docs/REAL_SITE_TEST_PROTOCOL.md`.

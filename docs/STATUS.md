@@ -1,7 +1,7 @@
 # BannerBanner status
 
-Last updated: 2026-08-03  
-Code baseline reviewed: issue #32 branch on top of `main` at `c981cc8` / merged hardening  
+Last updated: 2026-08-15  
+Code baseline reviewed: `main` at `3981fdb` (v0.1 hardening rewrite merged)  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -29,9 +29,12 @@ network cannot resolve external hostnames.
 
 ## Next Shippable Artifact
 
-Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
-rows (and permission walkthrough) on a desktop Chrome profile, then tick PB-11
-(and remaining manual cells) with evidence paths.
+Issue #32 execution: run `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29
+pre-filled candidate rows in `docs/REAL_SITE_TEST_MATRIX.md` (requires a
+human at a browser). The claim-to-code audit of the legacy planning
+documents is done: PRD.md, ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md,
+PROJECT_STATUS.md, and COMPLETE_PICTURE.md were rewritten to the v0.1
+reality, closing PB-12.
 
 ## Blocking Release Gate
 
@@ -41,11 +44,9 @@ WS-04 build procedure are recorded; both need submission-time finalization.
 
 ## Known blockers
 
-- Live real-site and Chrome permission-prompt flows need a human networked
-  browser (agent environment: no external DNS).
-- CMP support claims stay "candidate" until matrix live rows pass.
-- WS-03 screenshots not captured.
-- WS-04 final upload requires a git tag on a gates-green commit.
+- The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
+  user flows need manual matrix rows.
+- No real-site evidence yet; CMP support claims stay "candidate" until then.
 
 ## Parking Lot
 
@@ -63,6 +64,94 @@ WS-04 build procedure are recorded; both need submission-time finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: PB-12 documentation reconciliation — PRD.md,
+  ITERATION_6_SUMMARY.md, MVP_ASSESSMENT.md, PROJECT_STATUS.md, and
+  COMPLETE_PICTURE.md rewritten to describe only the shipped v0.1 Manifest
+  V3 extension. All alpha-era claims of a pattern training wizard,
+  community sharing, granular consent categories, or a learning system were
+  removed; each document now points to the operating pack
+  (`docs/MVP_CONTRACT.md`, `docs/DECISIONS.md`, `docs/RELEASE_GATES.md`,
+  this file) as canonical.
+- Files or behavior changed: the five legacy documents above, this file,
+  and the PB-12 row in `docs/RELEASE_GATES.md`. Docs only; no code changed;
+  `extension/` is untouched.
+- Checks passed: 70/70 unit tests, `npm run lint` 0 errors,
+  `npm run build:extension` + strict package validation pass,
+  `git diff --stat` confirms no `extension/` changes.
+- Manual evidence: the diff is the record.
+- Remaining uncertainty: none for PB-12 within the repository; external
+  copy (e.g. future Web Store listing) is covered separately by WS-01/WS-02.
+- Release gate changed: PB-12 closed (checkbox checked in
+  `docs/RELEASE_GATES.md` at James's direction, 2026-08-15).
+- Next shippable artifact: issue #32 execution — the real-site test matrix
+  rows (PB-11).
+
+Previous handoff (PR #37):
+
+- Artifact shipped: repo-wide eslint in CI on top of the merged v0.1
+  hardening rewrite: flat eslint config for eslint 10 (`eslint.config.js`
+  covering `src/`, the ES-module extension runtime, `scripts/`, and both test
+  suites), `.github/workflows/lint.yml`, and a clean `npm audit`.
+- Files or behavior changed: `eslint.config.js` and `.github/workflows/lint.yml`
+  added; 27 lint errors fixed in `src/` (unused bindings/imports, typing
+  cleanups — no behavior changes) and 3 in the rewritten runtime/tooling
+  (`lib/dom-probe.js` useless assignment, unused test arg, unused import in
+  `validate-package.mjs`); `package.json` security overrides bumped
+  (`postcss` 8.5.25, `minimatch` 3.1.5) plus `npm audit fix`, taking audit
+  findings from 4 to 0. Runtime behavior is unchanged; the merge kept main's
+  v0.1 runtime (including the deletion of `bananer.js`) intact.
+- Checks passed: `npm run lint` exits 0 (7 warnings, all the stock shadcn
+  fast-refresh warning); 70/70 unit tests; `npm audit` 0 vulnerabilities;
+  `npm run build` passes.
+- Manual evidence: Command output verified in the PR #37 session; the diff is
+  the record.
+- Remaining uncertainty: the lint workflow has not yet run on GitHub-hosted
+  runners (first run happens on this PR); `npm audit` is clean locally but is
+  deliberately not a CI check. The pre-existing `tsc --noEmit` errors in `src/`
+  (lucide-react deep imports) are untouched.
+- Release gate changed: None closed; PB-10 evidence extended with the
+  repo-wide eslint CI workflow.
+- Next shippable artifact: unchanged — issue #32 execution (run
+  `docs/REAL_SITE_TEST_PROTOCOL.md` against the matrix rows) and the final
+  claim audit.
+
+Previous handoff (PR #38, issue #32 prep):
+
+- Artifact shipped: issue #32 preparation — `docs/REAL_SITE_TEST_PROTOCOL.md`
+  (step-by-step manual procedure covering per-site rows, the
+  permission-boundary walkthrough, sensitive-dialog spot checks, storage
+  inspection, and evidence rules) and 29 pre-filled candidate rows in
+  `docs/REAL_SITE_TEST_MATRIX.md` with adapter-derived expected controls and
+  postconditions. Docs only; no runtime changes. The v0.1 runtime rewrite
+  (#24–#31) merged to `main` in PR #36 with CI green.
+
+Previous handoff (PR #36):
+
+- Artifact shipped: v0.1 permission-boundary, single-pipeline, verified-consent
+  rewrite of the extension runtime with tests, CI, packaging, and aligned
+  privacy/docs (issues #24–#31; #32 partially).
+- Files or behavior changed: `extension/` rewritten (manifest, background,
+  content, popup, new options page, new `lib/` modules); `bananer.js`,
+  `bananer-characters.js`, `learn.*`, `test-page.html` removed;
+  `scripts/generate-icons.mjs` and `scripts/validate-package.mjs` added;
+  `.github/workflows/extension-ci.yml` added; README, extension README,
+  privacy policy, decisions (BB-013, BB-014), release gates, and this file
+  updated.
+- Checks passed: 70/70 unit tests; 24/24 pipeline browser tests and 9/9
+  boundary browser tests in local Chromium; build + strict package validation
+  pass; icons reproduce byte-identically.
+- Manual evidence: none yet — real-site and grant-prompt flows are the next
+  artifact.
+- Remaining uncertainty: real-CMP behavior on live sites (fixtures mimic each
+  CMP's DOM and consent signals but are not the real deployments); Web Store
+  dashboard answers; PRD claim audit.
+- Release gate changed: PB-01…PB-10 evidence fields now link automated proof
+  (checkboxes intentionally left for James); PB-12 and WS-02 marked partial.
+- Next shippable artifact: completed `docs/REAL_SITE_TEST_MATRIX.md` rows and
+  the final claim audit (issue #32).
+
+Previous handoff (PR #39):
 
 - Artifact shipped: issue #32 documentation and evidence alignment — v0.1 PRD,
   Store listing copy, user/quick-start guides, claims audit, release provenance
