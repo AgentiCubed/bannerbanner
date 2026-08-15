@@ -73,7 +73,12 @@ test('install and update purge all alpha storage, including local browsing-deriv
     'bb:settings',
     'bb:stats',
   ]);
-  assert.equal(local.data['bb:settings'].mode, 'necessary');
+  assert.deepEqual(local.data['bb:settings'], {
+    version: 1,
+    mode: 'necessary',
+    enabled: true,
+    celebrate: true,
+  });
   assert.deepEqual(sync.data, {});
 
   local.data['bananer-kb'] = { fingerprint: { hostname: 'private.example' } };
