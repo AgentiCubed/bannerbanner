@@ -58,10 +58,10 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - Evidence: Automated: `.github/workflows/extension-ci.yml` runs syntax checks, unit tests, icon reproducibility, build + package validation, and both browser suites on every pull request. Local commands documented in `extension/README.md`. `.github/workflows/lint.yml` runs repo-wide eslint (flat config in `eslint.config.js` covering `src/`, `extension/`, `scripts/`, and tests) on every pull request; `npm audit` is clean as of PR #37 but is not a CI check.
 
 - [ ] **PB-11: Real-site acceptance**
-  - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.
+  - At least 20 to 30 distinct representative site origins are recorded in `docs/REAL_SITE_TEST_MATRIX.md`; multiple mode rows for one origin count as one site.
   - All claimed CMP-mode combinations have passing evidence.
   - There are zero destructive false positives.
-  - Evidence: Partial preparation only. Matrix has 33 candidate rows covering 20 distinct origins once the two placeholders are selected, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
+  - Evidence: Partial preparation only. Matrix has 33 candidate rows across 18 named origins and will cover 20 distinct origins once the two placeholders are assigned different sites, plus a protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
 
 - [x] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.

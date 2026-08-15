@@ -53,7 +53,8 @@ Launch may claim only three to five CMPs that pass. Remove or defer a candidate 
 One row represents one site, CMP, mode, extension commit, and test date.
 Follow `docs/REAL_SITE_TEST_PROTOCOL.md` for every row.
 
-The rows below are **pre-filled candidates** (33 rows): origins believed to
+The rows below are **pre-filled candidates** (33 rows across 18 named origins;
+20 distinct origins once RS-19 and RS-23 are assigned different sites): origins believed to
 run each CMP as of 2026-08, with the expected control and postcondition taken
 from the shipped adapters. Deployments change — step 1 of the protocol
 confirms the CMP on the day of testing; mark a row `Blocked` and substitute a

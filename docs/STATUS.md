@@ -45,7 +45,7 @@ replaces the alpha runtime:
 ## Next Shippable Artifact
 
 Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 33 candidate
-rows covering 20 distinct origins in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
+rows across 18 named origins in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
 walkthrough/revocation checks), then a tagged gates-green build with the final
 WS-04 provenance row.
 
@@ -82,6 +82,30 @@ need submission-time/dashboard finalization.
 
 ## Latest handoff
 
+- Artifact shipped: merge-conflict resolution for the PR #39 review-fix branch,
+  preserving the privacy cleanup, candidate-only claims, durable evidence rules,
+  and project-specific vulnerability reporting on current `main`.
+- Files or behavior changed: merged `origin/main`; reconciled eight conflicts;
+  retained centralized alpha-storage allowlists and added lifecycle coverage for
+  both preserving current settings and migrating safe legacy settings before
+  cleanup. Corrected the matrix inventory to 33 rows across 18 named origins,
+  reaching 20 distinct origins when its two placeholders are assigned.
+- Checks passed: 73/73 extension unit tests; repository lint (0 errors, 7
+  pre-existing fast-refresh warnings); extension build and strict 21-file
+  package validation; matrix count assertion; `git diff --check`; no repository
+  conflict markers.
+- Manual evidence: inspected the three merge stages for all eight conflicts and
+  confirmed the merge retains a two-parent `MERGE_HEAD`.
+- Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
+  WS-03 screenshots, the final tagged-build provenance row, and the existing
+  transitive dependency advisory remain open.
+- Release gate changed: none. PB-11 remains open and requires durable evidence
+  from 20–30 completed distinct origins.
+- Next shippable artifact: human execution of
+  `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
+
+Previous handoff:
+
 - Artifact shipped: PR #39 review fixes — honest candidate wording, enough
   distinct PB-11 site candidates, durable evidence requirements, complete
   alpha-storage cleanup, and project-specific private vulnerability reporting.
@@ -91,16 +115,15 @@ need submission-time/dashboard finalization.
   permissions, or supported-dialog behavior changed.
 - Checks passed: 72/72 extension unit tests; repository lint (0 errors, 7
   pre-existing fast-refresh warnings); extension build and strict 21-file
-  package validation; `git diff --check`; manual matrix count confirms 33 rows
-  across 20 distinct candidate origins.
+  package validation; `git diff --check`; manual matrix count confirms 33 rows,
+  18 named origins, and two placeholders for different sites.
 - Manual evidence: reviewed the historical alpha `bananer.js` storage writes
   against the cleanup inventory and inspected all eight review threads.
 - Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
   WS-03 screenshots, and the final tagged-build provenance row.
 - Release gate changed: none closed. PB-11 still requires 20–30 distinct
-  completed origins with durable evidence; the candidate matrix now has enough
-  distinct origins to meet that criterion after its two placeholders are
-  selected.
+  completed origins with durable evidence; the candidate matrix will cover 20
+  distinct origins after its two placeholders are assigned different sites.
 - Next shippable artifact: human execution of
   `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
 
