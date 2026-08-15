@@ -61,7 +61,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - At least 20 to 30 representative sites are recorded in `docs/REAL_SITE_TEST_MATRIX.md`.
   - All claimed CMP-mode combinations have passing evidence.
   - There are zero destructive false positives.
-  - Evidence: Partial preparation only. Matrix has 29 candidate rows, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
+  - Evidence: Partial preparation only. Matrix has 33 candidate rows covering 20 distinct origins once the two placeholders are selected, protocol, CMP fixture mode matrix, automated permission/sensitive evidence links, and Run R1 environment/provenance (`docs/REAL_SITE_TEST_MATRIX.md`, `docs/REAL_SITE_TEST_PROTOCOL.md`, `docs/RELEASE_PROVENANCE.md`). **Live site rows remain `Not run`** — agent/CI hosts cannot resolve external DNS; a human desktop Chrome run of the protocol is still required before this gate can close.
 
 - [x] **PB-12: Claims match the product**
   - README, PRD, manifest, options UI, privacy policy, and release notes agree on purpose, capabilities, permissions, data, and exclusions.

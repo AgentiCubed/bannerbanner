@@ -6,7 +6,15 @@
 // script per authorized origin, propagates settings, records bounded aggregate
 // stats, and signals open tabs to stop when access is revoked.
 
-import { STORAGE_KEYS, defaultSettings, normalizeSettings, sanitizeSettingsPatch, migrateLegacySettings } from './lib/settings-schema.js';
+import {
+  STORAGE_KEYS,
+  LEGACY_LOCAL_STORAGE_KEYS,
+  LEGACY_SYNC_STORAGE_KEYS,
+  defaultSettings,
+  normalizeSettings,
+  sanitizeSettingsPatch,
+  migrateLegacySettings,
+} from './lib/settings-schema.js';
 import { normalizeStats, recordOutcome } from './lib/stats.js';
 import { planReconciliation, addOrigin, removeOrigin } from './lib/registry.js';
 import { normalizeOrigin, originToMatchPattern, matchPatternToOrigin, normalizeOriginList } from './lib/origins.js';
@@ -18,6 +26,15 @@ function localGet(keys) {
 }
 function localSet(obj) {
   return new Promise((resolve) => chrome.storage.local.set(obj, () => resolve()));
+}
+function localRemove(keys) {
+  return new Promise((resolve) => chrome.storage.local.remove(keys, () => resolve()));
+}
+function syncGet(keys) {
+  return new Promise((resolve) => chrome.storage.sync.get(keys, (data) => resolve(data || {})));
+}
+function syncRemove(keys) {
+  return new Promise((resolve) => chrome.storage.sync.remove(keys, () => resolve()));
 }
 
 async function getSettings() {
@@ -114,18 +131,21 @@ async function broadcastSettings(settings) {
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   const existing = await localGet([STORAGE_KEYS.settings, STORAGE_KEYS.origins, STORAGE_KEYS.stats]);
+  let legacySync = {};
+
+  if (details.reason === 'update') {
+    legacySync = await syncGet(LEGACY_SYNC_STORAGE_KEYS);
+    await Promise.all([
+      localRemove(LEGACY_LOCAL_STORAGE_KEYS),
+      syncRemove(LEGACY_SYNC_STORAGE_KEYS),
+    ]);
+  }
 
   if (existing[STORAGE_KEYS.settings] === undefined) {
     // Fresh install or upgrade from legacy alpha: migrate what we safely can.
-    let settings = defaultSettings();
-    if (details.reason === 'update') {
-      const legacySync = await new Promise((resolve) =>
-        chrome.storage.sync.get(['banner-preferences', 'auto-close-enabled', 'show-banana-celebration'], (d) => resolve(d || {}))
-      );
-      settings = migrateLegacySettings(legacySync).settings;
-      // Purge legacy URL-bearing history from the previous alpha (privacy).
-      chrome.storage.sync.remove(['bannersClosedHistory', 'banner-preferences', 'auto-close-enabled', 'show-banana-celebration', 'theme']);
-    }
+    const settings = details.reason === 'update'
+      ? migrateLegacySettings(legacySync).settings
+      : defaultSettings();
     await localSet({ [STORAGE_KEYS.settings]: settings });
   }
   if (existing[STORAGE_KEYS.origins] === undefined) {

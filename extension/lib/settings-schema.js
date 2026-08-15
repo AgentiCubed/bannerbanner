@@ -14,6 +14,22 @@ export const STORAGE_KEYS = Object.freeze({
   stats: 'bb:stats',
 });
 
+export const LEGACY_LOCAL_STORAGE_KEYS = Object.freeze([
+  'bananer-settings',
+  'bananer-sites',
+  'bananer-kb',
+  'bananer-roster',
+  'bannersClosedCount',
+]);
+
+export const LEGACY_SYNC_STORAGE_KEYS = Object.freeze([
+  'bannersClosedHistory',
+  'banner-preferences',
+  'auto-close-enabled',
+  'show-banana-celebration',
+  'theme',
+]);
+
 /**
  * The two v0.1 consent modes. Anything else is invalid.
  * - "necessary": reject all non-essential categories.

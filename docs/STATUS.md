@@ -44,8 +44,8 @@ replaces the alpha runtime:
 
 ## Next Shippable Artifact
 
-Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
-rows in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
+Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 33 candidate
+rows covering 20 distinct origins in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
 walkthrough/revocation checks), then a tagged gates-green build with the final
 WS-04 provenance row.
 
@@ -81,6 +81,28 @@ need submission-time/dashboard finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: PR #39 review fixes — honest candidate wording, enough
+  distinct PB-11 site candidates, durable evidence requirements, complete
+  alpha-storage cleanup, and project-specific private vulnerability reporting.
+- Files or behavior changed: updates now purge all five alpha local keys and
+  all five legacy sync keys; focused lifecycle coverage added. User/security
+  docs and the PB-11 matrix/protocol were corrected; no consent pipeline,
+  permissions, or supported-dialog behavior changed.
+- Checks passed: focused update-migration tests and JavaScript syntax checks;
+  final repository checks pending.
+- Manual evidence: reviewed the historical alpha `bananer.js` storage writes
+  against the cleanup inventory and inspected all eight review threads.
+- Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
+  WS-03 screenshots, and the final tagged-build provenance row.
+- Release gate changed: none closed. PB-11 still requires 20–30 distinct
+  completed origins with durable evidence; the candidate matrix now has enough
+  distinct origins to meet that criterion after its two placeholders are
+  selected.
+- Next shippable artifact: human execution of
+  `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
+
+Previous handoff:
 
 - Artifact shipped: merge-conflict resolution for the issue #32 PR while
   preserving both sets of truthful v0.1 documentation: `main`'s rewritten

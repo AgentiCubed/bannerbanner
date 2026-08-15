@@ -3,11 +3,30 @@ import assert from 'node:assert/strict';
 import {
   SETTINGS_VERSION,
   STORAGE_KEYS,
+  LEGACY_LOCAL_STORAGE_KEYS,
+  LEGACY_SYNC_STORAGE_KEYS,
   defaultSettings,
   normalizeSettings,
   migrateLegacySettings,
   sanitizeSettingsPatch,
 } from '../../lib/settings-schema.js';
+
+test('legacy cleanup covers every alpha storage key', () => {
+  assert.deepEqual(LEGACY_LOCAL_STORAGE_KEYS, [
+    'bananer-settings',
+    'bananer-sites',
+    'bananer-kb',
+    'bananer-roster',
+    'bannersClosedCount',
+  ]);
+  assert.deepEqual(LEGACY_SYNC_STORAGE_KEYS, [
+    'bannersClosedHistory',
+    'banner-preferences',
+    'auto-close-enabled',
+    'show-banana-celebration',
+    'theme',
+  ]);
+});
 
 test('defaults are privacy-first and versioned', () => {
   const s = defaultSettings();
