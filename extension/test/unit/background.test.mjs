@@ -65,7 +65,8 @@ test('install and update purge all alpha storage, including local browsing-deriv
     },
   };
 
-  await import(`../../background.js?test=${Date.now()}`);
+  await import('../../background.js?unit-test');
+  assert.equal(typeof onInstalled, 'function');
   await onInstalled({ reason: 'update' });
 
   assert.deepEqual(Object.keys(local.data).sort(), [
