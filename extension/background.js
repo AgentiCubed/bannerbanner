@@ -129,7 +129,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     }
     await localSet({ [STORAGE_KEYS.settings]: settings });
   }
-  if (details.reason === 'update') {
+  if (details.reason === 'install' || details.reason === 'update') {
     // Purge all alpha-era data, including URL-bearing local knowledge records.
     await Promise.all([
       storageRemove(chrome.storage.local, [

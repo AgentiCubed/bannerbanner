@@ -23,7 +23,7 @@ function storageArea(initial) {
   };
 }
 
-test('update purges all alpha storage, including local browsing-derived knowledge', async () => {
+test('install and update purge all alpha storage, including local browsing-derived knowledge', async () => {
   let onInstalled;
   const local = storageArea({
     'bb:settings': { version: 1, mode: 'necessary', enabled: true, celebrate: true },
@@ -47,6 +47,7 @@ test('update purges all alpha storage, including local browsing-derived knowledg
       onInstalled: { addListener(listener) { onInstalled = listener; } },
       onStartup: { addListener() {} },
       onMessage: { addListener() {} },
+      getURL(path) { return `chrome-extension://test/${path}`; },
     },
     permissions: {
       getAll(callback) { callback({ origins: [] }); },
@@ -64,7 +65,7 @@ test('update purges all alpha storage, including local browsing-derived knowledg
     },
   };
 
-  await import('../../background.js');
+  await import(`../../background.js?test=${Date.now()}`);
   await onInstalled({ reason: 'update' });
 
   assert.deepEqual(Object.keys(local.data).sort(), [
@@ -73,4 +74,11 @@ test('update purges all alpha storage, including local browsing-derived knowledg
     'bb:stats',
   ]);
   assert.deepEqual(sync.data, {});
+
+  local.data['bananer-kb'] = { fingerprint: { hostname: 'private.example' } };
+  sync.data.bannersClosedHistory = [{ url: 'https://private.example/path' }];
+  await onInstalled({ reason: 'install' });
+
+  assert.equal(local.data['bananer-kb'], undefined);
+  assert.equal(sync.data.bannersClosedHistory, undefined);
 });

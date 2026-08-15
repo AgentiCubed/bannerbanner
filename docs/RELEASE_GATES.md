@@ -44,7 +44,7 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - Normal use stores no full URL, path, query string, title, content, or chronological browsing history.
   - Browsing-derived data does not enter sync storage.
   - The privacy policy describes the observed schema and behavior.
-  - Evidence: Automated: `extension/test/unit/stats.test.mjs` (schema cannot express URLs or history), `extension/test/unit/background.test.mjs` (an update purges all alpha-era local knowledge/history and sync data), and the empty-sync-storage test in `boundary.spec.mjs`; privacy policy rewritten to the observed schema (`extension/PRIVACY_POLICY.md`).
+  - Evidence: Automated: `extension/test/unit/stats.test.mjs` (schema cannot express URLs or history), `extension/test/unit/background.test.mjs` (install and update purge all alpha-era local knowledge/history and sync data), and the empty-sync-storage test in `boundary.spec.mjs`; privacy policy rewritten to the observed schema (`extension/PRIVACY_POLICY.md`).
 
 - [ ] **PB-09: Complete extension package**
   - Every manifest resource exists.

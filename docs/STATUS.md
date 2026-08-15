@@ -34,7 +34,8 @@ replaces the alpha runtime:
   shipped package.
 - Storage holds bounded aggregate counters only; nothing browsing-derived
   enters sync storage; all alpha-era local knowledge/history and sync data are
-  purged on update. The privacy policy was rewritten to the observed schema.
+  purged on install and update. The privacy policy was rewritten to the
+  observed schema.
 - Icons exist (generated reproducibly), the manifest references only real
   files, the build packages only runtime files, validates strictly, and emits
   an inventory plus an archive hash.
@@ -88,7 +89,7 @@ need submission-time/dashboard finalization.
   BannerBanner-specific private vulnerability reporting, and complete
   alpha-storage cleanup on update.
 - Files or behavior changed: `extension/background.js` now removes all legacy
-  local knowledge/history keys and sync keys on every update, with focused
+  local knowledge/history keys and sync keys on install and update, with focused
   coverage in `extension/test/unit/background.test.mjs`; `USER_GUIDE.md`,
   `SECURITY.md`, `DOCUMENTATION_INDEX.md`, the real-site matrix/protocol, and
   release-gate evidence were aligned to the review.
