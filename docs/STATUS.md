@@ -84,8 +84,8 @@ need submission-time/dashboard finalization.
 
 - Artifact shipped: PR #39 review fixes for candidate-only public CMP claims,
   PB-11 unique-site/evidence rules, complete alpha-storage cleanup, authority
-  ordering, provenance verification, and the misleading security-policy index
-  entry.
+  ordering, provenance verification, and project-specific private security
+  reporting.
 - Files or behavior changed: extension updates now purge all five legacy local
   keys plus legacy sync keys while preserving safely migrated settings;
   `extension/test/unit/background.test.mjs` covers the update lifecycle. The
@@ -102,7 +102,8 @@ need submission-time/dashboard finalization.
   WS-03 screenshots, the final tagged-build provenance row, and the existing
   transitive dependency advisory remain open.
 - Release gate changed: none. PB-08 evidence now includes the alpha-storage
-  purge regression; PB-11 remains open and explicitly counts distinct origins.
+  purge regression; PB-11 remains open and explicitly counts distinct origins;
+  WS-03 records the new security-reporting evidence but remains open.
 - Next shippable artifact: human execution of
   `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
 

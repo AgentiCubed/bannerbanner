@@ -84,7 +84,9 @@ The private-beta section must pass first.
 
 - [ ] **WS-03: Listing and asset readiness**
   - Required icons, screenshots, descriptions, support information, and policy links are complete and accurate.
-  - Evidence: Not yet provided.
+  - Evidence: Partial: required extension icons exist and `SECURITY.md` provides
+    the project-specific private vulnerability-reporting path. Listing
+    screenshots and general support information are still pending.
 
 - [ ] **WS-04: Release artifact provenance**
   - The submitted archive is reproducibly built from a tagged, passing commit.
