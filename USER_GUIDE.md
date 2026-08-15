@@ -38,15 +38,18 @@ A clean install has access to **no** websites.
 
 Revoking stops future injection and signals open tabs on that origin to stop.
 
-## What v0.1 supports
+## Candidate CMP coverage
 
-| CMP | Necessary only | Accept all |
+Until the real-site acceptance run passes, these are fixture-tested candidates,
+not verified support claims.
+
+| CMP candidate | Necessary only | Accept all |
 |---|---|---|
-| OneTrust | yes | yes |
-| Cookiebot | yes | yes |
-| CookieYes | yes | yes |
-| Usercentrics | yes | yes |
-| Quantcast Choice | no | yes |
+| OneTrust | fixture-tested candidate | fixture-tested candidate |
+| Cookiebot | fixture-tested candidate | fixture-tested candidate |
+| CookieYes | fixture-tested candidate | fixture-tested candidate |
+| Usercentrics | fixture-tested candidate | fixture-tested candidate |
+| Quantcast Choice | unsupported | fixture-tested candidate |
 
 Real-site evidence: [`docs/REAL_SITE_TEST_MATRIX.md`](docs/REAL_SITE_TEST_MATRIX.md).
 
@@ -67,7 +70,7 @@ enabled origins, and aggregate counters are stored locally.
 
 | Symptom | Check |
 |---|---|
-| Nothing happens on a site | Is the site enabled? Is the CMP in the table above? |
+| Nothing happens on a site | Is the site enabled? Is the CMP a candidate in the table above? |
 | Banner remains | Unsupported CMP or mode (e.g. Quantcast + Necessary only) — left untouched on purpose |
 | Want a clean slate | Options → Reset settings; disable sites individually |
 

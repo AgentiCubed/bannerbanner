@@ -5,10 +5,10 @@
 > concepts (a pattern training wizard, community pattern sharing, granular
 > per-category consent, a learning system) that were removed from the product
 > and are out of scope for v0.1. The canonical scope, safety rules, and
-> release process live in [`docs/MVP_CONTRACT.md`](docs/MVP_CONTRACT.md),
-> [`docs/DECISIONS.md`](docs/DECISIONS.md), and
-> [`docs/RELEASE_GATES.md`](docs/RELEASE_GATES.md); if this document ever
-> disagrees with them, they win.
+> authority order is defined in [`AGENTS.md`](AGENTS.md). This PRD is
+> subordinate to `docs/MVP_CONTRACT.md`, `docs/DECISIONS.md`,
+> `docs/RELEASE_GATES.md`, `docs/STATUS.md`, and
+> `docs/IMPLEMENTATION_PLAN.md`; if this document disagrees with them, they win.
 
 ## Product summary
 
