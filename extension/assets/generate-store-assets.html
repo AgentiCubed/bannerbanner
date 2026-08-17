@@ -98,22 +98,6 @@
             transform: translateY(0);
         }
         
-        .download-all {
-            text-align: center;
-            margin: 40px 0;
-        }
-        
-        .download-all button {
-            font-size: 18px;
-            padding: 16px 32px;
-            background: #000;
-            color: #FFD93D;
-        }
-        
-        .download-all button:hover {
-            background: #333;
-        }
-        
         .instructions {
             background: #fffbea;
             border: 2px solid #FFD93D;
@@ -145,14 +129,14 @@
     <div class="container">
         <header>
             <h1>🍌 BannerBanner Web Store Assets 🛡️</h1>
-            <p class="subtitle">Generate all promotional graphics for Chrome Web Store</p>
+            <p class="subtitle">Generate claim-safe promotional graphics for BannerBanner v0.1</p>
         </header>
 
         <div class="asset-section">
             <h2>Small Promotional Tile</h2>
             <div class="asset-info">
                 <strong>Size:</strong> 440×280px<br>
-                <strong>Required:</strong> Yes (for featured placement)<br>
+                <strong>Required:</strong> Yes (Chrome Web Store listing)<br>
                 <strong>Use:</strong> Displayed in Chrome Web Store search results and category pages
             </div>
             <canvas id="promo-small" width="440" height="280"></canvas>
@@ -197,27 +181,19 @@
             </div>
         </div>
 
-        <div class="download-all">
-            <button onclick="downloadAllAssets()">
-                📦 Download All Assets as ZIP
-            </button>
-        </div>
-
         <div class="instructions">
             <h3>🎨 How to Use These Assets</h3>
             <ol>
-                <li>Download all assets using the button above</li>
-                <li>For screenshots, capture your actual extension interface:
+                <li>Download the required 440×280 promotional tile and review it at full size.</li>
+                <li>Capture the actual shipped extension in a fresh Chrome profile:
                     <ul style="margin-top: 10px;">
-                        <li>Screenshot 1: Main dashboard with settings</li>
-                        <li>Screenshot 2: Patterns list showing supported frameworks</li>
-                        <li>Screenshot 3: Banana theme in action</li>
-                        <li>Screenshot 4: Testing tab with real results</li>
-                        <li>Screenshot 5: Banner training interface</li>
+                        <li>Screenshot 1: Popup showing per-site opt-in and the consent mode.</li>
+                        <li>Screenshot 2: Options page showing enabled sites and local aggregate statistics.</li>
+                        <li>Screenshot 3 (optional): Verified result on a CMP that passed PB-11.</li>
                     </ul>
                 </li>
-                <li>Upload to Chrome Web Store Developer Dashboard</li>
-                <li>Add these to the "Store Listing" tab when publishing</li>
+                <li>Exclude personal data, full URLs, and any unverified support claim.</li>
+                <li>Upload only after the WS-03 checklist and PB-11 evidence are complete.</li>
             </ol>
 
             <h3 style="margin-top: 30px;">📝 Tips for Great Screenshots</h3>
@@ -225,7 +201,7 @@
                 <li>✅ Use consistent window size (1280×800px)</li>
                 <li>✅ Show the extension actually working</li>
                 <li>✅ Include annotations or callouts for key features</li>
-                <li>✅ Use the same theme across all screenshots</li>
+                <li>✅ Use consistent visual treatment across all screenshots</li>
                 <li>✅ Add subtle drop shadows for depth</li>
                 <li>✅ Keep backgrounds clean and uncluttered</li>
             </ul>
@@ -252,10 +228,10 @@
             ctx.fillText('BannerBanner', 220, 140);
             
             ctx.font = '20px Arial';
-            ctx.fillText('Say Goodbye to Cookie Banners', 220, 180);
+            ctx.fillText('Cookie consent on sites you enable', 220, 180);
             
             ctx.font = 'bold 18px Arial';
-            ctx.fillText('Automatic Privacy Management', 220, 220);
+            ctx.fillText('Per-site opt-in • Verified choices • Local only', 220, 220);
             
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 3;
@@ -284,12 +260,12 @@
             ctx.fillText('🛡️ BannerBanner 🍌', 700, 160);
             
             ctx.font = 'bold 48px Arial';
-            ctx.fillText('Automatically Manage Cookie Consent', 700, 250);
+            ctx.fillText('Cookie Consent on Sites You Choose', 700, 250);
             
             ctx.font = '36px Arial';
-            ctx.fillText('Never Click Another Cookie Banner', 700, 320);
+            ctx.fillText('Supported consent managers only', 700, 320);
             
-            const features = ['🚀 Instant Detection', '🛡️ Privacy First', '🎨 Beautiful Themes', '📊 Track Stats'];
+            const features = ['🔒 Per-site Opt-in', '✓ Verified Choices', '🧭 Two Modes', '🏠 Local Only'];
             ctx.font = 'bold 28px Arial';
             const startX = 200;
             const spacing = 280;
@@ -301,7 +277,7 @@
             ctx.fillRect(500, 470, 400, 50);
             ctx.fillStyle = '#FFD93D';
             ctx.font = 'bold 32px Arial';
-            ctx.fillText('Free Forever', 700, 505);
+            ctx.fillText('Free & Open Source', 700, 505);
             
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 5;
@@ -351,43 +327,6 @@
             link.download = filename;
             link.href = canvas.toDataURL('image/png');
             link.click();
-        }
-        
-        async function downloadAllAssets() {
-            const JSZip = await loadJSZip();
-            const zip = new JSZip();
-            
-            const assets = [
-                { id: 'promo-small', name: 'promotional-tile-440x280.png' },
-                { id: 'promo-large', name: 'marquee-tile-1400x560.png' },
-                { id: 'screenshot', name: 'screenshot-template-1280x800.png' }
-            ];
-            
-            assets.forEach(asset => {
-                const canvas = document.getElementById(asset.id);
-                const dataUrl = canvas.toDataURL('image/png');
-                const data = dataUrl.split(',')[1];
-                zip.file(asset.name, data, {base64: true});
-            });
-            
-            const content = await zip.generateAsync({type: 'blob'});
-            const link = document.createElement('a');
-            link.download = 'bannerbanner-store-assets.zip';
-            link.href = URL.createObjectURL(content);
-            link.click();
-        }
-        
-        function loadJSZip() {
-            return new Promise((resolve) => {
-                if (window.JSZip) {
-                    resolve(window.JSZip);
-                } else {
-                    const script = document.createElement('script');
-                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-                    script.onload = () => resolve(window.JSZip);
-                    document.head.appendChild(script);
-                }
-            });
         }
         
         drawPromoSmall();

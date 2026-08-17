@@ -18,7 +18,9 @@ Do not submit until every private-beta gate (`PB-*`) in
       all-site automation, or newsletter/ad blocking
 - [ ] Supported CMP list matches adapters + matrix (Quantcast Accept all only)
 - [ ] Category and language set
-- [ ] Privacy policy URL points at current `PRIVACY_POLICY.md` text
+- [ ] Support URL opens while signed out
+- [ ] Privacy policy URL opens while signed out and points at current
+      `PRIVACY_POLICY.md` text
 
 ## Permissions
 
@@ -34,8 +36,18 @@ Do not submit until every private-beta gate (`PB-*`) in
 ## Assets (WS-03)
 
 - [ ] Icons 16/32/48/128 present in package
-- [ ] ≥1 screenshot of real popup/options (not Spark UI)
+- [ ] Required 440×280 promo tile reviewed at full size
+- [ ] ≥1 screenshot at 1280×800 or 640×400 of the real popup/options UI
+      (not Spark UI)
+- [ ] Images contain no personal data, full URLs, or unverified support claims
 - [ ] Promo tiles (if any) do not over-claim
+
+## Dashboard evidence
+
+- [ ] Listing-copy confirmation captured with date and owner
+- [ ] Permission-justification confirmation captured with date and owner
+- [ ] Privacy-practices confirmation captured with date and owner
+- [ ] Uploaded asset filenames recorded in `SUBMISSION_TRACKER.md`
 
 ## Gates
 
