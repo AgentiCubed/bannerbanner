@@ -89,13 +89,16 @@ description and permission justifications.
 
 English (United States)
 
-### Public listing URLs
+### Public listing URLs (owner action)
 
-- Support: `https://github.com/AgentiCubed/bannerbanner/issues`
-- Privacy policy:
-  `https://github.com/AgentiCubed/bannerbanner/blob/main/extension/PRIVACY_POLICY.md`
+- Support URL: **Pending a public support endpoint.**
+- Privacy-policy URL: **Pending publication of the exact
+  `extension/PRIVACY_POLICY.md` text.**
 
-Verify both URLs while signed out before entering them in the dashboard.
+The repository URLs returned `404` in a signed-out check on 2026-08-17, so they
+are not valid listing URLs while the repository is private. James must publish
+both endpoints, verify them while signed out, and record the final URLs in
+`extension/SUBMISSION_TRACKER.md` before WS-02 or WS-03 can close.
 
 ## Permission justifications (dashboard)
 

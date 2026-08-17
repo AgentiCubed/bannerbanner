@@ -46,7 +46,33 @@ echo "Inventory written to dist-extension-inventory.txt"
 if command -v zip >/dev/null 2>&1; then
   ARCHIVE="$ROOT/bannerbanner-v$VERSION.zip"
   rm -f "$ARCHIVE"
-  (cd "$OUT" && zip -qr "$ARCHIVE" .)
+  # Normalize timestamps and archive order so the same package contents produce
+  # the same bytes on every build. SOURCE_DATE_EPOCH may override the fixed
+  # default when release infrastructure supplies one.
+  PACKAGE_EPOCH="${SOURCE_DATE_EPOCH:-946684800}"
+  node --input-type=module - "$OUT" "$PACKAGE_EPOCH" <<'NODE'
+import { readdirSync, utimesSync } from 'node:fs';
+import { join } from 'node:path';
+
+const [, , root, epochValue] = process.argv;
+const epoch = Number(epochValue);
+if (!Number.isFinite(epoch)) throw new Error('SOURCE_DATE_EPOCH must be numeric');
+
+function normalizeTimes(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) normalizeTimes(path);
+    else utimesSync(path, epoch, epoch);
+  }
+}
+
+normalizeTimes(root);
+NODE
+  (
+    cd "$OUT"
+    find . -type f | sed 's|^\./||' | LC_ALL=C sort |
+      TZ=UTC zip -X -0 -q "$ARCHIVE" -@
+  )
   if command -v sha256sum >/dev/null 2>&1; then
     (cd "$ROOT" && sha256sum "$(basename "$ARCHIVE")") | tee "$ARCHIVE.sha256"
   fi
