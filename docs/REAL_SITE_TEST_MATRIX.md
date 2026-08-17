@@ -215,7 +215,8 @@ For every failure, capture:
 
 ## Exit criteria
 
-- 20 to 30 real-site rows are complete.
+- 20 to 30 distinct real-site origins are complete; multiple mode rows for one
+  origin count as one site.
 - Every claimed CMP passes both supported modes **on real sites**.
 - Candidate lint, unit, browser, build, manifest, and package checks pass locally
   and in linked workflows at the exact candidate SHA.
