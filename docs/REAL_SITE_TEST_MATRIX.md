@@ -25,10 +25,12 @@ Complete this block for each test run or link a versioned run record.
 ### Run R2 — human real-site pass (pending)
 
 - Frozen release-candidate commit:
+  `6f8255baf9efdd2e86f421a468e733dc189b3b92`
 - Packaged artifact hash:
-- Package inventory:
-- Extension CI run URL (same SHA):
-- Lint run URL (same SHA):
+  `7f74e24eff2ef4f7facf0398f5c7dcb3a7f571569512128190829c129aefe464`
+- Package inventory: `dist-extension-inventory.txt` (21 paths)
+- Extension CI run URL (same SHA): Pending — no run exists at this SHA.
+- Lint run URL (same SHA): Pending — no run exists at this SHA.
 - Chrome version:
 - Operating system:
 - Profile state: Fresh profile; exact archive extracted to a new working directory
@@ -49,15 +51,16 @@ but PB-10 requires the linked GitHub workflow runs to use that exact `head_sha`.
 
 | Check | Required result | Status | Evidence |
 |---|---|---|---|
-| Clean candidate tree | `git status --short` empty before build | Pending | |
-| Repo lint | `npm run lint` passes | Pending | |
-| Extension unit tests | All tests pass | Pending | |
-| Browser integration | Boundary and pipeline suites pass | Pending | |
-| Extension build | Build completes from candidate SHA | Pending | |
-| Source manifest validation | `npm run validate:extension` passes | Pending | |
-| Package validation | Strict 21-file inventory passes | Pending | |
-| Extension CI | Green run with candidate `head_sha` | Pending | |
-| Lint CI | Green run with candidate `head_sha` | Pending | |
+| Clean candidate tree | `git status --short` empty before build | **Pass (local, 2026-08-17)** | Candidate preflight at `6f8255b` |
+| Repo lint | `npm run lint` passes | **Pass (local, 2026-08-17)** | 0 errors; 7 pre-existing fast-refresh warnings |
+| Extension unit tests | All tests pass | **Pass (local, 2026-08-17)** | 73/73 |
+| Browser integration | Boundary and pipeline suites pass | **Pass (local, 2026-08-17)** | 33/33 |
+| Extension build | Build completes from candidate SHA | **Pass (local, 2026-08-17)** | SHA-256 recorded above |
+| Source manifest validation | `npm run validate:extension` passes | **Pass (local, 2026-08-17)** | Package validation passed |
+| Package validation | Strict 21-file inventory passes | **Pass (local, 2026-08-17)** | `dist-extension-inventory.txt` |
+| Reproducible archive | Consecutive builds have identical SHA-256 | **Pass (local, 2026-08-17)** | Both builds: `7f74e24…e464` |
+| Extension CI | Green run with candidate `head_sha` | Pending | Trigger through PR, manual dispatch, or candidate tag |
+| Lint CI | Green run with candidate `head_sha` | Pending | Trigger through PR, manual dispatch, or candidate tag |
 
 ## Candidate CMP support ledger
 

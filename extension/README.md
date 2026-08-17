@@ -65,13 +65,15 @@ open tabs on that origin to stop.
 npm run test:extension
 
 # Build + validate the package (fatal on missing files) → dist-extension/
+# Also emits a deterministic zip, portable sha256 file, and 21-path inventory.
 npm run build:extension
 
 # Validate the source-tree manifest
 npm run validate:extension
 
-# Browser integration tests (real Chromium; installs playwright-core locally)
-cd extension/test/browser && npm install && npm test
+# Browser integration tests (real Chromium)
+npm ci --prefix extension/test/browser
+npm run test:extension:browser
 
 # Regenerate icons deterministically
 node scripts/generate-icons.mjs

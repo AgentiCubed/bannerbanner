@@ -1,7 +1,8 @@
 # BannerBanner status
 
-Last updated: 2026-08-15  
-Code baseline reviewed: `main` at `3981fdb` with issue #32 documentation/provenance work merged on top  
+Last updated: 2026-08-17
+Code baseline reviewed: pre-R2 candidate
+`6f8255baf9efdd2e86f421a468e733dc189b3b92`
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -10,7 +11,8 @@ BannerBanner v0.1, Safe Chrome Private Beta.
 
 ## Current Mode
 
-Release hardening — PB-12 closed; PB-11 real-site evidence still human-gated.
+Release hardening — deterministic pre-R2 candidate validated locally; exact-SHA
+CI and PB-11 real-site evidence remain open.
 
 ## Current truth
 
@@ -37,32 +39,42 @@ replaces the alpha runtime:
   privacy policy was rewritten to the observed schema.
 - Icons exist (generated reproducibly), the manifest references only real
   files, the build packages only runtime files, validates strictly, and emits
-  an inventory plus an archive hash.
+  an inventory plus a deterministic archive and portable checksum.
+- Update lifecycle regressions now prove current settings/authorized grants
+  persist while stale revoked registrations cannot return.
 - Issue #32 added the claim-to-code audit, release notes, release provenance
   record, Store-copy alignment, and the PB-11 matrix/protocol scaffolding. The
   live real-site rows still require a human browser run.
+- The Run R2 protocol now freezes one candidate, requires exact-SHA CI, tests
+  post-revoke restart/update behavior, and records fresh-profile,
+  package/storage, real-flow safety, and gate-specific evidence.
+- Web Store asset guidance now matches v0.1 and no longer contains alpha-era
+  training/theme claims or a remote JSZip loader.
 
 ## Next Shippable Artifact
 
-Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
-rows in `docs/REAL_SITE_TEST_MATRIX.md` (including the permission
-walkthrough/revocation checks), then a tagged gates-green build with the final
-WS-04 provenance row.
+Green Extension CI and Lint runs for the frozen candidate, followed by human
+execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate rows
+(including permission, post-revoke, storage, and fresh-profile checks).
 
 ## Blocking Release Gate
 
 `PB-11: Real-site acceptance` (requires human browser evidence). `PB-12` is
-closed; `WS-01` and `WS-04` now have repository evidence prepared but still
-need submission-time/dashboard finalization.
+closed; candidate CI evidence, all Web Store dashboard actions, and final
+tagged provenance also remain pending.
 
 ## Known blockers
 
 - The Chrome permission-grant prompt cannot be automated; grant/denial/revoke
   user flows need manual matrix rows.
-- Agent/CI hosts cannot resolve the external sites needed for PB-11; live real
-  CMP evidence must be gathered on a human desktop browser.
+- No Extension CI or Lint workflow run exists yet at candidate `6f8255b`;
+  trigger both through a PR, manual dispatch, or candidate tag before Run R2.
+- Live real CMP evidence must be gathered on a networked human desktop Chrome
+  profile.
 - CMP support claims stay "candidate" until the live rows pass.
 - WS-03 screenshots are not yet captured.
+- The private repository's support/privacy URLs return 404 while signed out;
+  James must publish public endpoints before WS-02/WS-03 can close.
 - WS-04 still needs the final tagged-build hash on a gates-green commit.
 
 ## Parking Lot
@@ -82,15 +94,39 @@ need submission-time/dashboard finalization.
 
 ## Latest handoff
 
-- Artifact shipped: PR #39 review fixes for candidate-only public CMP claims,
-  PB-11 unique-site/evidence rules, complete alpha-storage cleanup, authority
+- Artifact shipped: evidence-ready pre-R2 candidate and release execution
+  hardening.
+- Files or behavior changed: release workflows gained manual/tag triggers;
+  background lifecycle tests cover authorized and revoked update behavior;
+  package ZIP output is deterministic with a portable checksum; Run R2 now has
+  exact candidate/CI, post-revoke, package/storage, and gate reconciliation
+  records; Store asset copy/checklists were aligned to v0.1.
+- Checks passed at candidate `6f8255b`: 73/73 extension unit tests, 33/33
+  browser tests, `npm run lint` with 0 errors and 7 pre-existing fast-refresh
+  warnings, source/strict package validation, 21-file inventory, and two
+  consecutive archives with SHA-256
+  `7f74e24eff2ef4f7facf0398f5c7dcb3a7f571569512128190829c129aefe464`.
+- Manual evidence: none. Signed-out checks showed the private repository's
+  proposed support/privacy URLs return 404; they were recorded as owner
+  actions rather than claimed complete.
+- Remaining uncertainty: exact-SHA GitHub workflow runs, all Run R2 live-site
+  and permission evidence, WS-03 visual assets, public support/privacy URLs,
+  dashboard confirmations, and final tagged-build provenance.
+- Release gate changed: none. PB-11 and all human/dashboard-dependent evidence
+  remain open.
+- Next shippable artifact: exact-SHA candidate CI, then human Run R2 evidence.
+
+Previous handoff (PR #39):
+
+- Artifact shipped: review fixes for candidate-only public CMP claims, PB-11
+  unique-site/evidence rules, complete alpha-storage cleanup, authority
   ordering, provenance verification, and the misleading security-policy index
   entry.
-- Files or behavior changed: extension updates now purge all five legacy local
-  keys plus legacy sync keys while preserving safely migrated settings;
+- Files or behavior changed: extension updates purge all five legacy local keys
+  plus legacy sync keys while preserving safely migrated settings;
   `extension/test/unit/background.test.mjs` covers the update lifecycle. The
   user guide, matrix/protocol, PRD, documentation index, and release-gate
-  evidence now match the review requirements.
+  evidence match the review requirements.
 - Checks passed: 71/71 extension unit tests; `npm run lint` with 0 errors and 7
   pre-existing fast-refresh warnings; `npm run build:extension` with strict
   21-file package validation; `git diff --check`.
@@ -99,10 +135,9 @@ need submission-time/dashboard finalization.
   unconditional support; the sample provenance hash is present in
   `docs/RELEASE_PROVENANCE.md`.
 - Remaining uncertainty: PB-11 live-site evidence, manual permission flows,
-  WS-03 screenshots, the final tagged-build provenance row, and the existing
-  transitive dependency advisory remain open.
-- Release gate changed: none. PB-08 evidence now includes the alpha-storage
-  purge regression; PB-11 remains open and explicitly counts distinct origins.
+  WS-03 screenshots, and the final tagged-build provenance row.
+- Release gate changed: none. PB-08 evidence includes the alpha-storage purge
+  regression; PB-11 remains open and explicitly counts distinct origins.
 - Next shippable artifact: human execution of
   `docs/REAL_SITE_TEST_PROTOCOL.md`, then final WS-04 tagged-build recording.
 
