@@ -24,16 +24,40 @@ Complete this block for each test run or link a versioned run record.
 
 ### Run R2 — human real-site pass (pending)
 
-- Extension commit:
+- Frozen release-candidate commit:
 - Packaged artifact hash:
+- Package inventory:
+- Extension CI run URL (same SHA):
+- Lint run URL (same SHA):
 - Chrome version:
 - Operating system:
-- Profile state: Fresh or named test profile
+- Profile state: Fresh profile; exact archive extracted to a new working directory
 - Date:
 - Tester:
 - Evidence location: committed sanitized evidence path or durable external
   artifact URL. Captures that cannot be safely sanitized must be excluded and
   cannot support a `Pass` row.
+- Distinct origins passed:
+- Destructive false positives:
+- Fresh-profile load result:
+- Final local/sync storage audit:
+
+## Candidate validation
+
+Every row must identify the same frozen candidate SHA. Local output is useful,
+but PB-10 requires the linked GitHub workflow runs to use that exact `head_sha`.
+
+| Check | Required result | Status | Evidence |
+|---|---|---|---|
+| Clean candidate tree | `git status --short` empty before build | Pending | |
+| Repo lint | `npm run lint` passes | Pending | |
+| Extension unit tests | All tests pass | Pending | |
+| Browser integration | Boundary and pipeline suites pass | Pending | |
+| Extension build | Build completes from candidate SHA | Pending | |
+| Source manifest validation | `npm run validate:extension` passes | Pending | |
+| Package validation | Strict 21-file inventory passes | Pending | |
+| Extension CI | Green run with candidate `head_sha` | Pending | |
+| Lint CI | Green run with candidate `head_sha` | Pending | |
 
 ## Candidate CMP support ledger
 
@@ -123,15 +147,18 @@ tests. Manual rows follow `REAL_SITE_TEST_PROTOCOL.md` permission walkthrough.
 | Explicit grant for current origin | Unified script registers and operates only on that origin | Not run (manual prompt) | Planning: `extension/test/unit/registry.test.mjs`; protocol walkthrough step 2 |
 | Reload after grant | Authorized behavior persists | Not run (manual) | Protocol walkthrough step 3 |
 | Browser restart after grant | Authorized behavior persists | Not run (manual) | Protocol walkthrough step 4 |
-| Extension update after grant | Registrations reconcile without expanding access | **Pass (automated planning)** + manual confirm pending | `registry.test.mjs` (update cannot broaden); protocol step 5 for full Chrome reload |
+| Extension update after grant | Settings and authorized registration persist without expanding access | **Pass (automated lifecycle)** + manual confirm pending | `background.test.mjs` / `registry.test.mjs`; protocol step 5 for a manifest-version update |
 | Permission denial | No execution; clear local status | Not run (manual prompt) | Protocol walkthrough step 6 |
 | Revoke origin | Registration removed and current activity stops | **Pass (automated stop path)** + manual confirm pending | `BB_STOP` in `pipeline.spec.mjs`; unregistration planning in `registry.test.mjs`; protocol step 7 |
+| Browser restart after revoke | Revoked access and registration remain absent | Not run (manual) | Protocol walkthrough step 8 |
+| Extension update after revoke | Revoked access and registration are not restored | **Pass (automated lifecycle)** + manual confirm pending | `background.test.mjs` (stale grant/registration removed); protocol step 9 |
 | Similar but unauthorized origin | No execution or page mutation | **Pass (automated)** | `boundary.spec.mjs` registered-without-grant does not run; `origins` / registry unit tests |
 
 ## Sensitive-dialog regression matrix
 
 Each case must prove that BannerBanner performs no click, removal, hiding, style mutation, or synthetic event.
-Fixture column = automated CI evidence. Real-flow column = optional human spot check from the protocol.
+Fixture column = automated CI evidence. Run R2 requires both human real-flow
+spot checks from the protocol.
 
 | Case | Fixture or real flow | Expected result | Status | Evidence |
 |---|---|---|---|---|
@@ -147,6 +174,16 @@ Fixture column = automated CI evidence. Real-flow column = optional human spot c
 | Unknown large modal | fixture `unknown-modal.html` | Untouched; unsupported status only | **Pass (fixture)** | same |
 | Login dialog (real flow spot check) | human | Untouched | Not run | Protocol sensitive-dialog section |
 | Newsletter popup (real flow spot check) | human | Untouched | Not run | Protocol sensitive-dialog section |
+
+## Package and storage audit
+
+| Check | Expected result | Status | Evidence |
+|---|---|---|---|
+| Exact archive in fresh profile | Loads unpacked with no extension-card, service-worker, popup, or options errors | Not run | Protocol setup |
+| Package checksum and inventory | SHA-256 matches Run R2; strict 21-file inventory unchanged | Not run | Protocol run-level audit |
+| Local storage schema | Only `bb:settings`, `bb:authorizedOrigins`, and `bb:stats`; no prohibited fields | Not run | Protocol run-level audit |
+| Sync storage | `{}` after normal use | Not run | Protocol run-level audit |
+| Registration audit | One registration per currently authorized origin and no others | Not run | Protocol run-level audit |
 
 ## CMP fixture mode matrix (not a substitute for real sites)
 
@@ -177,8 +214,13 @@ For every failure, capture:
 
 - 20 to 30 real-site rows are complete.
 - Every claimed CMP passes both supported modes **on real sites**.
-- Permission grant and revocation cases pass (manual + automated).
-- Every sensitive-dialog case passes (fixtures done; real spot checks recommended).
+- Candidate lint, unit, browser, build, manifest, and package checks pass locally
+  and in linked workflows at the exact candidate SHA.
+- Permission grant, denial, persistence, revocation, post-revoke restart, and
+  post-revoke update cases pass (manual + automated).
+- Every sensitive-dialog case passes (fixtures done; both real spot checks
+  required for Run R2).
+- Fresh-profile load and run-level package/storage audits pass.
 - No destructive false positive remains.
 - All failures are fixed, explicitly unsupported, or cause the relevant support claim to be removed.
 - `PB-03`, `PB-04`, `PB-05`, and `PB-11` link to this evidence.
