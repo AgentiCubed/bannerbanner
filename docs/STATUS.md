@@ -111,7 +111,9 @@ tagged provenance also remain pending.
   actions rather than claimed complete.
 - Remaining uncertainty: exact-SHA GitHub workflow runs, all Run R2 live-site
   and permission evidence, WS-03 visual assets, public support/privacy URLs,
-  dashboard confirmations, and final tagged-build provenance.
+  dashboard confirmations, final tagged-build provenance, and the pre-existing
+  root-only transitive `nanoid` advisory (GHSA-2v37-7h3g-55p8; not present in
+  the 21-file extension package).
 - Release gate changed: none. PB-11 and all human/dashboard-dependent evidence
   remain open.
 - Next shippable artifact: exact-SHA candidate CI, then human Run R2 evidence.
