@@ -2,10 +2,10 @@
 // Generate the BannerBanner extension icons (16/32/48/128 px) as real PNGs.
 //
 // Dependency-free: rasterizes a simple banana-crescent mark and encodes the
-// PNG by hand using node:zlib for the IDAT stream. Deterministic output so the
-// committed icons are reproducible: `node scripts/generate-icons.mjs`.
+// PNG by hand. The IDAT stream uses explicitly encoded, uncompressed DEFLATE
+// blocks so output does not vary with the host zlib implementation.
+// Reproduce the committed icons with: `node scripts/generate-icons.mjs`.
 
-import { deflateSync } from 'node:zlib';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -40,6 +40,42 @@ function chunk(type, data) {
   return Buffer.concat([len, body, crc]);
 }
 
+function adler32(buf) {
+  const modAdler = 65521;
+  let a = 1;
+  let b = 0;
+  for (const byte of buf) {
+    a = (a + byte) % modAdler;
+    b = (b + a) % modAdler;
+  }
+  return ((b << 16) | a) >>> 0;
+}
+
+function encodeZlibStore(raw) {
+  // RFC 1950 header for DEFLATE with the fastest/no-compression level.
+  const parts = [Buffer.from([0x78, 0x01])];
+  let offset = 0;
+
+  // A stored DEFLATE block can contain at most 65,535 bytes. The five-byte
+  // header is written explicitly: BFINAL/BTYPE followed by LEN and NLEN in
+  // little-endian order. A do/while also emits a valid block for empty input.
+  do {
+    const length = Math.min(0xffff, raw.length - offset);
+    const final = offset + length === raw.length;
+    const header = Buffer.alloc(5);
+    header[0] = final ? 0x01 : 0x00;
+    header.writeUInt16LE(length, 1);
+    header.writeUInt16LE((~length) & 0xffff, 3);
+    parts.push(header, raw.subarray(offset, offset + length));
+    offset += length;
+  } while (offset < raw.length);
+
+  const checksum = Buffer.alloc(4);
+  checksum.writeUInt32BE(adler32(raw));
+  parts.push(checksum);
+  return Buffer.concat(parts);
+}
+
 function encodePng(width, height, rgba) {
   const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
   const ihdr = Buffer.alloc(13);
@@ -56,7 +92,7 @@ function encodePng(width, height, rgba) {
   return Buffer.concat([
     signature,
     chunk('IHDR', ihdr),
-    chunk('IDAT', deflateSync(raw, { level: 9 })),
+    chunk('IDAT', encodeZlibStore(raw)),
     chunk('IEND', Buffer.alloc(0)),
   ]);
 }

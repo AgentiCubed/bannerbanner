@@ -34,11 +34,6 @@ jobs:
       - name: Unit tests (safety-critical pure logic)
         run: node --test extension/test/unit/*.test.mjs
 
-      - name: Icons are reproducible from source
-        run: |
-          node scripts/generate-icons.mjs
-          git diff --exit-code extension/icons
-
       - name: Build and validate the package (missing files are fatal)
         run: bash extension/build-extension.sh
 
@@ -54,6 +49,25 @@ jobs:
             dist-extension-inventory.txt
             bannerbanner-v*.zip
             bannerbanner-v*.zip.sha256
+
+  icon-reproducibility:
+    name: Icons reproduce (${{ matrix.os }}, Node 22)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Regenerate committed icons byte-for-byte
+        run: |
+          node scripts/generate-icons.mjs
+          git diff --exit-code extension/icons
 
   browser:
     name: Browser integration tests (real Chromium)
