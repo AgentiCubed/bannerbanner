@@ -32,7 +32,9 @@ bannerbanner-v*.zip.sha256
 
 .env
 **/agent-eval-report*
-packages
+packages/*
+!packages/github-spark/
+!packages/github-spark/**
 pids
 .file-manifest
 .devcontainer/

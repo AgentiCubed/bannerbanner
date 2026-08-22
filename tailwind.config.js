@@ -16,13 +16,15 @@ const defaultTheme = {
   container: {
     center: true,
     padding: "2rem",
+    screens: {
+      sm: "40rem",
+      md: "48rem",
+      lg: "64rem",
+      xl: "80rem",
+      "2xl": "96rem",
+    },
   },
   extend: {
-    screens: {
-      coarse: { raw: "(pointer: coarse)" },
-      fine: { raw: "(pointer: fine)" },
-      pwa: { raw: "(display-mode: standalone)" },
-    },
     colors: {
       neutral: {
         1: "var(--color-neutral-1)",

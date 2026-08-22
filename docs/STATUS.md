@@ -88,6 +88,31 @@ prepared but still need submission-time/dashboard finalization.
 
 ## Latest handoff
 
+- Artifact shipped: PR #58 — Vite 8.2.1 dependency-tree upgrade with compatible
+  plugins.
+- Files or behavior changed: `package.json` / `package-lock.json` now move the
+  app build to Vite 8.2.1, `@tailwindcss/vite` 4.3.3,
+  `@vitejs/plugin-react-swc` 4.3.3, `tailwindcss` 4.3.3, and safe
+  `postcss`/`nanoid` overrides; `@github/spark` is now a local compatibility
+  package at `packages/github-spark/` that vendors 0.46.15 and broadens only
+  its Vite peer range to include Vite 8; `tailwind.config.js` removes three
+  unused raw screen aliases that broke Tailwind 4 CSS minification during
+  `vite build`.
+- Checks passed: `npm install`; `npm ls vite @github/spark @tailwindcss/vite
+  @vitejs/plugin-react-swc`; `npm audit` (0 vulnerabilities); `npm run build`.
+- Manual evidence: the built app bundle was generated locally with the vendored
+  Spark compatibility package and the upgraded Vite/Tailwind stack.
+- Remaining uncertainty: the vendored `@github/spark` compatibility package
+  should be dropped once upstream publishes official Vite 8 peer support; CI on
+  the final PR head is still required before this evidence can close PB-10.
+- Release gate changed: none closed. PB-10 evidence is strengthened for the app
+  toolchain, but the checkbox remains open pending CI; PB-11 is unchanged.
+- Next shippable artifact: GitHub CI confirmation for this dependency upgrade,
+  then the existing release-hardening path remains unchanged (final candidate
+  freeze and human execution of `docs/REAL_SITE_TEST_PROTOCOL.md`).
+
+Previous handoff (PR #57):
+
 - Artifact in review: draft PR #57 — cross-platform deterministic icon
   generation and release-candidate baseline.
 - Files or behavior changed: `scripts/generate-icons.mjs` now writes an
