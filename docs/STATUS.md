@@ -88,10 +88,11 @@ prepared but still need submission-time/dashboard finalization.
 
 ## Latest handoff
 
-- Artifact shipped: PR #58 — Vite 8.2.1 dependency-tree upgrade with compatible
-  plugins.
+- Artifact shipped: PR #58 — Vite `^8.2.1` dependency-tree upgrade (currently
+  resolved to 8.2.2) with compatible plugins.
 - Files or behavior changed: `package.json` / `package-lock.json` now move the
-  app build to Vite 8.2.1, `@tailwindcss/vite` 4.3.3,
+  app build to the `vite` range `^8.2.1` (currently resolved to 8.2.2),
+  `@tailwindcss/vite` 4.3.3,
   `@vitejs/plugin-react-swc` 4.3.3, `tailwindcss` 4.3.3, and safe
   `postcss`/`nanoid` overrides; `@github/spark` is now supplied by a local
   patched tarball at `packages/github-spark-0.46.15-vite8.tgz` that keeps the
