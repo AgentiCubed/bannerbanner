@@ -50,12 +50,12 @@ A gate is closed only when its checkbox is checked and its Evidence field points
   - Every manifest resource exists.
   - Missing required files fail the build.
   - The packaged directory contains only required runtime assets and loads without errors in a fresh profile.
-  - Evidence: Automated: `scripts/validate-package.mjs` (missing files fatal, strict inventory) run inside `extension/build-extension.sh` and CI; icons committed and reproducible. Pending: fresh-profile manual load check.
+  - Evidence: Automated: `scripts/validate-package.mjs` (missing files fatal, strict inventory) run inside `extension/build-extension.sh` and CI. Draft PR #57 replaces host-zlib output with explicit stored-DEFLATE bytes, preserves identical decoded pixels, and adds byte-for-byte regeneration checks on Ubuntu and macOS with Node 22. The PR checks on its final head are the cross-platform evidence record. Pending: fresh-profile manual load check.
 
 - [ ] **PB-10: Automated release checks**
   - Build, lint, unit, browser integration, manifest, and package checks run in CI and pass.
   - Safety regressions are required checks.
-  - Evidence: Automated: `.github/workflows/extension-ci.yml` runs syntax checks, unit tests, icon reproducibility, build + package validation, and both browser suites on every pull request. Local commands documented in `extension/README.md`. `.github/workflows/lint.yml` runs repo-wide eslint (flat config in `eslint.config.js` covering `src/`, `extension/`, `scripts/`, and tests) on every pull request; `npm audit` is clean as of PR #37 but is not a CI check.
+  - Evidence: Automated: `.github/workflows/extension-ci.yml` runs syntax checks, unit tests, cross-platform icon reproducibility on Ubuntu and macOS with Node 22, build + package validation, and both browser suites on every pull request. Draft PR #57 is the evidence record for the cross-platform addition. Local commands are documented in `extension/README.md`. `.github/workflows/lint.yml` runs repo-wide eslint (flat config in `eslint.config.js` covering `src/`, `extension/`, `scripts/`, and tests) on every pull request; `npm audit` is clean as of PR #37 but is not a CI check.
 
 - [ ] **PB-11: Real-site acceptance**
   - At least 20 to 30 distinct representative site origins are recorded in `docs/REAL_SITE_TEST_MATRIX.md` (mode rows for the same origin count once).

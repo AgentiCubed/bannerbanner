@@ -1,7 +1,7 @@
 # BannerBanner status
 
-Last updated: 2026-08-15  
-Code baseline reviewed: `main` at `3981fdb` with issue #32 documentation/provenance work merged on top  
+Last updated: 2026-08-22  
+Code baseline reviewed: `main` at `218b902`; deterministic icon release baseline under review in draft PR #57 (`4e3ced2`)  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -10,7 +10,7 @@ BannerBanner v0.1, Safe Chrome Private Beta.
 
 ## Current Mode
 
-Release hardening — PB-12 closed; PB-11 real-site evidence still human-gated.
+Release hardening — cross-platform release reproducibility in draft PR #57; PB-11 real-site evidence remains human-gated.
 
 ## Current truth
 
@@ -36,26 +36,30 @@ replaces the alpha runtime:
   enters sync storage; all alpha-era local knowledge/history and sync data are
   purged on install and update. The privacy policy was rewritten to the
   observed schema.
-- Icons exist (generated reproducibly), the manifest references only real
-  files, the build packages only runtime files, validates strictly, and emits
-  an inventory plus an archive hash.
+- Icons exist and retain identical decoded pixels. Draft PR #57 replaces
+  host-zlib compression with explicit stored-DEFLATE bytes and enforces
+  regeneration on Ubuntu and macOS with Node 22. The manifest references only
+  real files, and the strict build emits a runtime-only inventory plus an
+  archive hash.
 - Issue #32 added the claim-to-code audit, release notes, release provenance
   record, Store-copy alignment, and the PB-11 matrix/protocol scaffolding. The
   live real-site rows still require a human browser run.
 
 ## Next Shippable Artifact
 
-Human execution of `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate
-rows covering 20 concrete distinct origins in
-`docs/REAL_SITE_TEST_MATRIX.md` (including the permission
-walkthrough/revocation checks), then a tagged gates-green build with the final
-WS-04 provenance row.
+Complete review of draft PR #57's deterministic icon and release-candidate
+baseline against one final head SHA. After its cross-platform icon, lint, unit,
+browser, build, and validation evidence is green and James separately
+authorizes merge, freeze that candidate and execute
+`docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate rows covering 20
+concrete distinct origins.
 
 ## Blocking Release Gate
 
-`PB-11: Real-site acceptance` (requires human browser evidence). `PB-12` is
-closed; `WS-01` and `WS-04` now have repository evidence prepared but still
-need submission-time/dashboard finalization.
+`PB-11: Real-site acceptance` (requires human browser evidence). PB-09 and
+PB-10 evidence is being strengthened by draft PR #57, but neither gate is
+closed. `PB-12` is closed; `WS-01` and `WS-04` have repository evidence
+prepared but still need submission-time/dashboard finalization.
 
 ## Known blockers
 
@@ -83,6 +87,33 @@ need submission-time/dashboard finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact in review: draft PR #57 — cross-platform deterministic icon
+  generation and release-candidate baseline.
+- Files or behavior changed: `scripts/generate-icons.mjs` now writes an
+  explicit RFC 1950 stream with stored RFC 1951 DEFLATE blocks; the four PNGs
+  were regenerated with identical decoded pixels; Extension CI now checks
+  byte reproduction on Ubuntu and macOS with Node 22. No extension runtime or
+  CMP behavior changed.
+- Checks passed locally: generator syntax; 71/71 unit tests; strict 21-file
+  build and package validation; source-tree validation; PNG decode; identical
+  before/after pixel hashes; identical file hashes across two generations;
+  `git diff --check`. Diagnostic archive SHA-256:
+  `9f26e883c439fd0218372eac7c8ef4147582fd27b16434b6eb05487062f88c74`.
+- Independent evidence required: the GitHub Actions results on the final PR
+  head for Ubuntu/Node 22, macOS/Node 22, browser integration, and repo-wide
+  lint. The PR remains draft until those checks are green.
+- Manual evidence: none; this artifact is automated release hardening and does
+  not substitute for PB-11.
+- Remaining uncertainty: fresh-profile loading, permission lifecycle, and all
+  live-site rows remain human work after a candidate is frozen.
+- Release gate changed: none. PB-09 and PB-10 evidence is expanded but their
+  checkboxes remain open; PB-11 is unchanged.
+- Next shippable artifact after this PR passes and James authorizes merge:
+  human execution of `docs/REAL_SITE_TEST_PROTOCOL.md`, subject to a new
+  authorization gate.
+
+Previous handoff (PR #50):
 
 - Artifact shipped: PR #39 review corrections — honest candidate labels,
   a 20-distinct-origin PB-11 candidate set with durable evidence rules,
