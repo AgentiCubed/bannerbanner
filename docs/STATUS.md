@@ -1,7 +1,7 @@
 # BannerBanner status
 
-Last updated: 2026-08-22  
-Code baseline reviewed: `main` at `218b902`; deterministic icon release baseline under review in draft PR #57 (`4e3ced2`)  
+Last updated: 2026-09-04  
+Code baseline reviewed: `main` at `b01b224` (deterministic icon release baseline merged in PR #57 on 2026-08-22, plus subsequent dependency bumps)  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -10,7 +10,7 @@ BannerBanner v0.1, Safe Chrome Private Beta.
 
 ## Current Mode
 
-Release hardening — cross-platform release reproducibility in draft PR #57; PB-11 real-site evidence remains human-gated.
+Release hardening — cross-platform release reproducibility merged (PR #57); PB-11 real-site evidence remains human-gated.
 
 ## Current truth
 
@@ -36,28 +36,27 @@ replaces the alpha runtime:
   enters sync storage; all alpha-era local knowledge/history and sync data are
   purged on install and update. The privacy policy was rewritten to the
   observed schema.
-- Icons exist and retain identical decoded pixels. Draft PR #57 replaces
-  host-zlib compression with explicit stored-DEFLATE bytes and enforces
-  regeneration on Ubuntu and macOS with Node 22. The manifest references only
-  real files, and the strict build emits a runtime-only inventory plus an
-  archive hash.
+- Icons exist and retain identical decoded pixels. PR #57 (merged 2026-08-22)
+  replaced host-zlib compression with explicit stored-DEFLATE bytes and
+  enforces regeneration on Ubuntu and macOS with Node 22 in CI. The manifest
+  references only real files, and the strict build emits a runtime-only
+  inventory plus an archive hash.
 - Issue #32 added the claim-to-code audit, release notes, release provenance
   record, Store-copy alignment, and the PB-11 matrix/protocol scaffolding. The
   live real-site rows still require a human browser run.
 
 ## Next Shippable Artifact
 
-Complete review of draft PR #57's deterministic icon and release-candidate
-baseline against one final head SHA. After its cross-platform icon, lint, unit,
-browser, build, and validation evidence is green and James separately
-authorizes merge, freeze that candidate and execute
-`docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate rows covering 20
-concrete distinct origins.
+Freeze a release candidate from current `main` (PR #57's deterministic icon
+and release baseline is merged and its cross-platform CI evidence is green),
+then execute `docs/REAL_SITE_TEST_PROTOCOL.md` against the 29 candidate rows
+covering 20 concrete distinct origins. The protocol run requires a human at a
+desktop browser and James's separate authorization.
 
 ## Blocking Release Gate
 
 `PB-11: Real-site acceptance` (requires human browser evidence). PB-09 and
-PB-10 evidence is being strengthened by draft PR #57, but neither gate is
+PB-10 evidence was strengthened by the merged PR #57, but neither gate is
 closed. `PB-12` is closed; `WS-01` and `WS-04` have repository evidence
 prepared but still need submission-time/dashboard finalization.
 
@@ -87,6 +86,33 @@ prepared but still need submission-time/dashboard finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: dependency-audit cleanup and status reconciliation —
+  `npm audit` taken from 5 findings (1 high, 4 moderate) back to 0, and this
+  file updated to reflect that PR #57 merged on 2026-08-22.
+- Files or behavior changed: `package.json` (the security `overrides` pin for
+  `qs` bumped 6.15.2 → 6.16.0 — the stale-pin failure mode previously seen
+  with postcss/minimatch in PR #37; 6.15.2 fell below the fixed version for
+  GHSA-x5fp-wj9c-mxmx and GHSA-4mjr-xmp4-gh2g), `package-lock.json`
+  (`npm audit fix` resolved nanoid and @humanfs/node advisories), and this
+  file. Tooling tree only; no extension runtime or CMP behavior changed, and
+  none of the affected packages ship in `dist-extension/`.
+- Checks passed: `npm audit` 0 vulnerabilities; `npm run lint` 0 errors
+  (7 pre-existing fast-refresh warnings); 71/71 unit tests;
+  `npm run build`; `npm run build:extension` with strict package validation
+  (zip SHA-256
+  `bfa6d33276eff840acfc7a1764a1fd6a95c1805dd24dd443e24d2c92fb2f5d80`).
+- Manual evidence: none required; the diff is the record.
+- Remaining uncertainty: GitHub Actions results on this PR's head; the open
+  Dependabot queue (including a TypeScript 5→7 major bump) is unmerged and
+  each merge can reintroduce audit findings — re-run `npm audit` at the
+  release-candidate freeze.
+- Release gate changed: none. PB-10 hygiene restored (audit clean again);
+  PB-11 unchanged.
+- Next shippable artifact: freeze the release candidate and execute
+  `docs/REAL_SITE_TEST_PROTOCOL.md` (human, with James's authorization).
+
+Previous handoff (PR #57, merged 2026-08-22):
 
 - Artifact in review: draft PR #57 — cross-platform deterministic icon
   generation and release-candidate baseline.
