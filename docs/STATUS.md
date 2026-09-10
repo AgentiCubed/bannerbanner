@@ -1,7 +1,7 @@
 # BannerBanner status
 
-Last updated: 2026-09-04  
-Code baseline reviewed: `main` at `b01b224` (deterministic icon release baseline merged in PR #57 on 2026-08-22, plus subsequent dependency bumps)  
+Last updated: 2026-09-10  
+Code baseline reviewed: `main` at `5a419f4` (deterministic icon release baseline merged in PR #57 on 2026-08-22, plus subsequent dependency and audit bumps)  
 Operating pack: committed to `main` on 2026-08-02
 
 ## Current Project
@@ -86,6 +86,33 @@ prepared but still need submission-time/dashboard finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: PR #58 — Vite `^8.2.1` dependency-tree upgrade (currently
+  resolved to 8.2.2) with compatible plugins, merged onto current `main`.
+- Files or behavior changed: `package.json` / `package-lock.json` now move the
+  app build to the `vite` range `^8.2.1` (currently resolved to 8.2.2),
+  `@tailwindcss/vite` 4.3.3,
+  `@vitejs/plugin-react-swc` 4.3.3, `tailwindcss` 4.3.3, and safe
+  `postcss`/`nanoid`/`lightningcss` overrides; `@github/spark` is now supplied by a local
+  patched tarball at `packages/github-spark-0.46.15-vite8.tgz` that keeps the
+  published 0.46.15 runtime but broadens only its Vite peer range to include
+  Vite 8; `tailwind.config.js` removes three unused raw screen aliases that
+  broke Tailwind 4 CSS minification during `vite build`. Merge also keeps
+  main's `qs` 6.16.0 security override.
+- Checks passed: `npm install`; `npm ls vite @github/spark @tailwindcss/vite
+  @vitejs/plugin-react-swc`; `npm audit` (0 vulnerabilities); `npm run build`.
+- Manual evidence: the built app bundle was generated locally with the vendored
+  Spark compatibility package and the upgraded Vite/Tailwind stack.
+- Remaining uncertainty: the patched local `@github/spark` tarball should be
+  dropped once upstream publishes official Vite 8 peer support; CI on the final
+  PR head is still required before this evidence can close PB-10.
+- Release gate changed: none closed. PB-10 evidence is strengthened for the app
+  toolchain, but the checkbox remains open pending CI; PB-11 is unchanged.
+- Next shippable artifact: GitHub CI confirmation for this dependency upgrade,
+  then the existing release-hardening path remains unchanged (final candidate
+  freeze and human execution of `docs/REAL_SITE_TEST_PROTOCOL.md`).
+
+Previous handoff (main dependency-audit cleanup):
 
 - Artifact shipped: dependency-audit cleanup and status reconciliation —
   `npm audit` taken from 5 findings (1 high, 4 moderate) back to 0, and this
