@@ -32,7 +32,8 @@ bannerbanner-v*.zip.sha256
 
 .env
 **/agent-eval-report*
-packages
+packages/*
+!packages/*.tgz
 pids
 .file-manifest
 .devcontainer/
