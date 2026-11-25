@@ -49,6 +49,8 @@ if command -v zip >/dev/null 2>&1; then
   (cd "$OUT" && zip -qr "$ARCHIVE" .)
   if command -v sha256sum >/dev/null 2>&1; then
     sha256sum "$ARCHIVE" | tee "$ARCHIVE.sha256"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$ARCHIVE" | tee "$ARCHIVE.sha256"
   fi
   echo "Archive: $ARCHIVE"
 else

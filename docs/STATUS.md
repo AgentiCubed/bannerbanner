@@ -1,6 +1,6 @@
 # BannerBanner status
 
-Last updated: 2026-09-10  
+Last updated: 2026-11-24  
 Code baseline reviewed: `main` at `5a419f4` (deterministic icon release baseline merged in PR #57 on 2026-08-22, plus subsequent dependency and audit bumps)  
 Operating pack: committed to `main` on 2026-08-02
 
@@ -86,6 +86,40 @@ prepared but still need submission-time/dashboard finalization.
   see BB-013).
 
 ## Latest handoff
+
+- Artifact shipped: Pre-flight release-hardening polish for `PB-11` / `WS-04`
+  (Shadow DOM probing for Usercentrics, macOS `shasum -a 256` fallback in the
+  extension build script, and `SUBMISSION_TRACKER.md` reconciliation).
+- Files or behavior changed: `extension/lib/dom-probe.js` now falls back to
+  traversing open `shadowRoot` trees in `queryVisible()` and `isGone()` after
+  the light-DOM fast path so Shadow DOM CMPs (notably Usercentrics
+  `#usercentrics-root`) can locate controls and verify teardown;
+  `extension/test/unit/dom-probe.test.mjs`,
+  `extension/test/browser/fixtures/usercentrics-shadow.html`, and
+  `extension/test/browser/specs/pipeline.spec.mjs` add unit and browser fixture
+  coverage for Shadow DOM Usercentrics; `extension/build-extension.sh` adds a
+  `shasum -a 256` fallback when `sha256sum` is unavailable (macOS);
+  `extension/SUBMISSION_TRACKER.md` updates `PB-12` to `Closed (2026-08-15)`.
+- Checks passed: `node --check` on all extension scripts, helpers, and tests;
+  73/73 unit tests (`npm run test:extension`); `npm run build:extension`
+  (strict 21-file inventory + `bannerbanner-v0.1.0.zip` SHA-256
+  `72decfd02e5de3faf52ee8ca6cbfa5e0b6044908a79b116ccf27ac6e8e7d98b3`);
+  `npm run validate:extension`.
+- Manual evidence: none — `PB-11` live-site execution and manual permission
+  walkthrough still require a human desktop Chrome run.
+- Remaining uncertainty: `npm run lint` and Playwright browser specs were not
+  run in this worktree because `node_modules/` and
+  `extension/test/browser/node_modules/` are not installed locally; CI on the
+  PR head will verify both `Extension CI` (including the new
+  `usercentrics-shadow.html` Playwright tests) and `Lint`.
+- Release gate changed: none closed. `PB-09`/`PB-10`/`PB-11`/`WS-04`
+  preparation strengthened; all `PB-01`–`PB-11` and `WS-01`–`WS-04` checkboxes
+  remain open pending CI confirmation, human browser evidence, and final tag.
+- Next shippable artifact: open a PR for these pre-flight fixes, confirm
+  `Extension CI` + `Lint` green (`PB-10`), then execute
+  `docs/REAL_SITE_TEST_PROTOCOL.md` in desktop Chrome (`PB-01`–`PB-11`).
+
+Previous handoff (PR #58):
 
 - Artifact shipped: PR #58 — Vite `^8.2.1` dependency-tree upgrade (currently
   resolved to 8.2.2) with compatible plugins, merged onto current `main`.
