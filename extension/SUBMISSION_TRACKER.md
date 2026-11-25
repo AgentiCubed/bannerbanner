@@ -7,7 +7,7 @@
 | Privacy policy | Aligned to code | `PRIVACY_POLICY.md` |
 | Permission justifications | Draft ready | same file |
 | Real-site matrix (PB-11) | Open | Needs human browser evidence |
-| Claim audit (PB-12) | In progress on #32 | PRD + store copy rewritten |
+| Claim audit (PB-12) | Closed (2026-08-15) | Claims audit + legacy docs reconciled; CMP wording stays "candidate" until PB-11 |
 | Screenshots (WS-03) | Not started | Capture after PB-11 |
 | Provenance record (WS-04) | Procedure ready | `docs/RELEASE_PROVENANCE.md` |
 | Developer account / fee | Owner action | James |

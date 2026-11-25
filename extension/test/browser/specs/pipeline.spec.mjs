@@ -48,10 +48,12 @@ const CMP_CASES = [
   { fixture: 'quantcast', cmp: 'Quantcast Choice', mode: ALL, expectClick: 'accept', cookie: 'euconsent-v2' },
   { fixture: 'usercentrics', cmp: 'Usercentrics', mode: NECESSARY, expectClick: 'reject', storageKey: 'uc_settings' },
   { fixture: 'usercentrics', cmp: 'Usercentrics', mode: ALL, expectClick: 'accept', storageKey: 'uc_settings' },
+  { fixture: 'usercentrics-shadow', label: 'Usercentrics (Shadow DOM)', cmp: 'Usercentrics', mode: NECESSARY, expectClick: 'reject', storageKey: 'uc_settings' },
+  { fixture: 'usercentrics-shadow', label: 'Usercentrics (Shadow DOM)', cmp: 'Usercentrics', mode: ALL, expectClick: 'accept', storageKey: 'uc_settings' },
 ];
 
 for (const c of CMP_CASES) {
-  test(`${c.cmp} / ${c.mode.mode}: intended control clicked, postcondition verified`, async () => {
+  test(`${c.label || c.cmp} / ${c.mode.mode}: intended control clicked, postcondition verified`, async () => {
     const page = await freshPage();
     await page.goto(`${origin}/fixtures/${c.fixture}.html`);
     await startRuntimeOnPage(page, origin, c.mode);

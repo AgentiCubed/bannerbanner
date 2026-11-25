@@ -6,26 +6,60 @@
 // DOM adapter, it is exercised by the browser integration tests rather than the
 // pure unit tests.
 
-function isElementVisible(el) {
+function isElementVisible(el, win) {
   if (!el || el.nodeType !== 1) return false;
-  const style = getComputedStyle(el);
+  const getStyle = win && typeof win.getComputedStyle === 'function' ? win.getComputedStyle : getComputedStyle;
+  const style = getStyle(el);
   if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
   const rect = el.getBoundingClientRect();
   return rect.width > 1 && rect.height > 1;
 }
 
+function collectOpenShadowRoots(root, out = [], visited = new Set()) {
+  if (!root || visited.has(root)) return out;
+  visited.add(root);
+  let elements;
+  try {
+    elements = root.querySelectorAll('*');
+  } catch {
+    return out;
+  }
+  for (const el of elements) {
+    if (el && el.shadowRoot && !visited.has(el.shadowRoot)) {
+      out.push(el.shadowRoot);
+      collectOpenShadowRoots(el.shadowRoot, out, visited);
+    }
+  }
+  return out;
+}
+
+function queryVisibleInRoot(root, selector, win) {
+  let nodes;
+  try {
+    nodes = root.querySelectorAll(selector);
+  } catch {
+    return null;
+  }
+  for (const node of nodes) {
+    if (isElementVisible(node, win)) return node;
+  }
+  return null;
+}
+
 export function createDomProbe(win = window, doc = document) {
   return {
     queryVisible(selectors) {
+      // Fast path: check light DOM first.
       for (const selector of selectors) {
-        let nodes;
-        try {
-          nodes = doc.querySelectorAll(selector);
-        } catch {
-          continue;
-        }
-        for (const node of nodes) {
-          if (isElementVisible(node)) return node;
+        const hit = queryVisibleInRoot(doc, selector, win);
+        if (hit) return hit;
+      }
+      // Fallback: traverse open shadow roots (e.g. Usercentrics #usercentrics-root).
+      const shadowRoots = collectOpenShadowRoots(doc);
+      for (const shadowRoot of shadowRoots) {
+        for (const selector of selectors) {
+          const hit = queryVisibleInRoot(shadowRoot, selector, win);
+          if (hit) return hit;
         }
       }
       return null;
@@ -33,13 +67,13 @@ export function createDomProbe(win = window, doc = document) {
 
     isGone(selectors) {
       for (const selector of selectors) {
-        let node;
-        try {
-          node = doc.querySelector(selector);
-        } catch {
-          continue;
+        if (queryVisibleInRoot(doc, selector, win)) return false;
+      }
+      const shadowRoots = collectOpenShadowRoots(doc);
+      for (const shadowRoot of shadowRoots) {
+        for (const selector of selectors) {
+          if (queryVisibleInRoot(shadowRoot, selector, win)) return false;
         }
-        if (node && isElementVisible(node)) return false;
       }
       return true;
     },
@@ -107,7 +141,7 @@ export function createDomProbe(win = window, doc = document) {
       }
       for (const el of roots) {
         if (out.length >= 8) break;
-        if (seen.has(el) || !isElementVisible(el)) continue;
+        if (seen.has(el) || !isElementVisible(el, win)) continue;
         seen.add(el);
         const buttonTexts = [];
         for (const btn of el.querySelectorAll('button, a, [role="button"]')) {
